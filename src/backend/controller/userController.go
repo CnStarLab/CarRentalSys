@@ -9,6 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary      user login
+// @Description  new user to login
+// @Tags         user
+// @Response     200
+// @Router       /api/v1/user/login [GET]
 func UserLogin(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "pong",
@@ -22,6 +27,16 @@ func GetUserInfo(c *gin.Context) {
 	//WIP
 }
 
+// @Summary      User Register
+// @Description  New user to register
+// @Tags         user
+// @Param        user body models.User true "User Registration Request"
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} models.User
+// @Failure      400 {object} map[string]interface{}
+// @Failure      500 {object} map[string]interface{}
+// @Router       /api/v1/user/register [post]
 func UserRegister(c *gin.Context) {
 	var user models.User
 
