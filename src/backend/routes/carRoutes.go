@@ -1,19 +1,15 @@
 package routes
 
 import (
+	"carRentalSys/controller"
+
 	"github.com/gin-gonic/gin"
 )
 
 func CarRoutes(router *gin.Engine) {
 	v1 := router.Group("/v1")
 	{
-		v1.GET("/cars/getAll", getAll)
+		v1.GET("/cars/getAll", controller.GetAllCars)
+		v1.POST("/cars/addCar", controller.AddCarsByUser)
 	}
-}
-
-func getAll(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "ALL CARS",
-	})
-	//WIP
 }

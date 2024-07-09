@@ -8,3 +8,7 @@ type User struct {
 	Email    string `json:"email" gorm:"unique;not null"`
 	Password string `json:"password" gorm:"not null"`
 }
+
+func CreateUser(db *gorm.DB, user *User) error {
+	return db.Create(user).Error
+}

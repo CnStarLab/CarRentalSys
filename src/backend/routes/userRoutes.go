@@ -1,8 +1,7 @@
 package routes
 
 import (
-	"fmt"
-	"net/http"
+	"carRentalSys/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,20 +9,8 @@ import (
 func UserRoutes(router *gin.Engine) {
 	v1 := router.Group("/v1")
 	{
-		v1.GET("/login", userLogin)
-		v1.GET("/getUserInfo", getUserInfo)
+		v1.GET("/user/login", controller.UserLogin)
+		v1.POST("/user/register", controller.UserRegister)
+		v1.GET("/user/getUserInfo", controller.GetUserInfo)
 	}
-}
-
-func userLogin(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "pong",
-	})
-	//WIP
-}
-
-func getUserInfo(c *gin.Context) {
-	name := c.DefaultQuery("name", "NaN")
-	c.String(http.StatusOK, fmt.Sprintf("hello %s", name))
-	//WIP
 }
