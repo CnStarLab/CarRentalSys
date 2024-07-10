@@ -13,18 +13,54 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useState } from 'react';
+import Modal from '../login/alert';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [modalMessage, setModalMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+  
+    // formData 2 json
+    const formData = {
+      username: data.get('username'),
       email: data.get('email'),
       password: data.get('password'),
-    });
+    };
+  
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/user/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      // parse response 2 json
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.log(response.body)
+        throw new Error(`Register error! INFO: ${result.error}`);
+      }
+  
+      setModalMessage(result.message || 'Success!');
+    } catch (error) {
+      setModalMessage(`Error: ${error.message}`);
+    } finally {
+      setIsModalOpen(true);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -47,7 +83,7 @@ export default function SignUp() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
                   name="firstName"
@@ -67,7 +103,7 @@ export default function SignUp() {
                   name="lastName"
                   autoComplete="family-name"
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <TextField
                   required
@@ -124,6 +160,7 @@ export default function SignUp() {
           </Box>
         </Box>
       </Container>
+      <Modal open={isModalOpen} message={modalMessage} onClose={closeModal} />
     </ThemeProvider>
   );
 }
