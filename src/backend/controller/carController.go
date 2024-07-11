@@ -27,8 +27,11 @@ func AddCarsByUser(c *gin.Context) {
 }
 
 func GetAllCars(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "ALL CARS",
-	})
-	//WIP
+	var cars []models.Car
+	result := database.DB.Find(&cars)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, cars)
 }
