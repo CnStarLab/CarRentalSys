@@ -9,6 +9,7 @@ type Car struct {
 	Year      int     `json:"year"`
 	Price     float64 `json:"price"`
 	Available bool    `json:"available"`
+	Users     []User  `gorm:"many2many:user_cars;" json:"users"`
 }
 
 func CreateCarByUser(db *gorm.DB, car *Car) error {
