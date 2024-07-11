@@ -20,7 +20,7 @@ func ConnectDatabase() {
 	DB = db
 
 	// 自动迁移数据库模型
-	err = db.AutoMigrate(&models.User{})
+	err = db.AutoMigrate(&models.User{}, &models.Car{})
 	if err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
