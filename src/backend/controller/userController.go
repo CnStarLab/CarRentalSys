@@ -15,10 +15,27 @@ import (
 // @Response     200
 // @Router       /api/v1/user/login [GET]
 func UserLogin(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "pong",
-	})
-	//WIP
+	var user models.User
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	//Check user and password.
+	var dbUser models.User
+	if err := database.DB.Where("username = ? AND password = ?", user.Username, user.Password).First(&dbUser).Error; err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
+		return
+	}
+
+	// Genetate Signed JWT
+	token, err := user.GenerateToken()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 func GetUserInfo(c *gin.Context) {

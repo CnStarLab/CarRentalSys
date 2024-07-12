@@ -3,7 +3,6 @@ package controller
 import (
 	"carRentalSys/database"
 	"carRentalSys/models"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +10,6 @@ import (
 
 func BookNewCar(c *gin.Context) {
 	var rentRequest models.UserCar
-	fmt.Println("!11")
 	if err := c.ShouldBindJSON(&rentRequest); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
