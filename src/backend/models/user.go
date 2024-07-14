@@ -27,6 +27,18 @@ func CreateUser(db *gorm.DB, user *User) error {
 	return db.Create(user).Error
 }
 
+func (u *User) FindByEmail(db *gorm.DB, email string) error {
+	if err := db.Where("email = ?", email).First(u).Error; err != nil {
+
+		return err
+	}
+	return nil
+}
+
+func (u *User) ValidatePassword(password string) bool {
+	return u.Password == password
+}
+
 // ==============================Token=======================================//
 func (u *User) GenerateToken() (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)

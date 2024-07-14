@@ -15,6 +15,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Logo from '../components/Logo';
 import Modal from './alert';
+import { Token } from '@mui/icons-material';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -26,6 +27,12 @@ export default function SignIn() {
   const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
+    const formData = {
+      email: data.get('email'),
+      password: data.get('password'),
+    };
+
     console.log({
       email: data.get('email'),
       password: data.get('password'),
@@ -37,13 +44,12 @@ export default function SignIn() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formData),
       });
       
-      console.log(response)
       // parse response 2 json
       const result = await response.json();
-
+ 
       if (!response.ok) {
         console.log(response.body)
         throw new Error(`Register error! INFO: ${result.error}`);

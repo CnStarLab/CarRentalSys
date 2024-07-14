@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // @Summary      user login
@@ -23,7 +24,18 @@ func UserLogin(c *gin.Context) {
 
 	//Check user and password.
 	var dbUser models.User
-	if err := database.DB.Where("username = ? AND password = ?", user.Username, user.Password).First(&dbUser).Error; err != nil {
+	if err := dbUser.FindByEmail(database.DB, user.Email); err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or not register"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		fmt.Println("Database error:", err)
+		return
+	}
+
+	// Compare the provided password with the stored password
+	if !dbUser.ValidatePassword(user.Password) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 		return
 	}
