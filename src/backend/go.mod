@@ -2,7 +2,6 @@ module carRentalSys
 
 go 1.21
 
-toolchain go1.22.5
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect

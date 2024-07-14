@@ -14,18 +14,54 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Logo from '../components/Logo';
+import Modal from './alert';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+  const [modalMessage, setModalMessage] = React.useState('');
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
+
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      console.log(response)
+      // parse response 2 json
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.log(response.body)
+        throw new Error(`Register error! INFO: ${result.error}`);
+      }
+      
+      localStorage.setItem('token', result.token);
+
+      setModalMessage(result.message || 'Success!');
+    } catch (error) {
+      setModalMessage(`Error: ${error.message}`);
+    } finally {
+      setIsModalOpen(true);
+    }
+
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -95,6 +131,7 @@ export default function SignIn() {
           </Box>
         </Box>
       </Container>
+      <Modal open={isModalOpen} message={modalMessage} onClose={closeModal} />
     </ThemeProvider>
   );
 }
