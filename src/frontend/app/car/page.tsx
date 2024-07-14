@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Modal from '../login/alert';
+import Logo from '../components/Logo';
 
 export default function AddCars() {
     const [modalMessage, setModalMessage] = React.useState('');
@@ -63,6 +64,7 @@ export default function AddCars() {
 
   return (
     <Container component="main" maxWidth="xs">
+      <Logo/>
       <CssBaseline />
       <Box
         sx={{

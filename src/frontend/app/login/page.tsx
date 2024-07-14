@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Logo from '../components/Logo';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -29,6 +30,7 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <Logo/>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

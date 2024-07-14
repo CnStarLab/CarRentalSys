@@ -2,6 +2,7 @@
 import * as React from 'react'
 import { Box, Container } from "@mui/material";
 import CarCards from "./CarCards";
+import Logo from '../components/Logo';
 
 export default function AllCars(){
     const [JsonData, SetJsonData] = React.useState([])
@@ -15,6 +16,7 @@ export default function AllCars(){
 
     return (
         <Container maxWidth="sm">
+            <Logo/>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {JsonData.map((car, index) => (
                 <CarCards key={index} car={car} />
