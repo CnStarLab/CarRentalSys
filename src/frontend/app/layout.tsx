@@ -34,6 +34,7 @@ export default function RootLayout({
     bottom: '40px', // 距离底部的距离
     left: '50%',
     transform: 'translateX(-50%)', // 水平居中
+    color: 'white', // 设置字体颜色为白色
   };
 
   return (

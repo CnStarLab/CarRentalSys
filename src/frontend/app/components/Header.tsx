@@ -26,7 +26,7 @@ export default function Header() {
 
     const navLinkStyle: React.CSSProperties = {
         textDecoration: 'none',
-        color: 'black',
+        color: 'white',
         fontWeight: 'bold'
     };
 
@@ -53,8 +53,8 @@ export default function Header() {
             <Link href="#" style={navLinkStyle}>Shop</Link>
         </div>
         <div style={iconsStyle}>
-            <button style={iconButtonStyle}>🌐</button>
-            <button style={iconButtonStyle}>❓</button>
+            <button style={iconButtonStyle}>🌍</button>
+            <button style={iconButtonStyle}>❔</button>
             <button style={iconButtonStyle} onClick={handleSignIn}>👤</button>
         </div>
     </header>

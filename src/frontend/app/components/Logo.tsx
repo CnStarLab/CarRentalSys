@@ -6,7 +6,7 @@ import Link from 'next/link';
 export default function Logo() {
   const logoStyle: React.CSSProperties = {
     position: 'absolute',
-    left: '20px', // 根据布局需要调整位置
+    left: '20px',
     top: '0',
   };
 
