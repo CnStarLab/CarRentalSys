@@ -28,11 +28,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const copyrightStyle: React.CSSProperties = {
+    position: 'absolute',
+    bottom: '40px', // 距离底部的距离
+    left: '50%',
+    transform: 'translateX(-50%)', // 水平居中
+  };
+
   return (
     <html lang="en">
       <body className={inter.className}>
         {children}
-        <Copyright sx={{ mt: 8, mb: 4 }} />
+        <Copyright sx={copyrightStyle} />
       </body>
     </html>
   );
