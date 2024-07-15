@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Logo from './Logo';
 import { useRouter } from 'next/navigation';
 import { useAuth } from './AuthContext';
+import { Button } from '@mui/material';
 
 export default function Header() {
     const { isLoggedIn, username, login, logout } = useAuth();
@@ -28,7 +29,7 @@ export default function Header() {
 
     const navLinkStyle: React.CSSProperties = {
         textDecoration: 'none',
-        color: 'white',
+        color: 'black',
         fontWeight: 'bold'
     };
 
@@ -51,7 +52,7 @@ export default function Header() {
             <Link href="#" style={navLinkStyle}>Vehicles</Link>
             <Link href="#" style={navLinkStyle}>Energy</Link>
             <Link href="/rent" style={navLinkStyle}>Rent</Link>
-            <Link href="#" style={navLinkStyle}>Discover</Link>
+            <Link href="/carList" style={navLinkStyle}>Discover</Link>
             <Link href="#" style={navLinkStyle}>Shop</Link>
         </div>
         <div style={iconsStyle}>
@@ -61,7 +62,7 @@ export default function Header() {
             {isLoggedIn ? (
                 <p>Welcome, {username}!</p>
             ) : (
-                <button onClick={() => window.location.href = '/login'}>登录</button>
+                <Button variant="contained" onClick={() => window.location.href = '/login'}>登录</Button>
             )}
         </div>
     </header>

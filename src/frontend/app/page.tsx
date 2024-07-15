@@ -43,7 +43,6 @@ export default function HomePage() {
 
   return (
     <div style={ContainerStyle}>
-      <Header/>
       <div style={HomePageContainerStyle}>
         <div style={circleStyle}>
           <p style={textStyle}>Our Slogan</p>

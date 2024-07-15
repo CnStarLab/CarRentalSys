@@ -10,7 +10,10 @@ export default function AllCars(){
     React.useEffect(() => {
         fetch('http://localhost:8080/api/v1/cars/getAll')
           .then(response => response.json())
-          .then(data => SetJsonData(data))
+          .then(data => {
+            console.log("[AllCars]",data)
+            SetJsonData(data)
+        })
           .catch(error => console.error('Error fetching data:', error));
       }, []); // Empty Array as Listener, make sure only run when the Component mount fist time.
 

@@ -16,8 +16,11 @@ import Modal from '../login/alert';
 import Logo from '../components/Logo';
 import { DateRangePicker } from 'rsuite';
 import { useAuth } from '../components/AuthContext';
+import { useSearchParams } from 'next/navigation';
 
 export default function RentCar() {
+    const searchParams = useSearchParams();
+    const carId = searchParams.get('carId');
     const { isLoggedIn, username, login, logout } = useAuth();
     const [dateRange, setDateRange]:any = React.useState([null, null]);
     const [modalMessage, setModalMessage] = React.useState('');
@@ -34,7 +37,7 @@ export default function RentCar() {
     
       // formData 2 json
       const formData = {
-        carId: Number(data.get('carId')),
+        carId: Number(carId),
         username: username,
         startTime: dateRange[0], 
         endTime: dateRange[1], 
@@ -117,11 +120,15 @@ export default function RentCar() {
                 id="carId"
                 label="carId"
                 name="carId"
-                type='number'
+                type="number"
+                value={carId}
+                InputProps={{
+                  readOnly: true,
+                }}
                 autoComplete="NaN"
+                disabled
               />
             </Grid>
-
             <Grid item xs={12}>
               <DateRangePicker 
               size='lg'

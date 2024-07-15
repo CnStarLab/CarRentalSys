@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Box } from '@mui/material';
+import Link from 'next/link';
 
 export default function CarCards({ car }) {
   return (
@@ -83,7 +84,9 @@ export default function CarCards({ car }) {
           More Info
         </Button>
         <Button size="small" color="success">
+          <Link href={`/rent?carId=${car.ID}`} >
           Rent Now
+          </Link>
         </Button>
       </CardActions>
     </Card>

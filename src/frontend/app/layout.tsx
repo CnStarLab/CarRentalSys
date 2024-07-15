@@ -2,6 +2,7 @@ import { Link, Typography } from "@mui/material";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { AuthProvider } from "./components/AuthContext";
+import Header from "./components/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,6 +43,7 @@ export default function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body className={inter.className}>
+          <Header />
             {children}
             <Copyright sx={copyrightStyle} />
         </body>
