@@ -15,13 +15,18 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Modal from '../login/alert';
 import Logo from '../components/Logo';
 import { DateRangePicker } from 'rsuite';
+import { useAuth } from '../components/AuthContext';
 
 export default function RentCar() {
+    const { isLoggedIn, username, login, logout } = useAuth();
     const [dateRange, setDateRange]:any = React.useState([null, null]);
     const [modalMessage, setModalMessage] = React.useState('');
     const [isModalOpen, setIsModalOpen] = React.useState(false);
   
     const handleSubmit = async (event) => {
+      if(!isLoggedIn){
+        window.location.href = '/login'
+      }
       event.preventDefault();
       const data = new FormData(event.currentTarget);
 
@@ -30,7 +35,7 @@ export default function RentCar() {
       // formData 2 json
       const formData = {
         carId: Number(data.get('carId')),
-        username: "111",
+        username: username,
         startTime: dateRange[0], 
         endTime: dateRange[1], 
       };

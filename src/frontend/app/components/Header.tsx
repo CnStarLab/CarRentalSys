@@ -50,7 +50,7 @@ export default function Header() {
         <div style={navStyle}>
             <Link href="#" style={navLinkStyle}>Vehicles</Link>
             <Link href="#" style={navLinkStyle}>Energy</Link>
-            <Link href="#" style={navLinkStyle}>Charging</Link>
+            <Link href="/rent" style={navLinkStyle}>Rent</Link>
             <Link href="#" style={navLinkStyle}>Discover</Link>
             <Link href="#" style={navLinkStyle}>Shop</Link>
         </div>
