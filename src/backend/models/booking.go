@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -18,14 +19,10 @@ var (
 	ErrUserNotFound    = errors.New("user not found")
 	ErrCarNotFound     = errors.New("car not found")
 	ErrCarNotAvailable = errors.New("car is not available")
+	ErrUserCarNotFound = errors.New("UserCar relation not found")
 )
 
-func BookCar(db *gorm.DB, userID uint, carID uint) error {
-	var user User
-	if err := db.Preload("Cars").First(&user, userID).Error; err != nil {
-		return ErrUserNotFound
-	}
-
+func BookCar(db *gorm.DB, userID uint, carID uint, startTime time.Time, endTime time.Time) error {
 	var car Car
 	if err := db.First(&car, carID).Error; err != nil {
 		return ErrCarNotFound
@@ -35,33 +32,50 @@ func BookCar(db *gorm.DB, userID uint, carID uint) error {
 		return ErrCarNotAvailable
 	}
 
-	// 更新汽车状态为不可用
+	// Update car status to unavailable
 	car.Available = false
 	db.Save(&car)
 
-	// 添加用户和汽车的关联
-	db.Model(&user).Association("Cars").Append(&car)
+	// Create a new UserCar record
+	fmt.Println(startTime)
+	userCar := UserCar{
+		UserID:    userID,
+		CarID:     car.ID,
+		StartTime: startTime,
+		EndTime:   endTime,
+	}
+	if err := db.Create(&userCar).Error; err != nil {
+		return err
+	}
+
+	// Associate the user and car
+	//db.Model(&user).Association("Cars").Append(&car)
 
 	return nil
 }
 
 func ReturnCar(db *gorm.DB, userID uint, carID uint) error {
-	var user User
-	if err := db.Preload("Cars").First(&user, userID).Error; err != nil {
-		return ErrUserNotFound
-	}
+	// 查找用户和汽车
 
 	var car Car
 	if err := db.First(&car, carID).Error; err != nil {
 		return ErrCarNotFound
 	}
 
+	// 在 UserCars 中找到对应的记录并删除
+	var userCar UserCar
+	if err := db.Where("user_id = ? AND car_id = ?", userID, carID).First(&userCar).Error; err != nil {
+		return ErrUserCarNotFound
+	}
+
 	// 更新汽车状态为可用
 	car.Available = true
 	db.Save(&car)
 
-	// 删除用户和汽车的关联
-	db.Model(&user).Association("Cars").Delete(&car)
+	// 删除 UserCar 记录
+	if err := db.Delete(&userCar).Error; err != nil {
+		return err
+	}
 
 	return nil
 }
