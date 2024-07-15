@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import Logo from './Logo';
 import { useRouter } from 'next/navigation';
+import { useAuth } from './AuthContext';
 
 export default function Header() {
+    const { isLoggedIn, username, login, logout } = useAuth();
     const router = useRouter();
 
     const handleSignIn = () => {
@@ -56,6 +58,11 @@ export default function Header() {
             <button style={iconButtonStyle}>🌍</button>
             <button style={iconButtonStyle}>❔</button>
             <button style={iconButtonStyle} onClick={handleSignIn}>👤</button>
+            {isLoggedIn ? (
+                <p>Welcome, {username}!</p>
+            ) : (
+                <button onClick={() => window.location.href = '/login'}>登录</button>
+            )}
         </div>
     </header>
     );

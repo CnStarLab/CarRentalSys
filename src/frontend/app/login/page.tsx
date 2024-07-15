@@ -16,11 +16,15 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Logo from '../components/Logo';
 import Modal from './alert';
 import { Token } from '@mui/icons-material';
+import { useAuth } from '../components/AuthContext';
+import { useRouter } from 'next/navigation';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+  const {login} = useAuth();
+  const router = useRouter()
 
   const [modalMessage, setModalMessage] = React.useState('');
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -55,9 +59,11 @@ export default function SignIn() {
         throw new Error(`Register error! INFO: ${result.error}`);
       }
       
+      console.log("[SignIn] response Json:",result)
       localStorage.setItem('token', result.token);
-
+      
       setModalMessage(result.message || 'Success!');
+      login(router,result.username)
     } catch (error) {
       setModalMessage(`Error: ${error.message}`);
     } finally {
