@@ -9,7 +9,7 @@ import (
 )
 
 type UserCar struct {
-	UserID    uint      `json:"userId" gorm:"primaryKey"`
+	Username  string    `json:"username" gorm:"primaryKey"`
 	CarID     uint      `json:"carId" gorm:"primaryKey"`
 	StartTime time.Time `json:"startTime" gorm:"not null"`
 	EndTime   time.Time `json:"endTime" gorm:"not null"`
@@ -22,7 +22,7 @@ var (
 	ErrUserCarNotFound = errors.New("UserCar relation not found")
 )
 
-func BookCar(db *gorm.DB, userID uint, carID uint, startTime time.Time, endTime time.Time) error {
+func BookCar(db *gorm.DB, username string, carID uint, startTime time.Time, endTime time.Time) error {
 	var car Car
 	if err := db.First(&car, carID).Error; err != nil {
 		return ErrCarNotFound
@@ -39,7 +39,7 @@ func BookCar(db *gorm.DB, userID uint, carID uint, startTime time.Time, endTime 
 	// Create a new UserCar record
 	fmt.Println(startTime)
 	userCar := UserCar{
-		UserID:    userID,
+		Username:  username,
 		CarID:     car.ID,
 		StartTime: startTime,
 		EndTime:   endTime,
@@ -54,7 +54,7 @@ func BookCar(db *gorm.DB, userID uint, carID uint, startTime time.Time, endTime 
 	return nil
 }
 
-func ReturnCar(db *gorm.DB, userID uint, carID uint) error {
+func ReturnCar(db *gorm.DB, username string, carID uint) error {
 	// 查找用户和汽车
 
 	var car Car
@@ -64,7 +64,7 @@ func ReturnCar(db *gorm.DB, userID uint, carID uint) error {
 
 	// 在 UserCars 中找到对应的记录并删除
 	var userCar UserCar
-	if err := db.Where("user_id = ? AND car_id = ?", userID, carID).First(&userCar).Error; err != nil {
+	if err := db.Where("username = ? AND car_id = ?", username, carID).First(&userCar).Error; err != nil {
 		return ErrUserCarNotFound
 	}
 

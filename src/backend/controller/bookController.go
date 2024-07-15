@@ -15,7 +15,7 @@ func BookNewCar(c *gin.Context) {
 		return
 	}
 
-	err := models.BookCar(database.DB, rentRequest.UserID, rentRequest.CarID, rentRequest.StartTime, rentRequest.EndTime)
+	err := models.BookCar(database.DB, rentRequest.Username, rentRequest.CarID, rentRequest.StartTime, rentRequest.EndTime)
 	if err != nil {
 		switch err {
 		case models.ErrUserNotFound:
@@ -40,7 +40,7 @@ func ReturnCar(c *gin.Context) {
 		return
 	}
 
-	err := models.ReturnCar(database.DB, returnRequest.UserID, returnRequest.CarID)
+	err := models.ReturnCar(database.DB, returnRequest.Username, returnRequest.CarID)
 	if err != nil {
 		switch err {
 		case models.ErrUserNotFound:

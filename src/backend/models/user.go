@@ -17,7 +17,7 @@ type User struct {
 }
 
 type JWTClaims struct {
-	Email string `json:"UserId"`
+	Email string `json:"email"`
 	jwt.StandardClaims
 }
 

@@ -30,7 +30,7 @@ export default function RentCar() {
       // formData 2 json
       const formData = {
         carId: Number(data.get('carId')),
-        userId: 1,
+        username: "111",
         startTime: dateRange[0], 
         endTime: dateRange[1], 
       };
