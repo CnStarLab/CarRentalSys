@@ -1,19 +1,19 @@
 import React from 'react';
-import { Container, Grid, Box, Typography, TextField, Slider, Checkbox, FormControlLabel, Button, Card, CardContent, CardMedia } from '@mui/material';
+import { Container, Grid, Box, Typography, TextField, Slider, Checkbox, FormControlLabel, Button, Card, CardContent, CardMedia, Stack, Radio, ToggleButtonGroup, ToggleButton, RadioGroup } from '@mui/material';
 import AllCars from '../carList/page';
 
 const marks = [
   {
-    value: 1000,
-    label: '$1K',
+    value: 50,
+    label: '$50',
   },
   {
-    value: 100000,
-    label: '$100K',
+    value: 500,
+    label: '$500',
   },
 ];
 
-const HomePage = () => {
+export default function BroserPage() {
   return (
     <Container maxWidth="lg">
       <Box sx={{ my: 4 }}>
@@ -26,35 +26,49 @@ const HomePage = () => {
             <Box sx={{ p: 2, border: '1px solid #ddd', borderRadius: 2 }}>
               <Typography variant="h6">Price</Typography>
               <Slider
-                defaultValue={50000}
-                step={1000}
+                defaultValue={100}
+                step={20}
                 marks={marks}
-                min={1000}
-                max={100000}
+                min={50}
+                max={500}
                 valueLabelDisplay="auto"
               />
               <Typography variant="h6">Location</Typography>
-              <FormControlLabel control={<Checkbox />} label="All Location" />
-              <FormControlLabel control={<Checkbox />} label="Ulaanbaatar" />
-              <FormControlLabel control={<Checkbox />} label="Darkhan" />
-              <FormControlLabel control={<Checkbox />} label="Erdenet" />
+              <Stack direction="column" spacing={1}>
+                <FormControlLabel control={<Checkbox />} label="All Location" />
+                <FormControlLabel control={<Checkbox />} label="Ulaanbaatar" />
+                <FormControlLabel control={<Checkbox />} label="Darkhan" />
+                <FormControlLabel control={<Checkbox />} label="Erdenet" />
+                <FormControlLabel control={<Checkbox />} label="...." />
+              </Stack>
+
               <Typography variant="h6">Vehicle Type</Typography>
-              <FormControlLabel control={<Checkbox />} label="All type" />
-              <FormControlLabel control={<Checkbox />} label="Luxury" />
-              <FormControlLabel control={<Checkbox />} label="Van" />
+              <Stack direction="column" spacing={1}>
+                <FormControlLabel control={<Checkbox />} label="All type" />
+                <FormControlLabel control={<Checkbox />} label="Luxury" />
+                <FormControlLabel control={<Checkbox />} label="Van" />
+              </Stack>
+
               <Typography variant="h6">Brand</Typography>
-              <FormControlLabel control={<Checkbox />} label="All brand" />
-              <FormControlLabel control={<Checkbox />} label="Toyoto" />
-              <FormControlLabel control={<Checkbox />} label="Nissan" />
+              <Stack direction="column" spacing={1}>
+                <FormControlLabel control={<Checkbox />} label="All brand" />
+                <FormControlLabel control={<Checkbox />} label="Toyoto" />
+                <FormControlLabel control={<Checkbox />} label="Nissan" />
+              </Stack>
               <Typography variant="h6">With driver</Typography>
-              <FormControlLabel control={<Checkbox />} label="Yes" />
-              <FormControlLabel control={<Checkbox />} label="No" />
-              <FormControlLabel control={<Checkbox />} label="All" />
+              <RadioGroup row>
+                <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+                <FormControlLabel value="no" control={<Radio />} label="No" />
+                <FormControlLabel value="all" control={<Radio />} label="All" />
+              </RadioGroup>
+
               <Typography variant="h6">Delivery</Typography>
-              <FormControlLabel control={<Checkbox />} label="Yes" />
-              <FormControlLabel control={<Checkbox />} label="No" />
-              <FormControlLabel control={<Checkbox />} label="All" />
-            </Box>
+              <RadioGroup row>
+                <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+                <FormControlLabel value="no" control={<Radio />} label="No" />
+                <FormControlLabel value="all" control={<Radio />} label="All" />
+              </RadioGroup>
+              </Box>
           </Grid>
           <Grid item xs={12} md={9}>
             <Box sx={{ mb: 2 }}>
@@ -87,5 +101,3 @@ const HomePage = () => {
     </Container>
   );
 };
-
-export default HomePage;
