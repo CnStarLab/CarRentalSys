@@ -47,6 +47,49 @@ export default function CarCards({ car }) {
                   >
                     ${car.price ? car.price : 'NaN'} /Day
                   </Box>
+                  </Typography>
+                  <Typography
+                    fontSize="lg"
+                    fontWeight="bold"
+                    color="primary"
+                  >
+                    Available: 
+                    <Box
+                      component="span"
+                      sx={{
+                        color: car.available ? 'green' : 'red',
+                        fontWeight: 'bold',
+                        ml: 1, // a little margin
+                      }}
+                    >
+                      {car.available ? 'Yes' : 'No'}
+                    </Box>
+                  </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  mt: 2,
+                }}
+              >
+                <Typography
+                  fontSize="lg"
+                  fontWeight="bold"
+                  color="primary"
+                  sx={{ mr: 2 }}
+                >
+                  Support Driver:
+                  <Box
+                    component="span"
+                    sx={{
+                      color: car.supportDriver ? 'green' : 'red',
+                      fontWeight: 'bold',
+                      ml: 1, // a little margin
+                    }}
+                  >
+                    {car.supportDriver ? 'Yes' : 'No'}
+                  </Box>
                 </Typography>
                 <Typography
                   fontSize="lg"
@@ -54,16 +97,16 @@ export default function CarCards({ car }) {
                   color="primary"
                 >
                   Available: 
-                  <Box
-                    component="span"
-                    sx={{
-                      color: car.available ? 'green' : 'red',
-                      fontWeight: 'bold',
-                      ml: 1, // a little margin
-                    }}
-                  >
-                    {car.available ? 'Yes' : 'No'}
-                  </Box>
+                    <Box
+                      component="span"
+                      sx={{
+                        color: car.supportDelivery ? 'green' : 'red',
+                        fontWeight: 'bold',
+                        ml: 1, // a little margin
+                      }}
+                    >
+                      {car.supportDelivery ? 'Yes' : 'No'}
+                    </Box>
                 </Typography>
               </Box>
             </CardContent>
