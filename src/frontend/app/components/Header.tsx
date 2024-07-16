@@ -52,7 +52,7 @@ export default function Header() {
             <Link href="#" style={navLinkStyle}>Vehicles</Link>
             <Link href="#" style={navLinkStyle}>Energy</Link>
             <Link href="/rent" style={navLinkStyle}>Rent</Link>
-            <Link href="/carList" style={navLinkStyle}>Discover</Link>
+            <Link href="/browser" style={navLinkStyle}>Discover</Link>
             <Link href="#" style={navLinkStyle}>Shop</Link>
         </div>
         <div style={iconsStyle}>

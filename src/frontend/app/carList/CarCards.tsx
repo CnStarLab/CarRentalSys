@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 export default function CarCards({ car }) {
   return (
-    <Card sx={{ maxWidth: 600 }}>
+    <Card sx={{ maxWidth: 1200 }}>
       <CardActionArea>
         <Grid container>
           <Grid item xs={8}>
