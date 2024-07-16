@@ -4,8 +4,12 @@ import "gorm.io/gorm"
 
 type Car struct {
 	gorm.Model
-	Brand     string  `json:"brand"`
-	CarModel  string  `json:"model"`
+	Brand           string `json:"brand"`
+	CarModel        string `json:"model"`
+	CarType         string `json:"type"`
+	SupportDriver   bool   `json:"supportDriver"`
+	SupportDelivery bool   `json:"supportDelivery"`
+
 	Year      int     `json:"year"`
 	Price     float64 `json:"price"`
 	Available bool    `json:"available"`
