@@ -20,11 +20,19 @@ export default function Header() {
     };
 
     const headerStyle: React.CSSProperties = {
+        position: 'relative',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '20px',
         backgroundColor: 'transparent'
+    };
+
+    const navContainerStyle: React.CSSProperties = {
+        position: 'absolute',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        display: 'flex',
     };
     
     const navStyle: React.CSSProperties = {
@@ -53,17 +61,19 @@ export default function Header() {
     return (
         <header style={headerStyle}>
             <Logo />
-            <div style={navStyle}>
-                <Link href="#" style={navLinkStyle}>Vehicles</Link>
-                <Link href="#" style={navLinkStyle}>Energy</Link>
-                <Link href="/rent" style={navLinkStyle}>Rent</Link>
-                <Link href="/browser" style={navLinkStyle}>Discover</Link>
-                <Link href="#" style={navLinkStyle}>Shop</Link>
+            <div style={navContainerStyle}>
+                <div style={navStyle}>
+                    <Link href="#" style={navLinkStyle}>Vehicles</Link>
+                    <Link href="#" style={navLinkStyle}>Energy</Link>
+                    <Link href="/rent" style={navLinkStyle}>Rent</Link>
+                    <Link href="/browser" style={navLinkStyle}>Discover</Link>
+                    <Link href="#" style={navLinkStyle}>Shop</Link>
+                </div>
             </div>
             <div style={iconsStyle}>
                 <button style={iconButtonStyle}>🌍</button>
                 <button style={iconButtonStyle}>❔</button>
-                {isLoggedIn? (
+                {isLoggedIn ? (
                     <>
                         <p>Welcome, {username}!</p>
                         <Button style={iconButtonStyle} onClick={handleLogout}>Logout</Button>
