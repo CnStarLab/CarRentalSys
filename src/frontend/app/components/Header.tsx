@@ -3,15 +3,20 @@
 import Link from 'next/link';
 import Logo from './Logo';
 import { useRouter } from 'next/navigation';
-import { useAuth } from './AuthContext';
+import { useAuth } from '../hook/AuthContext';
 import { Button } from '@mui/material';
 
 export default function Header() {
-    const { isLoggedIn, username, login, logout } = useAuth();
+    const { username, isLoggedIn, logout } = useAuth();
     const router = useRouter();
 
     const handleSignIn = () => {
-      router.push('/login');
+        router.push('/login');
+    };
+
+    const handleLogout = () => {
+        logout();
+        router.push('/');
     };
 
     const headerStyle: React.CSSProperties = {
@@ -46,25 +51,27 @@ export default function Header() {
     };
 
     return (
-    <header style={headerStyle}>
-        <Logo />
-        <div style={navStyle}>
-            <Link href="#" style={navLinkStyle}>Vehicles</Link>
-            <Link href="#" style={navLinkStyle}>Energy</Link>
-            <Link href="/rent" style={navLinkStyle}>Rent</Link>
-            <Link href="/browser" style={navLinkStyle}>Discover</Link>
-            <Link href="#" style={navLinkStyle}>Shop</Link>
-        </div>
-        <div style={iconsStyle}>
-            <button style={iconButtonStyle}>🌍</button>
-            <button style={iconButtonStyle}>❔</button>
-            <button style={iconButtonStyle} onClick={handleSignIn}>👤</button>
-            {isLoggedIn ? (
-                <p>Welcome, {username}!</p>
-            ) : (
-                <Button variant="contained" onClick={() => window.location.href = '/login'}>登录</Button>
-            )}
-        </div>
-    </header>
+        <header style={headerStyle}>
+            <Logo />
+            <div style={navStyle}>
+                <Link href="#" style={navLinkStyle}>Vehicles</Link>
+                <Link href="#" style={navLinkStyle}>Energy</Link>
+                <Link href="/rent" style={navLinkStyle}>Rent</Link>
+                <Link href="/browser" style={navLinkStyle}>Discover</Link>
+                <Link href="#" style={navLinkStyle}>Shop</Link>
+            </div>
+            <div style={iconsStyle}>
+                <button style={iconButtonStyle}>🌍</button>
+                <button style={iconButtonStyle}>❔</button>
+                {isLoggedIn? (
+                    <>
+                        <p>Welcome, {username}!</p>
+                        <Button style={iconButtonStyle} onClick={handleLogout}>Logout</Button>
+                    </>
+                ) : (
+                    <Button style={iconButtonStyle} onClick={handleSignIn}>👤</Button>
+                )}
+            </div>
+        </header>
     );
 }

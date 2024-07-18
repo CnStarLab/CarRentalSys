@@ -16,7 +16,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Logo from '../components/Logo';
 import Modal from './alert';
 import { Token } from '@mui/icons-material';
-import { useAuth } from '../components/AuthContext';
+import { useAuth } from '../hook/AuthContext';
 import { useRouter } from 'next/navigation';
 
 // TODO remove, this demo shouldn't need to reset the theme.

@@ -15,7 +15,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Modal from '../login/alert';
 import Logo from '../components/Logo';
 import { DateRangePicker } from 'rsuite';
-import { useAuth } from '../components/AuthContext';
+import { useAuth } from '../hook/AuthContext';
 import { useSearchParams } from 'next/navigation';
 
 export default function RentCar() {
