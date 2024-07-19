@@ -14,11 +14,11 @@ type UserCar struct {
 	CarID     uint      `json:"carId" gorm:"primaryKey"`
 	StartTime time.Time `json:"startTime" gorm:"not null"`
 	EndTime   time.Time `json:"endTime" gorm:"not null"`
-	Status    uint8     `json:"status" gorm:"not null"`
+	Status    uint8     `json:"status"`
 	//0: Request     1:Pending for payment     2:Paid but not used
 	//3.During using 4.After using             5.Finished
-	Reason     string `json:"reason" gorm:"not null"`
-	TotalPrice uint64 `json:"totalPrice" gorm:"not null"`
+	Reason     string `json:"reason"`
+	TotalPrice uint64 `json:"totalPrice"`
 }
 
 var (

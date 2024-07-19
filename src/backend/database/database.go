@@ -26,9 +26,9 @@ func ConnectDatabase() {
 		&models.UserCar{},
 		&models.Comment2Car{},
 		&models.Comment2User{},
-		&models.FavoriteCars{}
+		&models.FavoriteCars{},
 	)
-	
+
 	if err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
