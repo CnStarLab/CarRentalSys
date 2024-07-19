@@ -9,7 +9,8 @@ import (
 )
 
 type UserCar struct {
-	Username  string    `json:"username" gorm:"primaryKey"`
+	gorm.Model
+	Username  string    `json:"username" gorm:"primaryKe"`
 	CarID     uint      `json:"carId" gorm:"primaryKey"`
 	StartTime time.Time `json:"startTime" gorm:"not null"`
 	EndTime   time.Time `json:"endTime" gorm:"not null"`

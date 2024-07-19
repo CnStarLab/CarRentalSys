@@ -10,11 +10,13 @@ type Car struct {
 	Location        string `json:"location"`
 	SupportDriver   bool   `json:"supportDriver"`
 	SupportDelivery bool   `json:"supportDelivery"`
+	OwnerId         uint   `json:"userId"`
+	Seats           uint8  `json:"numSeats"`
 
-	Year      int     `json:"year"`
-	Price     float64 `json:"price"`
-	Available bool    `json:"available"`
-	Users     []User  `gorm:"many2many:user_cars;" json:"users"`
+	Year         int           `json:"year"`
+	Price        float64       `json:"price"`
+	Available    bool          `json:"available"`
+	Comments2Car []Comment2Car `json:"comments2car"`
 }
 
 func CreateCarByUser(db *gorm.DB, car *Car) error {
