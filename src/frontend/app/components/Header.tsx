@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import Link from 'next/link';
 import Logo from './Logo';
@@ -75,7 +75,7 @@ export default function Header() {
                 <button style={iconButtonStyle}>❔</button>
                 {isLoggedIn ? (
                     <>
-                        <p>Welcome, {username}!</p>
+                        <div>Welcome, {username}!</div>
                         <Button style={iconButtonStyle} onClick={handleLogout}>Logout</Button>
                     </>
                 ) : (
