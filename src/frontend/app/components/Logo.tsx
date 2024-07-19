@@ -1,5 +1,3 @@
-"use client";
-
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -12,7 +10,16 @@ export default function Logo() {
 
   return (
     <Link href="/">
-      <Image src="/logo.png" alt="Logo" width={100} height={100} style={logoStyle}/>
+      <Image src="/logo.svg" alt="Logo" width={100} height={100} style={{
+          position: 'absolute',
+          left: '20px',
+          top: '0',
+          maxWidth: '400px',
+          maxHeight: '400px',
+        }}/>
     </Link>
+
+    // components/Logo.js
+
   );
 }

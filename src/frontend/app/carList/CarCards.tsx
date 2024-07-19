@@ -96,7 +96,7 @@ export default function CarCards({ car }) {
                   fontWeight="bold"
                   color="primary"
                 >
-                  Available: 
+                  Support Delivery: 
                     <Box
                       component="span"
                       sx={{
