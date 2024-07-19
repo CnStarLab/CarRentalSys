@@ -7,7 +7,8 @@ type Car struct {
 	Brand           string `json:"brand"`
 	CarModel        string `json:"model"`
 	CarType         string `json:"type"`
-	Info            string `json:carInfo`
+	BasicInfo       string `json:"basicInfo"`
+	FeatureInfo     string `json:"featureInfo"`
 	Location        string `json:"location"`
 	SupportDriver   bool   `json:"supportDriver"`
 	SupportDelivery bool   `json:"supportDelivery"`
