@@ -14,8 +14,10 @@ import (
 func UserRoutes(router *gin.Engine) {
 	v1 := router.Group("/api/v1")
 	{
-		v1.POST("/user/login", controller.UserLogin)
-		v1.POST("/user/register", controller.UserRegister)
-		v1.GET("/user/getUserInfo", controller.GetUserInfo)
+		v1.POST("/user/login", controller.UserLogin)        //Request for user login
+		v1.POST("/user/register", controller.UserRegister)  //Request for register a new user
+		v1.POST("/user/updateProfile")                      //Update a user's profile
+		v1.POST("/user/getComments")                        //Get all comments of a user
+		v1.GET("/user/getUserInfo", controller.GetUserInfo) //Get a user's all profile
 	}
 }
