@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import {
   Container, Box, Typography, TextField, Button, Switch, Card, CardContent, CardActions, Grid, Avatar, IconButton
@@ -89,6 +90,17 @@ export const userData = {
 
   const UserPage = () => {
     const { profile, notifications, cars, favorites, transactions } = userData;
+    const [avatar, setAvatar] = React.useState(profile.avatar);
+  
+    const handleAvatarChange = (event) => {
+      if (event.target.files && event.target.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setAvatar(e.target.result);
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      }
+    };
   
     const styles = {
       container: {
@@ -100,6 +112,10 @@ export const userData = {
         height: 'auto',
         borderRadius: '8px',
       },
+      avatar: {
+        width: '150px',
+        height: '150px',
+      },
     };
   
     return (
@@ -110,6 +126,15 @@ export const userData = {
           <Box bgcolor="white" p={2} borderRadius="8px" boxShadow={2}>
             <Typography variant="h6" gutterBottom>User Information</Typography>
             <Grid container spacing={2}>
+              <Grid item xs={12} display="flex" justifyContent="center">
+                <Avatar alt="User Avatar" src={avatar} style={styles.avatar} />
+              </Grid>
+              <Grid item xs={12} display="flex" justifyContent="center">
+                <Button variant="contained" component="label">
+                  Change Avatar
+                  <input type="file" hidden onChange={handleAvatarChange} />
+                </Button>
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField fullWidth label="First Name" variant="outlined" defaultValue={profile.firstName} />
               </Grid>
