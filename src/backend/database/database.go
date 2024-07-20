@@ -27,6 +27,9 @@ func ConnectDatabase() {
 		&models.Comment2Car{},
 		&models.Comment2User{},
 		&models.FavoriteCars{},
+		&models.Comment2CarPic{},
+		&models.Comment2UserPic{},
+		&models.CarsPic{},
 	)
 
 	if err != nil {

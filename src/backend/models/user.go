@@ -13,10 +13,27 @@ type User struct {
 	Username string `json:"username" gorm:"unique;not null"`
 	Email    string `json:"email" gorm:"unique;not null"`
 	Password string `json:"password" gorm:"not null"`
-	PicLink  string `json:"picLink"`
+	UserPic  string `json:"userPic"`
 
 	Comments []Comment2User `json:"comments2user"`
 	Favorit  []FavoriteCars `json:"favoriteCars"`
+}
+
+type Comment2User struct {
+	gorm.Model
+	BookId       uint              `json:"bookId"`
+	UserId       uint              `json:"userId" gorm:"primaryKe"`
+	CarId        uint              `json:"carId"`
+	TitleContent string            `json:"titileContent"`
+	MainContent  string            `json:"mainContent"`
+	Likes        uint              `json:"likes"`
+	PicNames     []Comment2UserPic `json:"photos" gorm:"foreignKey:Comment2UserID"`
+}
+
+type Comment2UserPic struct {
+	gorm.Model
+	FileName       string `json:"fileName"`
+	Comment2UserID uint   `json:"comment2CarId"`
 }
 
 type JWTClaims struct {
