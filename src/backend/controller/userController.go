@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -52,9 +53,27 @@ func UserLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": token, "username": dbUser.Username})
 }
 
-func GetUserInfo(c *gin.Context) {
-	name := c.DefaultQuery("name", "NaN")
-	c.String(http.StatusOK, fmt.Sprintf("hello %s", name))
+func GetUserProfile(c *gin.Context) {
+	idParam := c.Param("id")
+	userID, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	var existingUser models.User
+	if err := existingUser.FindByID(database.DB, userID); err != nil {
+		if errors.Is(err, models.ErrUserNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var profile models.UserProfile
+	copier.Copy(&profile, &existingUser)
+	c.JSON(http.StatusOK, profile)
 	//WIP
 }
 

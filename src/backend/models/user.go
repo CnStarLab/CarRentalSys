@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// ==========================Data Base Table Mapping Structure============================//
 type User struct {
 	gorm.Model
 	Username string `json:"username" gorm:"unique;not null"`
@@ -34,6 +35,17 @@ type Comment2UserPic struct {
 	gorm.Model
 	FileName       string `json:"fileName"`
 	Comment2UserID uint   `json:"comment2CarId"`
+}
+
+//==========================Service Structure============================//
+
+type UserProfile struct {
+	ID        uint   `json:"ID"`
+	CreatedAt string `json:"CreatedAt"`
+	UpdatedAt string `json:"UpdatedAt"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+	UserPic   string `json:"userPic"`
 }
 
 type JWTClaims struct {
