@@ -28,6 +28,7 @@ export default function SignIn() {
 
   const [modalMessage, setModalMessage] = React.useState('');
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+
   const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -53,17 +54,15 @@ export default function SignIn() {
       
       // parse response 2 json
       const result = await response.json();
- 
       if (!response.ok) {
         console.log(response.body)
         throw new Error(`Register error! INFO: ${result.error}`);
       }
       
       console.log("[SignIn] response Json:",result)
-      localStorage.setItem('token', result.token);
-      
       setModalMessage(result.message || 'Success!');
-      login(router,result.username)
+      login(router,result.username, result.userId, result.token)
+
     } catch (error) {
       setModalMessage(`Error: ${error.message}`);
     } finally {

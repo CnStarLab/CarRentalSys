@@ -11,10 +11,15 @@ export const AuthProvider = ({ children }) => {
 
   const [isLoggedIn, setIsLoggedIn] = useLocalStorage("isloggedin",false);
   const [username, setUsername] = useLocalStorage("user", null);
+  const [userId, setUserId] = useLocalStorage("userId", null);
+  const [token, setToken] = useLocalStorage("token", null);
 
-  const login = (router, username:string) => {
+  const login = (router, username:string, userId:string, token:string) => {
     setIsLoggedIn(true);
     setUsername(username)
+    setUserId(userId)
+    setToken()
+    
     console.log('[AuthProvider]: Login!')
     router.push('/');
   };
@@ -22,6 +27,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setIsLoggedIn(false);
     setUsername(null);
+    setToken(null);
   };
 
   const authValue = useMemo(
@@ -29,7 +35,8 @@ export const AuthProvider = ({ children }) => {
       isLoggedIn,
       username,
       login,
-      logout
+      logout,
+      userId
     }),
     [username]
   );

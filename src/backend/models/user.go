@@ -40,15 +40,14 @@ type Comment2UserPic struct {
 //==========================Service Structure============================//
 
 type UserProfile struct {
-	ID        uint   `json:"ID"`
-	CreatedAt string `json:"CreatedAt"`
-	UpdatedAt string `json:"UpdatedAt"`
-	Username  string `json:"username"`
-	Email     string `json:"email"`
-	UserPic   string `json:"userPic"`
+	gorm.Model
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	UserPic  string `json:"userPic"`
 }
 
 type JWTClaims struct {
+	ID    uint   `json:userId`
 	Email string `json:"email"`
 	jwt.StandardClaims
 }
@@ -85,6 +84,7 @@ func (u *User) ValidatePassword(password string) bool {
 func (u *User) GenerateToken() (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &JWTClaims{
+		ID:    u.ID,
 		Email: u.Email,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),

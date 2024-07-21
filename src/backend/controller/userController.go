@@ -50,7 +50,7 @@ func UserLogin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token, "username": dbUser.Username})
+	c.JSON(http.StatusOK, gin.H{"token": token, "username": dbUser.Username, "userId": dbUser.ID})
 }
 
 func GetUserProfile(c *gin.Context) {

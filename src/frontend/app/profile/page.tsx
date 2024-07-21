@@ -6,14 +6,7 @@ import {
 import { Edit, Delete, Details } from '@mui/icons-material';
 // data.js
 
-export const userData = {
-    profile: {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john@example.com",
-      password: "",
-      confirmPassword: "",
-    },
+var userData = {
     notifications: {
       sendAlerts: true,
       emailAlerts: true,
@@ -89,9 +82,22 @@ export const userData = {
   };
 
   const UserPage = () => {
-    const { profile, notifications, cars, favorites, transactions } = userData;
-    const [avatar, setAvatar] = React.useState(profile.avatar);
+    const {notifications, cars, favorites, transactions } = userData;
+    const [avatar, setAvatar] = React.useState('');
+    const [userProfile, setUserProfile] = React.useState([])
   
+
+    React.useEffect(() => {
+        fetch(`http://localhost:8080/api/v1/user/getProfile/${localStorage.getItem("userId")}`)
+        .then(response => response.json()) 
+        .then(data => {
+          console.log("[UserProfil]",data)
+          console.log("[Localstorage->UserId] :",localStorage.getItem("userId"))
+          setUserProfile(data)
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }, []); // Empty Array as Listener, make sure only run when the Component mount fist time.
+
     const handleAvatarChange = (event) => {
       if (event.target.files && event.target.files[0]) {
         const reader = new FileReader();
@@ -124,7 +130,7 @@ export const userData = {
         <Box my={4}>
           <Typography variant="h4" gutterBottom>Profile</Typography>
           <Box bgcolor="white" p={2} borderRadius="8px" boxShadow={2}>
-            <Typography variant="h6" gutterBottom>User Information</Typography>
+            <Typography variant="h6" gutterBottom>User Information for {userProfile.username}</Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} display="flex" justifyContent="center">
                 <Avatar alt="User Avatar" src={avatar} style={styles.avatar} />
@@ -136,19 +142,19 @@ export const userData = {
                 </Button>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="First Name" variant="outlined" defaultValue={profile.firstName} />
+                <TextField fullWidth label="First Name" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.firstName} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Password" type="password" variant="outlined" defaultValue={profile.password} />
+                <TextField fullWidth label="Change password" type="password" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.password} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Last Name" variant="outlined" defaultValue={profile.lastName} />
+                <TextField fullWidth label="Last Name" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.lastName} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Confirm Password" type="password" variant="outlined" defaultValue={profile.confirmPassword} />
+                <TextField fullWidth label="Confirm Password" type="password" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.confirmPassword} />
               </Grid>
               <Grid item xs={12}>
-                <TextField fullWidth label="Email" type="email" variant="outlined" defaultValue={profile.email} />
+                <TextField fullWidth label="Email" type="email" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.email} />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Button fullWidth variant="contained" color="primary" startIcon={<Edit />}>Edit & Save</Button>
