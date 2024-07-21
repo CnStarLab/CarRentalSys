@@ -3,8 +3,10 @@ package controller
 import (
 	"carRentalSys/database"
 	"carRentalSys/models"
+	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -82,4 +84,46 @@ func UserRegister(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, user)
+}
+
+func UpdateUserProfile(c *gin.Context) {
+	var updateUser models.User
+
+	// Bind request with json
+	if err := c.ShouldBindJSON(&updateUser); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Get User Id and change to uint64
+	idParam := c.Param("id")
+	userID, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	// Search existing User
+	var existingUser models.User
+	if err := existingUser.FindByID(database.DB, userID); err != nil {
+		if errors.Is(err, models.ErrUserNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// update
+	existingUser.Username = updateUser.Username
+	existingUser.Email = updateUser.Email
+	existingUser.Password = updateUser.Password
+	existingUser.UserPic = updateUser.UserPic
+
+	if err := database.DB.Save(&existingUser).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, existingUser)
 }

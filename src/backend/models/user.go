@@ -55,6 +55,16 @@ func (u *User) FindByEmail(db *gorm.DB, email string) error {
 	return nil
 }
 
+func (u *User) FindByID(db *gorm.DB, ID uint64) error {
+	if err := db.Where("id = ?", ID).First(u).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return ErrUserNotFound
+		}
+		return err
+	}
+	return nil
+}
+
 func (u *User) ValidatePassword(password string) bool {
 	return u.Password == password
 }
