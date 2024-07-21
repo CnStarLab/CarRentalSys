@@ -74,7 +74,6 @@ func GetUserProfile(c *gin.Context) {
 	var profile models.UserProfile
 	copier.Copy(&profile, &existingUser)
 	c.JSON(http.StatusOK, profile)
-	//WIP
 }
 
 // @Summary      User Register
