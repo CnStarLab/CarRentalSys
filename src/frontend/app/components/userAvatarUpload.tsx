@@ -3,28 +3,36 @@ import React, { useState } from 'react';
 import { Container, Box, Button, Typography } from '@mui/material';
 
 const UploadPhoto = ({msg,setAvatar}) => {
-  const [file, setFile] = useState(null);
-  const [photoUrl, setPhotoUrl] = useState('');
+  const [files, setFiles] = useState([]);
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    setFiles(Array.from(e.target.files));
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (files.length === 0) return;
 
-    const formData = new FormData();
-    formData.append('photo', file);
+    const uploadPromises = files.map(async (file) => {
+      const formData = new FormData();
+      formData.append('photo', file);
 
-    const res = await fetch('http://localhost:8080/api/v1/upload/pic', {
-      method: 'POST',
-      body: formData,
+      const res = await fetch('http://localhost:8080/api/v1/upload/pic', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        const photoUrl = `http://localhost:8080/api/v1/upload/pic/${file.name}`;
+        return photoUrl;
+      } else {
+        return null;
+      }
     });
 
-    if (res.ok) {
-      setPhotoUrl(`http://localhost:8080/api/v1/upload/pic/${file.name}`);
-      setAvatar(`http://localhost:8080/api/v1/upload/pic/${file.name}`); // 假设后端返回一个文件路径
-    }
+    const uploadedUrls = await Promise.all(uploadPromises);
+    const filteredUrls = uploadedUrls.filter((url) => url !== null);
+
+    setAvatar(filteredUrls);
   };
 
   return (
@@ -42,33 +50,29 @@ const UploadPhoto = ({msg,setAvatar}) => {
 
         <Button variant="contained" component="label">
           Select Photo
-          <input type="file" hidden onChange={handleFileChange} />
+          <input type="file" multiple hidden onChange={handleFileChange} />
         </Button>
 
-        {file && (
-          <Typography variant="body1" component="p" marginTop={2}>
-            {file.name}
-          </Typography>
-        )}
-
-        <Button
+      <Button onClick={handleUpload}>Upload</Button>
+      {/* <Button
           variant="contained"
           color="primary"
           onClick={handleUpload}
           disabled={!file}
           sx={{ marginTop: 2 }}
-        >
-          Upload
-        </Button>
+        > */}
 
-        {/* {photoUrl && (
+        {/*
+        for inner testing
+         {photoUrl && (
           <Box marginTop={4}>
             <Typography variant="h6" component="h2">
               Processed Photo:
             </Typography>
             <img src={photoUrl} alt="Processed" style={{ maxWidth: '100%' }} />
           </Box>
-        )} */}
+        )} 
+        */}
       </Box>
     </Container>
   );

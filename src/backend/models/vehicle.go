@@ -49,3 +49,13 @@ type CarsPic struct {
 func CreateCarByUser(db *gorm.DB, car *Car) error {
 	return db.Create(car).Error
 }
+
+func (c *Car) FindByID(db *gorm.DB, ID uint64) error {
+	if err := db.Where("id = ?", ID).First(c).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return ErrCarNotFound
+		}
+		return err
+	}
+	return nil
+}

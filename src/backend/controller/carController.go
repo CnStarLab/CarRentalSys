@@ -3,7 +3,9 @@ package controller
 import (
 	"carRentalSys/database"
 	"carRentalSys/models"
+	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,4 +36,25 @@ func GetAllCars(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, cars)
+}
+
+func GetCarById(c *gin.Context) {
+	idParam := c.Param("id")
+	carID, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid car ID"})
+		return
+	}
+
+	var existingCarInfo models.Car
+	if err := existingCarInfo.FindByID(database.DB, carID); err != nil {
+		if errors.Is(err, models.ErrCarNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, existingCarInfo)
 }

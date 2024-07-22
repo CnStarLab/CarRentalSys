@@ -6,7 +6,7 @@ import {
 import { Edit, Delete, Details } from '@mui/icons-material';
 import { useAuth } from '../hook/AuthContext';
 import Modal from '../login/alert';
-import UploadPhoto from '../components/photoUpload';
+import UploadPhoto from '../components/userAvatarUpload';
 // data.js
 
 var userData = {
