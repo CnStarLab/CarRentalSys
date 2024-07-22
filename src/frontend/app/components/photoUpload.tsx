@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Container, Box, Button, Typography } from '@mui/material';
 
-const UploadPhoto = () => {
+const UploadPhoto = ({msg,setAvatar}) => {
   const [file, setFile] = useState(null);
   const [photoUrl, setPhotoUrl] = useState('');
 
@@ -16,13 +16,14 @@ const UploadPhoto = () => {
     const formData = new FormData();
     formData.append('photo', file);
 
-    const res = await fetch('http://localhost:8080/api/v1/upload/test', {
+    const res = await fetch('http://localhost:8080/api/v1/upload/pic', {
       method: 'POST',
       body: formData,
     });
 
     if (res.ok) {
       setPhotoUrl(`http://localhost:8080/api/v1/upload/pic/${file.name}`);
+      setAvatar(`http://localhost:8080/api/v1/upload/pic/${file.name}`); // 假设后端返回一个文件路径
     }
   };
 
@@ -35,8 +36,8 @@ const UploadPhoto = () => {
         justifyContent="center"
         marginTop={4}
       >
-        <Typography variant="h4" component="h1" gutterBottom>
-          Upload Photo
+        <Typography variant="h4" component="h3" gutterBottom>
+         {msg}
         </Typography>
 
         <Button variant="contained" component="label">
@@ -60,14 +61,14 @@ const UploadPhoto = () => {
           Upload
         </Button>
 
-        {photoUrl && (
+        {/* {photoUrl && (
           <Box marginTop={4}>
             <Typography variant="h6" component="h2">
               Processed Photo:
             </Typography>
             <img src={photoUrl} alt="Processed" style={{ maxWidth: '100%' }} />
           </Box>
-        )}
+        )} */}
       </Box>
     </Container>
   );

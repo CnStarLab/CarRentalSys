@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UploadTest(c *gin.Context) {
+func UploadPic(c *gin.Context) {
 	file, err := c.FormFile("photo")
 	if err != nil {
 		c.String(http.StatusBadRequest, "Bad request")

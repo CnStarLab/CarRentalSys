@@ -6,6 +6,7 @@ import {
 import { Edit, Delete, Details } from '@mui/icons-material';
 import { useAuth } from '../hook/AuthContext';
 import Modal from '../login/alert';
+import UploadPhoto from '../components/photoUpload';
 // data.js
 
 var userData = {
@@ -99,10 +100,13 @@ var userData = {
           console.log("[UserProfil]",data)
           console.log("[Localstorage->UserId] :",localStorage.getItem("userId"))
           setUserProfile(data)
+          setAvatar(data.userPic)
         })
         .catch(error => console.error('Error fetching data:', error));
     }, []); // Empty Array as Listener, make sure only run when the Component mount fist time.
 
+
+    
 
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -113,7 +117,8 @@ var userData = {
         email: data.get('email'),
         password: data.get('password'),
         firstName: data.get('firstName'),
-        lastName: data.get('lastName')
+        lastName: data.get('lastName'),
+        userPic:`${avatar}`
       };
 
       console.log(formData)
@@ -147,17 +152,6 @@ var userData = {
     const closeModal = () => {
       setIsModalOpen(false);
     };
-
-    const handleAvatarChange = (event) => {
-      if (event.target.files && event.target.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setAvatar(e.target.result);
-        };
-        reader.readAsDataURL(event.target.files[0]);
-      }
-    };
-  
     const styles = {
       container: {
         maxWidth: '800px',
@@ -186,10 +180,7 @@ var userData = {
                 <Avatar alt="User Avatar" src={avatar} style={styles.avatar} />
               </Grid>
               <Grid item xs={12} display="flex" justifyContent="center">
-                <Button variant="contained" component="label">
-                  Change Avatar
-                  <input type="file" hidden onChange={handleAvatarChange} />
-                </Button>
+                <UploadPhoto msg="change avatar" setAvatar={setAvatar}/>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField fullWidth label="First Name" name="firstName" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.firstName} />
