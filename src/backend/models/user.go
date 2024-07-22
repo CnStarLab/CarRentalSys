@@ -11,10 +11,12 @@ import (
 // ==========================Data Base Table Mapping Structure============================//
 type User struct {
 	gorm.Model
-	Username string `json:"username" gorm:"unique;not null"`
-	Email    string `json:"email" gorm:"unique;not null"`
-	Password string `json:"password" gorm:"not null"`
-	UserPic  string `json:"userPic"`
+	Username  string `json:"username" gorm:"unique;not null"`
+	Email     string `json:"email" gorm:"unique;not null"`
+	Password  string `json:"password" gorm:"not null"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	UserPic   string `json:"userPic"`
 
 	Comments []Comment2User `json:"comments2user"`
 	Favorit  []FavoriteCars `json:"favoriteCars"`
@@ -41,9 +43,11 @@ type Comment2UserPic struct {
 
 type UserProfile struct {
 	gorm.Model
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	UserPic  string `json:"userPic"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+	UserPic   string `json:"userPic"`
 }
 
 type JWTClaims struct {
