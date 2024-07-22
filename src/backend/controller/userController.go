@@ -133,7 +133,7 @@ func UpdateUserProfile(c *gin.Context) {
 	}
 
 	// update
-	existingUser.Username = updateUser.Username
+	//existingUser.Username = updateUser.Username	corrently not support change username.
 	existingUser.Email = updateUser.Email
 	existingUser.Password = updateUser.Password
 	existingUser.UserPic = updateUser.UserPic

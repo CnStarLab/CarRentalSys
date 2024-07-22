@@ -4,6 +4,8 @@ import {
   Container, Box, Typography, TextField, Button, Switch, Card, CardContent, CardActions, Grid, Avatar, IconButton
 } from '@mui/material';
 import { Edit, Delete, Details } from '@mui/icons-material';
+import { useAuth } from '../hook/AuthContext';
+import Modal from '../login/alert';
 // data.js
 
 var userData = {
@@ -83,9 +85,12 @@ var userData = {
 
   const UserPage = () => {
     const {notifications, cars, favorites, transactions } = userData;
+    const {userId} = useAuth()
+
     const [avatar, setAvatar] = React.useState('');
     const [userProfile, setUserProfile] = React.useState([])
-  
+    const [modalMessage, setModalMessage] = React.useState('');
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
 
     React.useEffect(() => {
         fetch(`http://localhost:8080/api/v1/user/getProfile/${localStorage.getItem("userId")}`)
@@ -97,6 +102,51 @@ var userData = {
         })
         .catch(error => console.error('Error fetching data:', error));
     }, []); // Empty Array as Listener, make sure only run when the Component mount fist time.
+
+
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+    
+      // formData 2 json
+      const formData = {
+        email: data.get('email'),
+        password: data.get('password'),
+        firstName: data.get('firstName'),
+        lastName: data.get('lastName')
+      };
+
+      console.log(formData)
+      
+      try {
+        const response = await fetch(`http://localhost:8080/api/v1/user/updateProfile/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+        
+        // parse response 2 json
+        const result = await response.json();
+  
+        if (!response.ok) {
+          console.log(response.body)
+          throw new Error(`Register error! INFO: ${result.error}`);
+        }
+    
+        setModalMessage(result.message || 'Success!');
+      } catch (error) {
+        setModalMessage(`Error: ${error.message}`);
+      } finally {
+        setIsModalOpen(true);
+      }
+
+    }
+
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
 
     const handleAvatarChange = (event) => {
       if (event.target.files && event.target.files[0]) {
@@ -127,7 +177,7 @@ var userData = {
     return (
       <Container style={styles.container}>
         {/* Profile Section */}
-        <Box my={4}>
+        <Box component="form" onSubmit={handleSubmit} my={4}>
           <Typography variant="h4" gutterBottom>Profile</Typography>
           <Box bgcolor="white" p={2} borderRadius="8px" boxShadow={2}>
             <Typography variant="h6" gutterBottom>User Information for {userProfile.username}</Typography>
@@ -142,24 +192,25 @@ var userData = {
                 </Button>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="First Name" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.firstName} />
+                <TextField fullWidth label="First Name" name="firstName" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.firstName} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Change password" type="password" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.password} />
+                <TextField fullWidth label="Change password" name="password" type="password" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.password} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Last Name" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.lastName} />
+                <TextField fullWidth label="Last Name" name="lastName" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.lastName} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Confirm Password" type="password" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.confirmPassword} />
+                <TextField fullWidth label="Confirm Password" type="password" variant="outlined" InputLabelProps={{ shrink: true }} />
               </Grid>
               <Grid item xs={12}>
-                <TextField fullWidth label="Email" type="email" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.email} />
+                <TextField fullWidth label="Email" name="email" type="email" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.email} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Button fullWidth variant="contained" color="primary" startIcon={<Edit />}>Edit & Save</Button>
+                <Button type="submit" variant="contained" color="primary" fullWidth startIcon={<Edit />}>Edit & Save</Button>
               </Grid>
             </Grid>
+            <Modal open={isModalOpen} message={modalMessage} onClose={closeModal} />
           </Box>
         </Box>
   
