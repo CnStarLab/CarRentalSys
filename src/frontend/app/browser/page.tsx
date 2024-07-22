@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Grid, Box, Typography, TextField, Slider, Checkbox, FormControlLabel, Button, Card, CardContent, CardMedia, Stack, Radio, ToggleButtonGroup, ToggleButton, RadioGroup } from '@mui/material';
 import AllCars from '../carList/page';
+import Link from 'next/link';
 
 const marks = [
   {
@@ -20,7 +21,7 @@ export default function BroserPage() {
         <Grid container spacing={2}>
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h4">RentRide.mn</Typography>
-            <Button variant="contained">Add a Car</Button>
+            <Link href="/car" ><Button variant="contained">ADD A CAR</Button></Link>
           </Grid>
           <Grid item xs={12} md={3}>
             <Box sx={{ p: 2, border: '1px solid #ddd', borderRadius: 2 }}>

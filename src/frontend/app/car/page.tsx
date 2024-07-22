@@ -14,21 +14,58 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Modal from '../login/alert';
 import Logo from '../components/Logo';
+import { useAuth } from '../hook/AuthContext';
+import { MenuItem } from '@mui/material';
 
 export default function AddCars() {
     const [modalMessage, setModalMessage] = React.useState('');
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-  
+    const {userId, username} = useAuth()
+    
+    const boolChoice = [
+      {
+        value: true,
+        label: "Yes",
+      },
+      {
+        value: false,
+        label: "No",
+      },
+    ];
+
+    const carType = [
+      {
+        value: "luxury",
+        label: "luxury"
+      },
+      {
+        value: "van",
+        label: "van"
+      },
+      {
+        value: "economical",
+        label: "economical"
+      }
+    ];
+
     const handleSubmit = async (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
     
       // formData 2 json
       const formData = {
+        ownerId: parseInt(`${userId}`, 10),
         brand: data.get('brand'),
         model: data.get('model'),
         year: parseInt(data.get('year'), 10), 
-        price: parseFloat(data.get('price')), 
+        price: parseFloat(data.get('price')),
+        numSeats:parseInt(data.get('numSeats'), 10), 
+        basicInfo: data.get('basicInfo'),
+        featureInfo: data.get('featureInfo'),
+        location: data.get('location'),
+        supportDriver: JSON.parse(data.get('supportDriver').toLowerCase()),
+        supportDelivery:JSON.parse(data.get('supportDelivery').toLowerCase()),
+        carType: data.get('carType'),
         available: false,
       };
     
@@ -125,11 +162,108 @@ export default function AddCars() {
                 required
                 fullWidth
                 name="price"
-                label="price"
+                label="Price per day."
                 id="price"
                 autoComplete="NaN"
                 type='number'
               />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                name="numSeats"
+                label="Seats of your cars.(include driver seats)"
+                id="numSeats"
+                autoComplete="NaN"
+                type='number'
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                name="location"
+                label="Where your car offer to?"
+                id="location"
+                autoComplete="NaN"
+                type='text'
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                name="basicInfo"
+                label="Intro basic info for your car."
+                id="basicInfo"
+                autoComplete="NaN"
+                type='text'
+                multiline
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                name="featureInfo"
+                label="Intro feature info for your car."
+                id="featureInfo"
+                autoComplete="NaN"
+                type='text'
+                multiline
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="outlined-select-currency"
+                name="supportDriver"
+                select
+                label="Support a driver?"
+                fullWidth
+                defaultValue='false'
+                helperText="Please choose"
+              >
+                {boolChoice.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="outlined-select-currency"
+                name="supportDelivery"
+                select
+                label="Do you support delivery?"
+                defaultValue="false"
+                helperText="Please choose"
+                fullWidth
+              >
+                {boolChoice.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="outlined-select-currency"
+                name="carType"
+                select
+                label="Which Type of your car?"
+                fullWidth
+                defaultValue="economical"
+                helperText="Please choose"
+              >
+                {carType.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel

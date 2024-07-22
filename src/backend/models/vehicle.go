@@ -6,7 +6,7 @@ type Car struct {
 	gorm.Model
 	Brand           string `json:"brand"`
 	CarModel        string `json:"model"`
-	CarType         string `json:"type"`
+	CarType         string `json:"carType"`
 	BasicInfo       string `json:"basicInfo"`
 	FeatureInfo     string `json:"featureInfo"`
 	Location        string `json:"location"`
