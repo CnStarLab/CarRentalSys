@@ -70,7 +70,7 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}) {
       };
     
       try {
-        const response = await fetch('http://localhost:8080/api/v1/cars/addCar', {
+        const response = await fetch('http://localhost:8080/api/v1/cars/info/createCarBasic', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -83,11 +83,11 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}) {
         setCurrCarInfo(result)
   
         if (!response.ok) {
-          console.log(response.body)
+          console.log("[AddCarBasic->handleSubmit->response.body]: ",response.body)
           throw new Error(`Register error! INFO: ${result.error}`);
         }
         
-        console.log(result)
+        console.log("[AddCarBasic->handleSubmit->result]: ", result)
         
         setModalMessage(result.message || 'Success!');
         

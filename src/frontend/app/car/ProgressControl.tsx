@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import AddCarBasic from './addCarBasic';
 import AddCarPics from './addCarPic';
+import FinishCarCreate from './FinishCarCreate';
 
 const steps = ['Add basic info for your car.', 'Upload relative pictures.', 'Ready for rent.'];
 
@@ -56,14 +57,14 @@ export default function AddCarProgressControl() {
     };
   
     const renderStepContent = (step: number) => {
-      console.log(currCarInfo)
+      console.log("[AddCarProgressControl->renderStepContent->state:currCarInfo]: ",currCarInfo)
       switch (step) {
         case 0:
           return <AddCarBasic handleNext={handleNext} setCurrCarInfo={SetCurrCarInfo}/>;
         case 1:
-          return <AddCarPics currCarInfo={currCarInfo}/>;
+          return <AddCarPics handleNext={handleNext} setCurrCarInfo={SetCurrCarInfo} currCarInfo={currCarInfo}/>;
         case 2:
-          return (<p>step3</p>);
+          return <FinishCarCreate currCarInfo={currCarInfo}/>;
         default:
           return null;
       }
