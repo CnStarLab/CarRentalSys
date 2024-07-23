@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AddCarsByUser(c *gin.Context) {
+func CreateCarsByUser(c *gin.Context) {
 	var car models.Car
 
 	// Bind JSON string to struct.
@@ -26,6 +26,44 @@ func AddCarsByUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, car)
+}
+
+func UpdateCarInfo(c *gin.Context) {
+	var updateCar models.Car
+	// Bind request with json
+	if err := c.ShouldBindJSON(&updateCar); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Get User Id and change to uint64
+	idParam := c.Param("id")
+	carID, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid car ID"})
+		return
+	}
+
+	// Search existing Car
+	var existingCar models.Car
+	if err := existingCar.FindByID(database.DB, carID); err != nil {
+		if errors.Is(err, models.ErrCarNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// update
+	existingCar.CarPics = updateCar.CarPics
+
+	if err := database.DB.Save(&existingCar).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, existingCar)
 }
 
 func GetAllCars(c *gin.Context) {
