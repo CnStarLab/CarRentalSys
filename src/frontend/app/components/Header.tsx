@@ -1,14 +1,22 @@
 'use client'
 
+import React from 'react';
 import Link from 'next/link';
 import Logo from './Logo';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../hook/AuthContext';
 import { Button } from '@mui/material';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 export default function Header() {
     const { username, isLoggedIn, logout } = useAuth();
     const router = useRouter();
+    const [clientOnly, setClientOnly] = useState(false);
+
+    useEffect(() => {
+        setClientOnly(true);
+    }, []);
 
     const handleSignIn = () => {
         router.push('/login');
@@ -48,6 +56,7 @@ export default function Header() {
 
     const iconsStyle: React.CSSProperties = {
         display: 'flex',
+        alignItems: 'center',
         gap: '10px'
     };
 
@@ -73,13 +82,27 @@ export default function Header() {
             <div style={iconsStyle}>
                 <button style={iconButtonStyle}>🌍</button>
                 <button style={iconButtonStyle}>❔</button>
-                {isLoggedIn ? (
+                {clientOnly && isLoggedIn ? (
                     <>
                         <div>Welcome, {username}!</div>
-                        <Button style={iconButtonStyle} onClick={handleLogout}>Logout</Button>
+                        <Button style={iconButtonStyle} onClick={handleLogout}>
+                            <Image
+                                src='/logout.svg'
+                                alt="Logout"
+                                width={20} // 设置图标宽度
+                                height={20} // 设置图标高度
+                            />
+                        </Button>
                     </>
                 ) : (
-                    <Button style={iconButtonStyle} onClick={handleSignIn}>👤</Button>
+                    clientOnly && <Button style={iconButtonStyle} onClick={handleSignIn}>
+                        <Image
+                            src='login.svg'
+                            alt="Login"
+                            width={20} // 设置图标宽度
+                            height={20} // 设置图标高度
+                        />
+                    </Button>
                 )}
             </div>
         </header>

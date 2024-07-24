@@ -4,7 +4,7 @@ export default function HomePage() {
 
   const ContainerStyle: React.CSSProperties = {
     width:'100%',
-    height:'840px',
+    height:'855px',
     backgroundImage: 'url(background.png)', // 替换为你的图片路径
     backgroundSize: 'cover', // 确保图片覆盖整个容器
     backgroundPosition: 'center', // 确保图片居中显示
