@@ -22,10 +22,11 @@ type UserCar struct {
 }
 
 var (
-	ErrUserNotFound    = errors.New("user not found")
-	ErrCarNotFound     = errors.New("car not found")
-	ErrCarNotAvailable = errors.New("car is not available")
-	ErrUserCarNotFound = errors.New("UserCar relation not found")
+	ErrUserNotFound      = errors.New("user not found")
+	ErrCarNotFound       = errors.New("car not found")
+	ErrCarNotAvailable   = errors.New("car is not available")
+	ErrUserCarNotFound   = errors.New("UserCar relation not found")
+	ErrPreloadNotAllowed = errors.New("preload connection not found")
 )
 
 func BookCar(db *gorm.DB, username string, carID uint, startTime time.Time, endTime time.Time) error {

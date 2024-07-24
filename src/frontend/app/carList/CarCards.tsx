@@ -123,14 +123,16 @@ export default function CarCards({ car }) {
         </Grid>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary">
-          More Info
-        </Button>
-        <Button size="small" color="success">
-          <Link href={`/rent?carId=${car.ID}`} >
-          Rent Now
-          </Link>
-        </Button>
+        <Link href={`/cardetail?carId=${car.ID}`} >
+          <Button size="small" color="primary">
+            More Info
+          </Button>
+        </Link>
+        <Link href={`/rent?carId=${car.ID}`} >
+          <Button size="small" color="success">
+            Rent Now
+          </Button>
+        </Link>
       </CardActions>
     </Card>
   );

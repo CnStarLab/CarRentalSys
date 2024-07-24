@@ -2,23 +2,40 @@
 'use client'
 import React from 'react';
 import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Divider, Box, Rating, TextField } from '@mui/material';
-import { Star } from '@mui/icons-material';
-
+import { useSearchParams } from 'next/navigation';
 
 export default function CarDetailComponent(){
+    const searchParams = useSearchParams();
+    const carId = searchParams.get('carId');
+    const [carData, setCarData] = React.useState([]);
+
+    React.useEffect(() => {
+        if (carId) {
+          // 仅在 carId 存在时进行数据获取
+          const fetchData = async () => {
+            try {
+              const response = await fetch(`http://localhost:8080/api/v1/cars/getCarById/${carId}`,{
+                method: 'POST',
+              });
+              const data = await response.json();
+              console.log("[CarDetailComponent->useEffect]: ", data)
+              setCarData(data);
+            } catch (error) {
+              console.error('Error fetching car data:', error);
+            }
+          };
+    
+          fetchData();
+        }
+      }, [carId]);
 
     const car = {
-        brand: "Luxury BMW 5 Series",
-        image: "https://via.placeholder.com/600x400",
-        basicInfo: "Experience the epitome of luxury with the BMW 5 Series, offering unparalleled elegance and performance.",
-        price: 240,
-        featurnInfo: [
-            "Exhilarating elegance and performance.",
-            "Premium driving experience.",
-            "Outstanding craftsmanship.",
-            "Innovative technology.",
-            "High-quality materials."
-        ],
+        brand: carData?.brand || "Owner haven't add car brand yet",
+        model: carData?.model || "Owner haven't add car model yet",
+        image: carData?.carPics?.[0]?.fileName || "https://via.placeholder.com/300",
+        basicInfo: carData?.basicInfo || "Owner haven't add basic info yet.",
+        price: carData?.price || "Owner haven't add price yet.",
+        featureInfo: carData?.featureInfo || "Owner haven't add feature info yet.",
         rentalTerms: "At the heart of the luxury BMW 5 Series lies a commitment to innovation and engineering and a driver-centric approach. Every feature, from the intuitive navigation system to the unparalleled safety configurations, is designed to enhance your driving pleasure.",
         //delay        
         relatedProducts: Array(6).fill({
@@ -62,7 +79,7 @@ export default function CarDetailComponent(){
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <Typography variant="h4" component="div">
-                        {car.brand}
+                        {car.brand + car.model}
                     </Typography>
                     <Rating value={4.5} precision={0.5} readOnly />
                     <Typography variant="h6" component="div" sx={{ marginTop: '10px' }}>
@@ -78,14 +95,14 @@ export default function CarDetailComponent(){
                         Save for later
                     </Button>
                     <Typography variant="body2" color="text.secondary" component="p" sx={{ marginTop: '10px' }}>
-                        Premium Leather | High-quality Aluminum | Carbon Fiber
+                        tags(WIP)
                     </Typography>
                 </Grid>
             </Grid>
             <Divider sx={{ marginY: '20px' }} />
-            <Typography variant="h5" component="div">Car featurnInfo</Typography>
+            <Typography variant="h5" component="div">Car featureInfo</Typography>
             <Typography variant="body2" color="text.secondary" component="p" sx={{ marginTop: '10px' }}>
-                {car.featurnInfo.join(' ')}
+                {car.featureInfo}
             </Typography>
             <Divider sx={{ marginY: '20px' }} />
             <Typography variant="h5" component="div">Rental Terms</Typography>
