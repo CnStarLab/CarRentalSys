@@ -18,6 +18,37 @@ import { useAuth } from '../hook/AuthContext';
 import { MenuItem } from '@mui/material';
 
 export default function AddCarBasic({handleNext,setCurrCarInfo}) {
+    // 定义错误状态的类型
+    type Errors = {
+      brand?: boolean;
+      model?: boolean;
+      year?: boolean;
+      price?: boolean;
+      numSeats?: boolean;
+      location?: boolean;
+      basicInfo?: boolean;
+      featureInfo?: boolean;
+    };
+
+    // 初始化所有字段的错误状态为 false
+    const [errors, setErrors] = React.useState<Errors>({
+      brand: false,
+      model: false,
+      year: false,
+      price: false,
+      numSeats: false,
+      location: false,
+      basicInfo: false,
+      featureInfo: false,
+    });
+
+    const handleBlur = (field: keyof Errors, value: string) => {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [field]: !value
+      }));
+    };
+
     const [modalMessage, setModalMessage] = React.useState('');
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const {userId, username} = useAuth()
@@ -103,197 +134,221 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}) {
       handleNext()
     };
 
-  return (
-    <Container component="main" maxWidth="xs">
-      <Logo/>
-      <CssBaseline />
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          background: 'rgba(255, 255, 255, 0.6)', // 半透明白色背景
-          backdropFilter: 'blur(10px)', // 磨砂玻璃效果
-          borderRadius: '15px', // 圆角
-          padding: '20px', // 内边距
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // 阴影效果
-        }}
-      >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+    return (
+      <Container component="main" maxWidth="xs">
+        <Logo />
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            background: 'rgba(255, 255, 255, 0.6)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '15px',
+            padding: '20px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <DirectionsCarFilledOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Add Cars
-        </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="brand"
-                label="Car Brand"
-                name="brand"
-                type='text'
-                autoComplete="NaN"
-              />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Add Cars
+          </Typography>
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="brand"
+                  label="Car Brand"
+                  name="brand"
+                  type='text'
+                  autoComplete="off"
+                  error={errors.brand}
+                  helperText={errors.brand ? "This field is required" : ""}
+                  onBlur={(e) => handleBlur('brand', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="model"
+                  label="Car Model"
+                  name="model"
+                  autoComplete="off"
+                  type='text'
+                  error={errors.model}
+                  helperText={errors.model ? "This field is required" : ""}
+                  onBlur={(e) => handleBlur('model', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="year"
+                  label="Buy Year"
+                  id="year"
+                  autoComplete="off"
+                  type='number'
+                  error={errors.year}
+                  helperText={errors.year ? "This field is required" : ""}
+                  onBlur={(e) => handleBlur('year', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="price"
+                  label="Price per day."
+                  id="price"
+                  autoComplete="off"
+                  type='number'
+                  error={errors.price}
+                  helperText={errors.price ? "This field is required" : ""}
+                  onBlur={(e) => handleBlur('price', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="numSeats"
+                  label="Seats of your cars.(include driver seats)"
+                  id="numSeats"
+                  autoComplete="off"
+                  type='number'
+                  error={errors.numSeats}
+                  helperText={errors.numSeats ? "This field is required" : ""}
+                  onBlur={(e) => handleBlur('numSeats', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="location"
+                  label="Where your car offer to?"
+                  id="location"
+                  autoComplete="off"
+                  type='text'
+                  error={errors.location}
+                  helperText={errors.location ? "This field is required" : ""}
+                  onBlur={(e) => handleBlur('location', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="basicInfo"
+                  label="Intro basic info for your car."
+                  id="basicInfo"
+                  autoComplete="off"
+                  type='text'
+                  multiline
+                  error={errors.basicInfo}
+                  helperText={errors.basicInfo ? "This field is required" : ""}
+                  onBlur={(e) => handleBlur('basicInfo', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="featureInfo"
+                  label="Intro feature info for your car."
+                  id="featureInfo"
+                  autoComplete="off"
+                  type='text'
+                  multiline
+                  error={errors.featureInfo}
+                  helperText={errors.featureInfo ? "This field is required" : ""}
+                  onBlur={(e) => handleBlur('featureInfo', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  id="outlined-select-currency"
+                  name="supportDriver"
+                  select
+                  label="Support a driver?"
+                  fullWidth
+                  defaultValue='false'
+                  helperText="Please choose"
+                >
+                  {boolChoice.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  id="outlined-select-currency"
+                  name="supportDelivery"
+                  select
+                  label="Do you support delivery?"
+                  defaultValue="false"
+                  helperText="Please choose"
+                  fullWidth
+                >
+                  {boolChoice.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  id="outlined-select-currency"
+                  name="carType"
+                  select
+                  label="Which Type of your car?"
+                  fullWidth
+                  defaultValue="economical"
+                  helperText="Please choose"
+                >
+                  {carType.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={<Checkbox value="allowExtraEmails" color="primary" />}
+                  label="I know and follow the rules of XXXXX"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="model"
-                label="Car Model"
-                name="model"
-                autoComplete="NaN"
-                type='text'
-              />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Register Basic Info.
+            </Button>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Link href="/allCar" variant="body2">
+                  Want More Info? Check All Cars
+                </Link>
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="year"
-                label="Buy Year"
-                id="year"
-                autoComplete="NaN"
-                type='number'
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="price"
-                label="Price per day."
-                id="price"
-                autoComplete="NaN"
-                type='number'
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="numSeats"
-                label="Seats of your cars.(include driver seats)"
-                id="numSeats"
-                autoComplete="NaN"
-                type='number'
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="location"
-                label="Where your car offer to?"
-                id="location"
-                autoComplete="NaN"
-                type='text'
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="basicInfo"
-                label="Intro basic info for your car."
-                id="basicInfo"
-                autoComplete="NaN"
-                type='text'
-                multiline
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="featureInfo"
-                label="Intro feature info for your car."
-                id="featureInfo"
-                autoComplete="NaN"
-                type='text'
-                multiline
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                id="outlined-select-currency"
-                name="supportDriver"
-                select
-                label="Support a driver?"
-                fullWidth
-                defaultValue='false'
-                helperText="Please choose"
-              >
-                {boolChoice.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                id="outlined-select-currency"
-                name="supportDelivery"
-                select
-                label="Do you support delivery?"
-                defaultValue="false"
-                helperText="Please choose"
-                fullWidth
-              >
-                {boolChoice.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                id="outlined-select-currency"
-                name="carType"
-                select
-                label="Which Type of your car?"
-                fullWidth
-                defaultValue="economical"
-                helperText="Please choose"
-              >
-                {carType.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I know and follow the rules of XXXXX"
-              />
-            </Grid>
-          </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Register Basic Info.
-          </Button>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link href="/allCar" variant="body2">
-                Want More Info? Check All Cars
-              </Link>
-            </Grid>
-          </Grid>
+          </Box>
         </Box>
-      </Box>
-      <Modal open={isModalOpen} message={modalMessage} onClose={closeModal} />
-    </Container>
-  );
+        <Modal open={isModalOpen} message={modalMessage} onClose={closeModal} />
+      </Container>
+    );
 }

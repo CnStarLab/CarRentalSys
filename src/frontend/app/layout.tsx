@@ -33,12 +33,10 @@ export default function RootLayout({
 }>) {
 
   const copyrightStyle: React.CSSProperties = {
-    position: 'absolute',
-    bottom: '40px', // 距离底部的距离
-    left: '50%',
-    transform: 'translateX(-50%)', // 水平居中
-    color: 'gray', // 设置字体颜色为灰色
-  };
+    color: 'gray',
+    textAlign: 'center',
+    marginTop: '-20px', // 提升版权信息位置以适应需求
+};
 
   return (
     <html lang="en">
