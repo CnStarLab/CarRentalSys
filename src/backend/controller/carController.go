@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -116,5 +117,51 @@ func GetCarByOwnerId(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, existingCarsInfo)
+}
 
+func GetCarsWithConds(c *gin.Context) {
+	var resultCars models.Cars
+	var currParams models.CarQueryParams
+
+	minPrice, err := strconv.ParseInt(c.Query("minPrice"), 10, 64)
+	if err == nil {
+		currParams.MinPrice = minPrice
+	}
+
+	maxPrice, err := strconv.ParseInt(c.Query("maxPrice"), 10, 64)
+	if err == nil {
+		currParams.MaxPrice = maxPrice
+	}
+
+	currParams.Brand = c.Query("brand")
+	currParams.Location = c.Query("location")
+	currParams.CarType = c.Query("carType")
+	currParams.SupportDriver = c.Query("supportDriver")
+	currParams.SupportDelivery = c.Query("supportDelivery")
+
+	if st := c.Query("startTime"); st != "" {
+		startTime, err := time.Parse(time.RFC3339, st)
+		if err == nil {
+			currParams.StartTime = startTime
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid start date format"})
+			return
+		}
+	}
+
+	if et := c.Query("endTime"); et != "" {
+		endTime, err := time.Parse(time.RFC3339, et)
+		if err == nil {
+			currParams.EndTime = endTime
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid start date format"})
+			return
+		}
+	}
+
+	if err := resultCars.FindByConds(database.DB, &currParams); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, resultCars)
 }

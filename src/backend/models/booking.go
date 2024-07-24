@@ -10,8 +10,8 @@ import (
 
 type UserCar struct {
 	gorm.Model
-	Username  string    `json:"username" gorm:"primaryKe"`
-	CarID     uint      `json:"carId" gorm:"primaryKey"`
+	Username  string    `json:"username"`
+	CarID     uint      `json:"carId"`
 	StartTime time.Time `json:"startTime" gorm:"not null"`
 	EndTime   time.Time `json:"endTime" gorm:"not null"`
 	Status    uint8     `json:"status"`
@@ -27,6 +27,7 @@ var (
 	ErrCarNotAvailable   = errors.New("car is not available")
 	ErrUserCarNotFound   = errors.New("UserCar relation not found")
 	ErrPreloadNotAllowed = errors.New("preload connection not found")
+	ErrNoCarsMatch       = errors.New("no cars match with conditions")
 )
 
 func BookCar(db *gorm.DB, username string, carID uint, startTime time.Time, endTime time.Time) error {
