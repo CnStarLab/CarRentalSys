@@ -8,6 +8,7 @@ export default function CarDetailComponent(){
     const searchParams = useSearchParams();
     const carId = searchParams.get('carId');
     const [carData, setCarData] = React.useState([]);
+    const [selectedImageIndex , setSelectedImageIndex] = React.useState(0);
 
     React.useEffect(() => {
         if (carId) {
@@ -32,7 +33,7 @@ export default function CarDetailComponent(){
     const car = {
         brand: carData?.brand || "Owner haven't add car brand yet",
         model: carData?.model || "Owner haven't add car model yet",
-        image: carData?.carPics?.[0]?.fileName || "https://via.placeholder.com/300",
+        image: carData?.carPics || [],
         basicInfo: carData?.basicInfo || "Owner haven't add basic info yet.",
         price: carData?.price || "Owner haven't add price yet.",
         featureInfo: carData?.featureInfo || "Owner haven't add feature info yet.",
@@ -65,18 +66,22 @@ export default function CarDetailComponent(){
         //delay
     };
     
+    console.log(car)
     return (
         <Container maxWidth="lg" sx={{ marginTop: '20px' }}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
+                    <Card onClick={() => setSelectedImageIndex(0)}>
                     <CardMedia
                         component="img"
                         alt={car.brand}
                         height="400"
-                        image={car.image}
+                        image={car?.image[selectedImageIndex]?.fileName}
                         titleContent={car.brand}
                     />
+                    </Card>
                 </Grid>
+
                 <Grid item xs={12} md={6}>
                     <Typography variant="h4" component="div">
                         {car.brand + car.model}
@@ -98,6 +103,28 @@ export default function CarDetailComponent(){
                         tags(WIP)
                     </Typography>
                 </Grid>
+            </Grid>
+            <Grid container spacing={2} sx={{ marginTop: '10px' }}>
+                {car.image.map((img, index) => (
+                <Grid item xs={6} md={1.5} key={index}>
+                    <Card
+                    onClick={() => setSelectedImageIndex(index)}
+                    sx={{
+                        border:
+                        selectedImageIndex === index
+                            ? '2px solid #007bff'
+                            : '1px solid #ccc',
+                    }}
+                    >
+                    <CardMedia
+                        component="img"
+                        alt="car img"
+                        height="100"
+                        image={img.fileName}
+                    />
+                    </Card>
+                </Grid>
+                ))}
             </Grid>
             <Divider sx={{ marginY: '20px' }} />
             <Typography variant="h5" component="div">Car featureInfo</Typography>
