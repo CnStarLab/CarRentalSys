@@ -91,6 +91,7 @@ export default function Header() {
                                 alt="Logout"
                                 width={20} // 设置图标宽度
                                 height={20} // 设置图标高度
+                                title="sign out"
                             />
                         </Button>
                     </>
@@ -101,6 +102,7 @@ export default function Header() {
                             alt="Login"
                             width={20} // 设置图标宽度
                             height={20} // 设置图标高度
+                            title="sign in"
                         />
                     </Button>
                 )}

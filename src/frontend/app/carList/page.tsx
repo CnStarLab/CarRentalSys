@@ -19,7 +19,6 @@ export default function AllCars(){
 
     return (
         <Container maxWidth="lg">
-            <Logo/>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {JsonData.map((car, index) => (
                 <CarCards key={index} car={car} />
