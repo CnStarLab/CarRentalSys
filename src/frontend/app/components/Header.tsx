@@ -84,7 +84,9 @@ export default function Header() {
                 <button style={iconButtonStyle}>❔</button>
                 {clientOnly && isLoggedIn ? (
                     <>
-                        <div>Welcome, {username}!</div>
+                        <Link href="/profile">
+                            <div>Welcome, {username}!</div>
+                        </Link>
                         <Button style={iconButtonStyle} onClick={handleLogout}>
                             <Image
                                 src='/logout.svg'

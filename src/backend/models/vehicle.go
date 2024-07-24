@@ -23,6 +23,8 @@ type Car struct {
 	CarPics      []CarsPic     `json:"carPics" gorm:"foreignKey:CarId"`
 }
 
+type Cars []Car
+
 type Comment2Car struct {
 	gorm.Model
 	BookId       uint             `json:"bookId"`
@@ -50,7 +52,7 @@ func CreateCarByUser(db *gorm.DB, car *Car) error {
 	return db.Create(car).Error
 }
 
-func (c *Car) FindByID(db *gorm.DB, ID uint64) error {
+func (c *Car) FindByCarID(db *gorm.DB, ID uint64) error {
 	if err := db.Preload("CarPics").First(&c, ID).Error; err != nil {
 		if err == gorm.ErrPreloadNotAllowed {
 			return ErrPreloadNotAllowed
@@ -58,6 +60,19 @@ func (c *Car) FindByID(db *gorm.DB, ID uint64) error {
 	}
 
 	if err := db.Where("id = ?", ID).First(c).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return ErrCarNotFound
+		}
+		return err
+	}
+	return nil
+}
+
+func (c *Cars) FindByOwnerID(db *gorm.DB, ownerId uint64) error {
+	if err := db.Preload("CarPics").Where("owner_id = ?", ownerId).Find(c).Error; err != nil {
+		if err == gorm.ErrPreloadNotAllowed {
+			return ErrPreloadNotAllowed
+		}
 		if err == gorm.ErrRecordNotFound {
 			return ErrCarNotFound
 		}

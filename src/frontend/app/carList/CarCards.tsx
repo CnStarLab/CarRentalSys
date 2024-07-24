@@ -18,7 +18,7 @@ export default function CarCards({ car }) {
           <Grid item xs={8}>
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
-                {car.brand ? car.brand : 'NaN'}
+                {car.brand ? car.brand+' '+car.model+' - '+car.year : 'NaN'}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Here will add some info in future. WIP
@@ -115,9 +115,13 @@ export default function CarCards({ car }) {
             <CardMedia
               component="img"
               height="140"
-              image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRw6oivF0mc5KS1qWhcovRUSkQuG_snSqImMA&s"
+              image={car.carPics[0].fileName}
               alt="green iguana"
-              sx={{ objectFit: 'cover', height: '100%' }}
+              sx={{
+                objectFit: 'cover',
+                height: '100%',
+                borderRadius: '8px' // 设置圆角为 8 像素
+              }}
             />
           </Grid>
         </Grid>

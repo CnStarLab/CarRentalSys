@@ -13,7 +13,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Modal from './alert';
-import Logo from '../components/Logo';
 import { useAuth } from '../hook/AuthContext';
 import { MenuItem } from '@mui/material';
 
@@ -134,6 +133,7 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}) {
       handleNext()
     };
 
+<<<<<<< HEAD
     return (
       <Container component="main" maxWidth="xs">
         <Logo />
@@ -152,6 +152,25 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}) {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+=======
+  return (
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          background: 'rgba(255, 255, 255, 0.6)', // 半透明白色背景
+          backdropFilter: 'blur(10px)', // 磨砂玻璃效果
+          borderRadius: '15px', // 圆角
+          padding: '20px', // 内边距
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // 阴影效果
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+>>>>>>> 5b48589 ([Update] Support carList pic shown,Support 'myCar' shown on profile.)
             <DirectionsCarFilledOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">

@@ -2,13 +2,12 @@
 import * as React from 'react'
 import { Box, Container } from "@mui/material";
 import CarCards from "./CarCards";
-import Logo from '../components/Logo';
 
 export default function AllCars(){
     const [JsonData, SetJsonData] = React.useState([])
     
     React.useEffect(() => {
-        fetch('http://localhost:8080/api/v1/cars/getAll')
+        fetch('http://localhost:8080/api/v1/cars/all')
         .then(response => response.json()) 
         .then(data => {
           console.log("[AllCars]",data)

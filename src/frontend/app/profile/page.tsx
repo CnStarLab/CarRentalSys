@@ -92,17 +92,36 @@ var userData = {
     const [userProfile, setUserProfile] = React.useState([])
     const [modalMessage, setModalMessage] = React.useState('');
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-
+    const [myCars, SetMyCars] = React.useState([]);
+    console.log("[UserProfile->state:myCars]",myCars)
     React.useEffect(() => {
-        fetch(`http://localhost:8080/api/v1/user/getProfile/${localStorage.getItem("userId")}`)
-        .then(response => response.json()) 
-        .then(data => {
-          console.log("[UserProfil]",data)
-          console.log("[Localstorage->UserId] :",localStorage.getItem("userId"))
-          setUserProfile(data)
-          setAvatar(data.userPic)
-        })
-        .catch(error => console.error('Error fetching data:', error));
+      const fetchUserProfile = async () => {
+        try {
+          const userResponse = await fetch(`http://localhost:8080/api/v1/user/getProfile/${localStorage.getItem("userId")}`);
+          const userData = await userResponse.json();
+          console.log("[UserProfile->Effect->resp:userProfile]", userData);
+          console.log("[Localstorage->UserId] :", localStorage.getItem("userId"));
+          setUserProfile(userData);
+          setAvatar(userData.userPic);
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      };
+    
+      const fetchCarInfo = async () => {
+        try {
+          const carResponse = await fetch(`http://localhost:8080/api/v1/cars/ownerId/${localStorage.getItem("userId")}`);
+          const carData = await carResponse.json();
+          console.log("[UserProfile->Effect->resp:CarInfo]", carData);
+          console.log("[Localstorage->UserId] :", localStorage.getItem("userId"));
+          SetMyCars(carData);
+        } catch (error) {
+          console.error('Error fetching car data:', error);
+        }
+      };
+    
+      fetchUserProfile();
+      fetchCarInfo();
     }, []); // Empty Array as Listener, make sure only run when the Component mount fist time.
 
 
@@ -254,28 +273,29 @@ var userData = {
         <Box my={4}>
           <Typography variant="h4" gutterBottom>My Cars</Typography>
           <Grid container spacing={2}>
-            {cars.map(car => (
+            {myCars.map(car => (
               <Grid item xs={12} key={car.id}>
                 <Card>
                   <CardContent display="flex" alignItems="center">
                     <Box flexShrink={0} mr={2}>
-                      <img src={car.image} alt="Car" style={styles.cardImage} />
+                      <img src={car?.carPics[0].fileName || "https://via.placeholder.com/150"} alt="Car" style={styles.cardImage} />
                     </Box>
                     <Box>
-                      <Typography variant="body1">{car.model}</Typography>
-                      <Typography variant="body2" color="textSecondary">{car.description}</Typography>
+                      <Typography variant="body1">{car?.brand ? car.brand : "Something Wrong"} {car?.model?car.model:"Something Wrong"}</Typography>
+                      <Typography variant="body2" color="textSecondary">{car?.basicInfo?car.basicInfo:"Something Wrong"}</Typography>
                     </Box>
                   </CardContent>
                   <CardActions>
                     <Button color="secondary" startIcon={<Delete />}>Delete</Button>
                     <Button color="primary">Car Detail</Button>
                     <Box ml="auto">
-                      <Switch defaultChecked={car.status === "Active"} />
+                      <Switch defaultChecked={car.available === "Active"} />
                     </Box>
                   </CardActions>
                 </Card>
-              </Grid>
-            ))}
+              </Grid>)
+        
+            )}
           </Grid>
         </Box>
   

@@ -46,7 +46,7 @@ func UpdateCarInfo(c *gin.Context) {
 
 	// Search existing Car
 	var existingCar models.Car
-	if err := existingCar.FindByID(database.DB, carID); err != nil {
+	if err := existingCar.FindByCarID(database.DB, carID); err != nil {
 		if errors.Is(err, models.ErrCarNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
@@ -68,7 +68,7 @@ func UpdateCarInfo(c *gin.Context) {
 
 func GetAllCars(c *gin.Context) {
 	var cars []models.Car
-	result := database.DB.Find(&cars)
+	result := database.DB.Preload("CarPics").Find(&cars)
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
 		return
@@ -76,7 +76,7 @@ func GetAllCars(c *gin.Context) {
 	c.JSON(http.StatusOK, cars)
 }
 
-func GetCarById(c *gin.Context) {
+func GetCarByCarId(c *gin.Context) {
 	idParam := c.Param("id")
 	carID, err := strconv.ParseUint(idParam, 10, 32)
 	if err != nil {
@@ -85,7 +85,7 @@ func GetCarById(c *gin.Context) {
 	}
 
 	var existingCarInfo models.Car
-	if err := existingCarInfo.FindByID(database.DB, carID); err != nil {
+	if err := existingCarInfo.FindByCarID(database.DB, carID); err != nil {
 		if errors.Is(err, models.ErrCarNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
@@ -95,4 +95,26 @@ func GetCarById(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, existingCarInfo)
+}
+
+func GetCarByOwnerId(c *gin.Context) {
+	idParam := c.Param("id")
+	ownerID, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Owner ID"})
+		return
+	}
+
+	var existingCarsInfo models.Cars
+	if err := existingCarsInfo.FindByOwnerID(database.DB, ownerID); err != nil {
+		if errors.Is(err, models.ErrCarNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, existingCarsInfo)
+
 }

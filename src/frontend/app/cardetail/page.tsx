@@ -15,7 +15,7 @@ export default function CarDetailComponent(){
           // 仅在 carId 存在时进行数据获取
           const fetchData = async () => {
             try {
-              const response = await fetch(`http://localhost:8080/api/v1/cars/getCarById/${carId}`,{
+              const response = await fetch(`http://localhost:8080/api/v1/cars/carId/${carId}`,{
                 method: 'POST',
               });
               const data = await response.json();

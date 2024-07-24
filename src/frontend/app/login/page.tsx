@@ -13,9 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Logo from '../components/Logo';
 import Modal from './alert';
-import { Token } from '@mui/icons-material';
 import { useAuth } from '../hook/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -77,7 +75,6 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Logo/>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

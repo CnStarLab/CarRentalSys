@@ -13,7 +13,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Modal from '../login/alert';
-import Logo from '../components/Logo';
 import { DateRangePicker } from 'rsuite';
 import { useAuth } from '../hook/AuthContext';
 import { useSearchParams } from 'next/navigation';
@@ -45,7 +44,7 @@ export default function RentCar() {
       console.log(JSON.stringify(formData));
 
       try {
-        const response = await fetch('http://localhost:8080/api/v1/service/bookCar', {
+        const response = await fetch('http://localhost:8080/api/v1/service/user/bookCar', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -90,7 +89,6 @@ export default function RentCar() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Logo/>
       <CssBaseline />
       <Box
         sx={{
