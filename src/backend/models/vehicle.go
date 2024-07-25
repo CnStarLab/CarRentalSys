@@ -1,7 +1,13 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+	"time"
 
+	"gorm.io/gorm"
+)
+
+// ===========================Database Table Mapping Structure==============================//
 type Car struct {
 	gorm.Model
 	Brand           string `json:"brand"`
@@ -21,9 +27,8 @@ type Car struct {
 	Available    bool          `json:"available"`
 	Comments2Car []Comment2Car `json:"comments2car"`
 	CarPics      []CarsPic     `json:"carPics" gorm:"foreignKey:CarId"`
+	UsingLogs    []UserCar     `json:"useLogs" gorm:"foreignKey:CarID"`
 }
-
-type Cars []Car
 
 type Comment2Car struct {
 	gorm.Model
@@ -48,6 +53,23 @@ type CarsPic struct {
 	CarId    uint   `json:"carId"`
 }
 
+//===========================Service Inner Structure===================================//
+
+type Cars []Car
+
+type CarQueryParams struct {
+	MinPrice        int64
+	MaxPrice        int64
+	Brand           string
+	Location        string
+	CarType         string
+	SupportDriver   string
+	SupportDelivery string
+	StartTime       time.Time
+	EndTime         time.Time
+}
+
+// ==========================function for type==========================================//
 func CreateCarByUser(db *gorm.DB, car *Car) error {
 	return db.Create(car).Error
 }
@@ -79,4 +101,121 @@ func (c *Cars) FindByOwnerID(db *gorm.DB, ownerId uint64) error {
 		return err
 	}
 	return nil
+}
+
+// func (c *Car) IsTimeSlotAvailable(startTime, endTime time.Time) bool {
+// 	for _, log := range c.UsingLogs {
+// 		if (startTime.Before(log.EndTime) && endTime.After(log.StartTime)) ||
+// 			(startTime.Equal(log.StartTime) && endTime.Equal(log.EndTime)) {
+// 			return false
+// 		}
+// 	}
+// 	return true
+// }
+
+func (c *Cars) FindByConds(db *gorm.DB, param *CarQueryParams) error {
+
+	query := db.Model(&Car{})
+
+	if param.MinPrice > 0 {
+		query = query.Where("price >= ?", param.MinPrice)
+		if err := query.Find(&c).Error; err != nil {
+			return err
+		}
+		if len(*c) == 0 {
+			return ErrNoCarsMatch
+		}
+	}
+
+	if param.MaxPrice > 0 {
+		query = query.Where("price <= ?", param.MaxPrice)
+		if err := query.Find(&c).Error; err != nil {
+			return err
+		}
+		if len(*c) == 0 {
+			return ErrNoCarsMatch
+		}
+	}
+
+	if param.Brand != "" {
+		query = query.Where("brand = ?", param.Brand)
+		if err := query.Find(&c).Error; err != nil {
+			return err
+		}
+		if len(*c) == 0 {
+			return ErrNoCarsMatch
+		}
+	}
+
+	if param.Location != "" {
+		query = query.Where("location = ?", param.Location)
+		if err := query.Find(c).Error; err != nil {
+			return err
+		}
+		if len(*c) == 0 {
+			return ErrNoCarsMatch
+		}
+	}
+
+	if param.CarType != "" {
+		query = query.Where("car_type = ?", param.CarType)
+		if err := query.Find(&c).Error; err != nil {
+			return err
+		}
+		if len(*c) == 0 {
+			return ErrNoCarsMatch
+		}
+	}
+
+	if param.SupportDriver != "" {
+		query = query.Where("support_driver = ?", param.SupportDriver)
+		if err := query.Find(&c).Error; err != nil {
+			return err
+		}
+		if len(*c) == 0 {
+			return ErrNoCarsMatch
+		}
+	}
+
+	if param.SupportDelivery != "" {
+		query = query.Where("support_delivery = ?", param.SupportDelivery)
+		if err := query.Find(&c).Error; err != nil {
+			return err
+		}
+		if len(*c) == 0 {
+			return ErrNoCarsMatch
+		}
+	}
+
+	availableCars := make(Cars, 0, len(*c))
+	if !param.StartTime.IsZero() && !param.EndTime.IsZero() {
+		for _, car := range *c {
+			err := db.Preload("UsingLogs").Find(&car).Error
+			if err != nil {
+				return err
+			}
+			fmt.Println(car)
+
+			available := true
+			for _, log := range car.UsingLogs {
+				if (param.StartTime.Before(log.EndTime) && param.EndTime.After(log.StartTime)) ||
+					(param.StartTime.Equal(log.StartTime) && param.EndTime.Equal(log.EndTime)) {
+					available = false
+					break
+				}
+			}
+
+			if available {
+				availableCars = append(availableCars, car)
+			}
+		}
+
+		*c = availableCars
+		if len(*c) == 0 {
+			return ErrNoCarsMatch
+		}
+	}
+
+	return nil
+
 }
