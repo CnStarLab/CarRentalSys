@@ -11,6 +11,7 @@ import { Box } from '@mui/material';
 import Link from 'next/link';
 
 export default function CarCards({ car }) {
+  //console.log("[CarCards:props:car] :",car)
   return (
     <Card sx={{ maxWidth: 1200 }}>
       <CardActionArea>
@@ -115,7 +116,7 @@ export default function CarCards({ car }) {
             <CardMedia
               component="img"
               height="140"
-              image={car.carPics[0].fileName}
+              image={car?.carPics[0]?.fileName}
               alt="green iguana"
               sx={{
                 objectFit: 'cover',

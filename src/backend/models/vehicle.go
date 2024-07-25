@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -114,6 +113,7 @@ func (c *Cars) FindByOwnerID(db *gorm.DB, ownerId uint64) error {
 // }
 
 func (c *Cars) FindByConds(db *gorm.DB, param *CarQueryParams) error {
+	db.Preload("CarPics").Find(&c)
 
 	query := db.Model(&Car{})
 
@@ -194,7 +194,6 @@ func (c *Cars) FindByConds(db *gorm.DB, param *CarQueryParams) error {
 			if err != nil {
 				return err
 			}
-			fmt.Println(car)
 
 			available := true
 			for _, log := range car.UsingLogs {
@@ -214,6 +213,9 @@ func (c *Cars) FindByConds(db *gorm.DB, param *CarQueryParams) error {
 		if len(*c) == 0 {
 			return ErrNoCarsMatch
 		}
+	}
+	if err := db.Preload("CarPics").Find(&c).Error; err != nil {
+		return err
 	}
 
 	return nil
