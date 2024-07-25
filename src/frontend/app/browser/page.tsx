@@ -70,7 +70,7 @@ export default function BroserPage() {
                 min={50}
                 max={500}
                 valueLabelDisplay="auto"
-                onChange={(e, value) => handleCondsChange({ target: { name: 'minPrice', value: value[0] } })}
+                onChange={(e, max) => handleCondsChange({ target: { name: 'maxPrice', value: max } })}
               />
               <Typography variant="h6">Location</Typography>
               <RadioGroup row name="location" onChange={handleCondsChange}>
