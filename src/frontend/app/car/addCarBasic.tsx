@@ -135,7 +135,6 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}) {
 
     return (
       <Container component="main" maxWidth="xs">
-        <Logo />
         <CssBaseline />
         <Box
           sx={{

@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: 513513
+      POSTGRES_DB: testing
+    ports:
+      - "1234:5432"
+    volumes:
+      - db-data14:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: 513513
+      POSTGRES_DB: testing
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_SSLMODE: disable
+
+volumes:
+  db-data14:
