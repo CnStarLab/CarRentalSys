@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -26,7 +27,7 @@ type Car struct {
 	Available    bool          `json:"available"`
 	Comments2Car []Comment2Car `json:"comments2car"`
 	CarPics      []CarsPic     `json:"carPics" gorm:"foreignKey:CarId"`
-	UsingLogs    []UserCar     `json:"useLogs" gorm:"foreignKey:CarID;references:ID"`
+	UsingLogs    []UserCar     `json:"useLogs" gorm:"foreignKey:CarID"`
 }
 
 type Comment2Car struct {
@@ -186,25 +187,35 @@ func (c *Cars) FindByConds(db *gorm.DB, param *CarQueryParams) error {
 		}
 	}
 
-	// for _, car := range *c {
-	// 	err := db.Preload("UsingLogs").Find(car).Error
-	// 	if err != nil {
-	// 		return err
-	// 	}
+	availableCars := make(Cars, 0, len(*c))
+	if !param.StartTime.IsZero() && !param.EndTime.IsZero() {
+		for _, car := range *c {
+			err := db.Preload("UsingLogs").Find(&car).Error
+			if err != nil {
+				return err
+			}
+			fmt.Println(car)
 
-	// 	available := true
-	// 	for _, log := range car.UsingLogs {
-	// 		if (param.StartTime.Before(log.EndTime) && param.EndTime.After(log.StartTime)) ||
-	// 			(param.StartTime.Equal(log.StartTime) && param.EndTime.Equal(log.EndTime)) {
-	// 			available = false
-	// 			break
-	// 		}
-	// 	}
+			available := true
+			for _, log := range car.UsingLogs {
+				if (param.StartTime.Before(log.EndTime) && param.EndTime.After(log.StartTime)) ||
+					(param.StartTime.Equal(log.StartTime) && param.EndTime.Equal(log.EndTime)) {
+					available = false
+					break
+				}
+			}
 
-	// 	if !available {
-	// 		return fmt.Errorf("time slot not available for car %d", car.ID)
-	// 	}
-	// }
+			if available {
+				availableCars = append(availableCars, car)
+			}
+		}
+
+		*c = availableCars
+		if len(*c) == 0 {
+			return ErrNoCarsMatch
+		}
+	}
 
 	return nil
+
 }
