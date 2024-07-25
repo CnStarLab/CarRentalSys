@@ -3,6 +3,8 @@ import React from 'react';
 import { Container, Grid, Box, Typography, TextField, Slider, FormControlLabel, Button, Card, CardContent, CardMedia, Stack, Radio, ToggleButtonGroup, ToggleButton, RadioGroup } from '@mui/material';
 import AllCars from '../carList/page';
 import Link from 'next/link';
+import { DateRangePicker } from 'rsuite';
+import 'rsuite/dist/rsuite.min.css';
 
 const marks = [
   {
@@ -24,8 +26,8 @@ export default function BroserPage() {
     carType: null,
     supportDriver: null,
     supportDelivery: null,
-    startTime: null,
-    endTime: null
+    startTime: "",
+    endTime: ""
   });
 
   const [searchParam, setSearchParam] = React.useState('');
@@ -50,6 +52,30 @@ export default function BroserPage() {
       .filter(([_, value]) => value !== null && value !== undefined && value !== '')
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join('&');
+  };
+
+  const handleDateRange = (value) =>{
+    if (value && value.length === 2) {
+      const [startDate, endDate] = value;
+      const startISOString = startDate.toISOString();
+      const endISOString = endDate.toISOString();
+      // Set the date range using the ISO strings
+      console.log(startISOString,endISOString)
+      setChoiceConds((prevChoiceConds) => ({
+        ...prevChoiceConds,
+        ["startTime"]: startISOString,
+        ["endTime"]: endISOString
+      }));
+    }
+  };
+
+  const handleCleanDate = () =>{
+      setChoiceConds((prevChoiceConds) => ({
+        ...prevChoiceConds,
+        ["startTime"]: "",
+        ["endTime"]: ""
+      }));
+
   };
 
   return (
@@ -120,11 +146,12 @@ export default function BroserPage() {
                 <Grid item xs={12} md={3}>
                   <TextField fullWidth label="Choose Vehicle Type" variant="outlined" />
                 </Grid>
-                <Grid item xs={12} md={2}>
-                  <TextField fullWidth label="From" variant="outlined" type="date" InputLabelProps={{ shrink: true }} />
-                </Grid>
-                <Grid item xs={12} md={2}>
-                  <TextField fullWidth label="To" variant="outlined" type="date" InputLabelProps={{ shrink: true }} />
+                <Grid item xs={12} md={4}>
+                  <DateRangePicker 
+                  size='lg'
+                  onChange={(value) => handleDateRange(value)}
+                  onClean={handleCleanDate}
+                  />
                 </Grid>
                 <Grid item xs={12} md={1}>
                   <Button fullWidth variant="contained">Search</Button>
