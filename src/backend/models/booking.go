@@ -48,6 +48,7 @@ func BookCar(db *gorm.DB, username string, carID uint, startTime time.Time, endT
 		StartTime: startTime,
 		EndTime:   endTime,
 		Reason:    reason,
+		Status:    0,
 	}
 	if err := db.Create(&userCar).Error; err != nil {
 		return err
