@@ -10,7 +10,7 @@ import (
 
 type UserCar struct {
 	gorm.Model
-	Username  string    `json:"username"`
+	UserId    uint      `json:"UserId"`
 	CarID     uint      `json:"carId"`
 	StartTime time.Time `json:"startTime" gorm:"not null"`
 	EndTime   time.Time `json:"endTime" gorm:"not null"`
@@ -30,20 +30,20 @@ var (
 	ErrNoCarsMatch       = errors.New("no cars match with conditions")
 )
 
-func BookCar(db *gorm.DB, username string, carID uint, startTime time.Time, endTime time.Time, reason string) error {
+func BookCar(db *gorm.DB, userId uint, carID uint, startTime time.Time, endTime time.Time, reason string) (uint, error) {
 	var car Car
 	if err := db.First(&car, carID).Error; err != nil {
-		return ErrCarNotFound
+		return 0, ErrCarNotFound
 	}
 
 	if !car.Available {
-		return ErrCarNotAvailable
+		return 0, ErrCarNotAvailable
 	}
 
 	// Create a new UserCar record
 	fmt.Println(startTime)
 	userCar := UserCar{
-		Username:  username,
+		UserId:    userId,
 		CarID:     car.ID,
 		StartTime: startTime,
 		EndTime:   endTime,
@@ -51,16 +51,16 @@ func BookCar(db *gorm.DB, username string, carID uint, startTime time.Time, endT
 		Status:    0,
 	}
 	if err := db.Create(&userCar).Error; err != nil {
-		return err
+		return 0, err
 	}
 
 	// Associate the user and car
 	//db.Model(&user).Association("Cars").Append(&car)
 
-	return nil
+	return userCar.ID, nil
 }
 
-func ReturnCar(db *gorm.DB, username string, carID uint) error {
+func ReturnCar(db *gorm.DB, userId, carID uint) error {
 	// 查找用户和汽车
 
 	var car Car
@@ -68,20 +68,30 @@ func ReturnCar(db *gorm.DB, username string, carID uint) error {
 		return ErrCarNotFound
 	}
 
-	// 在 UserCars 中找到对应的记录并删除
 	var userCar UserCar
-	if err := db.Where("username = ? AND car_id = ?", username, carID).First(&userCar).Error; err != nil {
+	if err := db.Where("userId = ? AND car_id = ?", userId, carID).First(&userCar).Error; err != nil {
 		return ErrUserCarNotFound
 	}
 
-	// 更新汽车状态为可用
-	car.Available = true
-	db.Save(&car)
-
-	// 删除 UserCar 记录
 	if err := db.Delete(&userCar).Error; err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func FindBookingInfoById(db *gorm.DB, bookId uint64) (UserCar, error) {
+	var curr UserCar
+	if err := db.Where("id = ?", bookId).First(&curr).Error; err != nil {
+		return curr, ErrUserCarNotFound
+	}
+	return curr, nil
+}
+
+func (u *UserCar) UpdateStatus(db *gorm.DB, newStatus uint8) error {
+	u.Status = newStatus
+	if err := db.Save(&u).Error; err != nil {
+		return err
+	}
 	return nil
 }

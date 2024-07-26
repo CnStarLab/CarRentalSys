@@ -17,7 +17,7 @@ import { useAuth } from '../hook/AuthContext';
 import { useSearchParams } from 'next/navigation';
 import { DateRangePicker } from 'rsuite';
 
-export default function StageRequest_st1({handleNext,setCurrCarInfo}) {
+export default function StageRequest_st1({handleNext,setCurrBookInfo}) {
     // 定义错误状态的类型
     type Errors = {
       brand?: boolean;
@@ -59,7 +59,8 @@ export default function StageRequest_st1({handleNext,setCurrCarInfo}) {
 
     const searchParams = useSearchParams();
     const carId = searchParams.get('carId');
-    const { isLoggedIn, username} = useAuth();
+
+    const { isLoggedIn, username, userId} = useAuth();
     const [dateRange, setDateRange]:any = React.useState([null, null]);
     const [modalMessage, setModalMessage] = React.useState('');
     const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -77,7 +78,7 @@ export default function StageRequest_st1({handleNext,setCurrCarInfo}) {
       // formData 2 json
       const formData = {
         carId: Number(carId),
-        username: username,
+        userId: userId,
         startTime: dateRange[0], 
         endTime: dateRange[1], 
         reason: data.get('reason'),
@@ -100,7 +101,7 @@ export default function StageRequest_st1({handleNext,setCurrCarInfo}) {
           console.log(response.body)
           throw new Error(`Register error! INFO: ${result.error}`);
         }
-        
+        setCurrBookInfo(result.bookId)
         console.log(result)
         setModalMessage(result.message || 'Success!');
       } catch (error) {

@@ -137,6 +137,8 @@ func UpdateUserProfile(c *gin.Context) {
 	existingUser.Email = updateUser.Email
 	existingUser.Password = updateUser.Password
 	existingUser.UserPic = updateUser.UserPic
+	existingUser.FirstName = updateUser.FirstName
+	existingUser.LastName = updateUser.LastName
 
 	if err := database.DB.Save(&existingUser).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

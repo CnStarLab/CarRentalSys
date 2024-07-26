@@ -27,7 +27,7 @@ const steps = [
 export default function BookingFlowControl() {
     const [activeStep, setActiveStep] = React.useState(0);
     //const [skipped, setSkipped] = React.useState(new Set<number>());
-    const [currCarInfo, SetCurrCarInfo] = React.useState([])
+    const [currBookInfo, setCurrBookInfo] = React.useState([])
   
     // const isStepOptional = (step: number) => {
     //   return step === 1;
@@ -69,12 +69,12 @@ export default function BookingFlowControl() {
     };
   
     const renderStepContent = (step: number) => {
-      console.log("[BookingFlowControl->renderStepContent->state:currCarInfo]: ",currCarInfo)
+      console.log("[BookingFlowControl->renderStepContent->state:currCarInfo]: ",currBookInfo)
       switch (step) {
         case 0:
-          return <StageRequest_st1 handleNext={handleNext} setCurrCarInfo={SetCurrCarInfo}/>;
+          return <StageRequest_st1 handleNext={handleNext} setCurrBookInfo={setCurrBookInfo}/>;
         case 1:
-          return <StagePayment_st2 handleNext={handleNext} />;
+          return <StagePayment_st2 handleNext={handleNext} currBookInfo={currBookInfo} />;
         case 2:
           return <StageAfterPaid_st3 handleNext={handleNext}/>;
         case 3:
