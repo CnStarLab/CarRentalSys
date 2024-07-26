@@ -30,7 +30,7 @@ var (
 	ErrNoCarsMatch       = errors.New("no cars match with conditions")
 )
 
-func BookCar(db *gorm.DB, username string, carID uint, startTime time.Time, endTime time.Time) error {
+func BookCar(db *gorm.DB, username string, carID uint, startTime time.Time, endTime time.Time, reason string) error {
 	var car Car
 	if err := db.First(&car, carID).Error; err != nil {
 		return ErrCarNotFound
@@ -40,10 +40,6 @@ func BookCar(db *gorm.DB, username string, carID uint, startTime time.Time, endT
 		return ErrCarNotAvailable
 	}
 
-	// Update car status to unavailable
-	car.Available = false
-	db.Save(&car)
-
 	// Create a new UserCar record
 	fmt.Println(startTime)
 	userCar := UserCar{
@@ -51,6 +47,7 @@ func BookCar(db *gorm.DB, username string, carID uint, startTime time.Time, endT
 		CarID:     car.ID,
 		StartTime: startTime,
 		EndTime:   endTime,
+		Reason:    reason,
 	}
 	if err := db.Create(&userCar).Error; err != nil {
 		return err

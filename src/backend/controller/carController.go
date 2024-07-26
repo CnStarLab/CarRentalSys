@@ -120,7 +120,6 @@ func GetCarByOwnerId(c *gin.Context) {
 }
 
 func GetCarsWithConds(c *gin.Context) {
-	var resultCars models.Cars
 	var currParams models.CarQueryParams
 
 	minPrice, err := strconv.ParseInt(c.Query("minPrice"), 10, 64)
@@ -159,9 +158,43 @@ func GetCarsWithConds(c *gin.Context) {
 		}
 	}
 
+	var resultCars models.Cars
 	if err := resultCars.FindByConds(database.DB, &currParams); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, resultCars)
+}
+
+func GetCarInvalidDate(c *gin.Context) {
+	//get parama and trans 2 unsigned int
+	idParam := c.Param("id")
+	carID, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Car ID"})
+		return
+	}
+
+	//Search the car by carId
+	var targetCar models.Car
+	if err := targetCar.FindByCarID(database.DB, carID); err != nil {
+		if errors.Is(err, models.ErrCarNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	//Put the member we want into new structure
+	var result []map[string]interface{}
+	for _, userCar := range targetCar.UsingLogs {
+		result = append(result, map[string]interface{}{
+			"id":        userCar.ID,
+			"startTime": userCar.StartTime,
+			"endTime":   userCar.EndTime,
+		})
+	}
+
+	c.JSON(http.StatusOK, result)
 }
