@@ -74,7 +74,7 @@ func CreateCarByUser(db *gorm.DB, car *Car) error {
 }
 
 func (c *Car) FindByCarID(db *gorm.DB, ID uint64) error {
-	if err := db.Preload("CarPics").First(&c, ID).Error; err != nil {
+	if err := db.Preload("CarPics").Preload("UsingLogs").First(&c, ID).Error; err != nil {
 		if err == gorm.ErrPreloadNotAllowed {
 			return ErrPreloadNotAllowed
 		}
