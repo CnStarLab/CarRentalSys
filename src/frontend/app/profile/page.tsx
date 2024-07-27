@@ -203,6 +203,30 @@ var userData = {
         console.log("[SignIn] response Json:",result)
         setModalMessage(result.message || 'Approved!');
 
+        
+      } catch (error) {
+        setModalMessage(`Error: ${error.message}`);
+      } finally {
+        setIsModalOpen(true);
+      }
+    }
+
+    const handleDecline = async(event)=>{
+      try {
+        const response = await fetch(`http://localhost:8080/api/v1/service/status/decline/${event.currentTarget.id}`, {
+          method: 'POST',
+        });
+        
+        // parse response 2 json
+        const result = await response.json();
+        if (!response.ok) {
+          console.log(response.body)
+          throw new Error(`Register error! INFO: ${result.error}`);
+        }
+        
+        console.log("[SignIn] response Json:",result)
+        setModalMessage(result.message || 'Approved!');
+
   
       } catch (error) {
         setModalMessage(`Error: ${error.message}`);
@@ -345,7 +369,7 @@ var userData = {
                                   <Button startIcon={<Details />}>Details</Button>
                                   {currCarBookInfo.status === 0 && (
                                     <>
-                                      <Button color="secondary" startIcon={<Delete />}>Decline</Button>
+                                      <Button id={currCarBookInfo.ID} onClick={handleDecline}color="secondary" startIcon={<Delete />}>Decline</Button>
                                       <Button id={currCarBookInfo.ID} onClick={handleApprove} color="primary" variant="contained">Approve</Button>
                                     </>
                                   )}

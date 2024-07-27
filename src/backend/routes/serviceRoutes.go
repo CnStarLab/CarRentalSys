@@ -18,5 +18,6 @@ func BookingRoutes(router *gin.Engine) {
 		v1.POST("/service/owner/addComment")                                  //Add comment to user from car owner.
 		v1.POST("/service/owner/confirmRequest")                              //Confirm this rent request for owner.
 		v1.POST("/service/status/approve/:id", controller.ApproveBookRequest) //Car owner approver request
+		v1.POST("/service/status/decline/:id", controller.DeclineBookRequest) // Car owner declines request
 	}
 }

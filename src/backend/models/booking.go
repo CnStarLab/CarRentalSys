@@ -111,3 +111,10 @@ func (u *UserCar) UpdateStatus(db *gorm.DB, newStatus uint8) error {
 	}
 	return nil
 }
+
+func (uc *UserCar) Delete(db *gorm.DB) error {
+	if err := db.Delete(&uc).Error; err != nil {
+		return err
+	}
+	return nil
+}

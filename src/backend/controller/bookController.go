@@ -65,7 +65,7 @@ func ApproveBookRequest(c *gin.Context) {
 	idParam := c.Param("id")
 	requestId, err := strconv.ParseUint(idParam, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid car ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Book ID"})
 		return
 	}
 
@@ -92,6 +92,39 @@ func ApproveBookRequest(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Request approved successfully"})
+}
+
+func DeclineBookRequest(c *gin.Context) {
+	idParam := c.Param("id")
+	requestId, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Book ID"})
+		return
+	}
+
+	// Get book info
+	var currRequest models.UserCar
+	currRequest, err = models.FindBookInfoByBookId(database.DB, requestId)
+	if err != nil {
+		if errors.Is(err, models.ErrUserCarNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if currRequest.Status != 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Not A Pending Request!"})
+		return
+	}
+
+	// Delete the request from the database
+	if err := currRequest.Delete(database.DB); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Request declined and deleted successfully"})
 }
 
 func GetBookInfoByBookId(c *gin.Context) {
