@@ -91,6 +91,7 @@ func ApproveBookRequest(c *gin.Context) {
 		return
 	}
 
+	//[WIP] email/sms service notice user
 	c.JSON(http.StatusOK, gin.H{"message": "Request approved successfully"})
 }
 
@@ -124,6 +125,7 @@ func DeclineBookRequest(c *gin.Context) {
 		return
 	}
 
+	//[WIP] email/sms service notice user
 	c.JSON(http.StatusOK, gin.H{"message": "Request declined and deleted successfully"})
 }
 
