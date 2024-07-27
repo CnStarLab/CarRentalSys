@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 )
 
 func BookNewCar(c *gin.Context) {
@@ -64,13 +65,13 @@ func ApproveBookRequest(c *gin.Context) {
 	idParam := c.Param("id")
 	requestId, err := strconv.ParseUint(idParam, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid car ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Book ID"})
 		return
 	}
 
 	//get book info
 	var currRequest models.UserCar
-	currRequest, err = models.FindBookingInfoById(database.DB, requestId)
+	currRequest, err = models.FindBookInfoByBookId(database.DB, requestId)
 	if err != nil {
 		if errors.Is(err, models.ErrUserCarNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -90,10 +91,45 @@ func ApproveBookRequest(c *gin.Context) {
 		return
 	}
 
+	//[WIP] email/sms service notice user
 	c.JSON(http.StatusOK, gin.H{"message": "Request approved successfully"})
 }
 
-func GetBookInfoById(c *gin.Context) {
+func DeclineBookRequest(c *gin.Context) {
+	idParam := c.Param("id")
+	requestId, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Book ID"})
+		return
+	}
+
+	// Get book info
+	var currRequest models.UserCar
+	currRequest, err = models.FindBookInfoByBookId(database.DB, requestId)
+	if err != nil {
+		if errors.Is(err, models.ErrUserCarNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if currRequest.Status != 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Not A Pending Request!"})
+		return
+	}
+
+	// Delete the request from the database
+	if err := currRequest.Delete(database.DB); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	//[WIP] email/sms service notice user
+	c.JSON(http.StatusOK, gin.H{"message": "Request declined and deleted successfully"})
+}
+
+func GetBookInfoByBookId(c *gin.Context) {
 	idParam := c.Param("id")
 	requestId, err := strconv.ParseUint(idParam, 10, 32)
 	if err != nil {
@@ -103,7 +139,7 @@ func GetBookInfoById(c *gin.Context) {
 
 	//get book info
 	var currBookInfo models.UserCar
-	currBookInfo, err = models.FindBookingInfoById(database.DB, requestId)
+	currBookInfo, err = models.FindBookInfoByBookId(database.DB, requestId)
 	if err != nil {
 		if errors.Is(err, models.ErrUserCarNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -114,4 +150,30 @@ func GetBookInfoById(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, currBookInfo)
+}
+
+func GetBookInfoByOwnerId(c *gin.Context) {
+	var ownerCarsInfo models.CarsBookInfo
+	idParam := c.Param("id")
+	OwnerId, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Owner ID"})
+		return
+	}
+
+	var myCars models.Cars
+	err = myCars.FindByOwnerID(database.DB, OwnerId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch cars"})
+		return
+	}
+	//emprty slice
+	if len(myCars) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "You Have No Car Registered For Renting Yet!"})
+		return
+	}
+
+	copier.Copy(&ownerCarsInfo, &myCars)
+
+	c.JSON(http.StatusOK, ownerCarsInfo)
 }

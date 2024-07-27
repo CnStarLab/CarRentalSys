@@ -90,7 +90,8 @@ func (c *Car) FindByCarID(db *gorm.DB, ID uint64) error {
 }
 
 func (c *Cars) FindByOwnerID(db *gorm.DB, ownerId uint64) error {
-	if err := db.Preload("CarPics").Where("owner_id = ?", ownerId).Find(c).Error; err != nil {
+	//[WIP] here we both use this for just fine cars and for find using logs,we should take out the logic for useing logs.
+	if err := db.Preload("CarPics").Preload("UsingLogs").Where("owner_id = ?", ownerId).Find(c).Error; err != nil {
 		if err == gorm.ErrPreloadNotAllowed {
 			return ErrPreloadNotAllowed
 		}
@@ -102,15 +103,18 @@ func (c *Cars) FindByOwnerID(db *gorm.DB, ownerId uint64) error {
 	return nil
 }
 
-// func (c *Car) IsTimeSlotAvailable(startTime, endTime time.Time) bool {
-// 	for _, log := range c.UsingLogs {
-// 		if (startTime.Before(log.EndTime) && endTime.After(log.StartTime)) ||
-// 			(startTime.Equal(log.StartTime) && endTime.Equal(log.EndTime)) {
-// 			return false
-// 		}
-// 	}
-// 	return true
-// }
+func (c *Cars) FindLogsByOwnerID(db *gorm.DB, ownerId uint64) error {
+	if err := db.Preload("UsingLogs").Where("owner_id = ?", ownerId).Find(c).Error; err != nil {
+		if err == gorm.ErrPreloadNotAllowed {
+			return ErrPreloadNotAllowed
+		}
+		if err == gorm.ErrRecordNotFound {
+			return ErrCarNotFound
+		}
+		return err
+	}
+	return nil
+}
 
 func (c *Cars) FindByConds(db *gorm.DB, param *CarQueryParams) error {
 	query := db.Model(&Car{}).Preload("CarPics")

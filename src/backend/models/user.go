@@ -20,6 +20,7 @@ type User struct {
 
 	Comments []Comment2User `json:"comments2user"`
 	Favorit  []FavoriteCars `json:"favoriteCars"`
+	MyCars   []Car          `gorm:"foreignKey:OwnerId"`
 }
 
 type Comment2User struct {
@@ -48,6 +49,7 @@ type UserProfile struct {
 	Username  string `json:"username"`
 	Email     string `json:"email"`
 	UserPic   string `json:"userPic"`
+	MyCars    []Car  `json:"myCars"`
 }
 
 type JWTClaims struct {
@@ -71,7 +73,7 @@ func (u *User) FindByEmail(db *gorm.DB, email string) error {
 }
 
 func (u *User) FindByID(db *gorm.DB, ID uint64) error {
-	if err := db.Where("id = ?", ID).First(u).Error; err != nil {
+	if err := db.Preload("MyCars").Where("id = ?", ID).First(u).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return ErrUserNotFound
 		}
