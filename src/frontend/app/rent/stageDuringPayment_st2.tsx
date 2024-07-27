@@ -5,7 +5,7 @@ export default function StageDuringPayment_st2({ handleNext, currBookInfo }) {
     const [pendingApprove, setPendingApprove] = React.useState(false);
 
     React.useEffect(() => {
-        fetch(`http://localhost:8080/api/v1/service/info/${currBookInfo}`)
+        fetch(`http://localhost:8080/api/v1/service/info/bookId/${currBookInfo}`)
             .then(response => response.json())
             .then(data => {
                 console.log("[StageDuringPayment_st2:useEffect->data]", data);
@@ -16,7 +16,7 @@ export default function StageDuringPayment_st2({ handleNext, currBookInfo }) {
                 }
             })
             .catch(error => console.error('Error fetching data:', error));
-    }, [currBookInfo]);
+    }, []);
 
     return (
         <Paper elevation={3} sx={{ padding: 3, textAlign: 'center', margin: 2 }}>

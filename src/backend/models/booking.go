@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// =======================Structure for database mapping ==============================//
 type UserCar struct {
 	gorm.Model
 	UserId    uint      `json:"UserId"`
@@ -20,6 +21,22 @@ type UserCar struct {
 	Reason     string `json:"reason"`
 	TotalPrice uint64 `json:"totalPrice"`
 }
+
+//=======================Structure for service==================================//
+
+type Logs []UserCar
+
+// struct for owner profile page status monitor and renting flow alert
+type OwnerCarsInfo struct {
+	Brand     string    `json:"brand"`
+	CarModel  string    `json:"model"`
+	CarType   string    `json:"cartype"`
+	Year      int       `json:"year"`
+	CarPics   []CarsPic `json:"carPics"`
+	UsingLogs []UserCar `json:"useLogs"`
+}
+
+type CarsBookInfo []OwnerCarsInfo
 
 var (
 	ErrUserNotFound      = errors.New("user not found")
@@ -61,7 +78,6 @@ func BookCar(db *gorm.DB, userId uint, carID uint, startTime time.Time, endTime 
 }
 
 func ReturnCar(db *gorm.DB, userId, carID uint) error {
-	// 查找用户和汽车
 
 	var car Car
 	if err := db.First(&car, carID).Error; err != nil {
@@ -80,7 +96,7 @@ func ReturnCar(db *gorm.DB, userId, carID uint) error {
 	return nil
 }
 
-func FindBookingInfoById(db *gorm.DB, bookId uint64) (UserCar, error) {
+func FindBookInfoByBookId(db *gorm.DB, bookId uint64) (UserCar, error) {
 	var curr UserCar
 	if err := db.Where("id = ?", bookId).First(&curr).Error; err != nil {
 		return curr, ErrUserCarNotFound

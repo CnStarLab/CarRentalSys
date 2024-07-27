@@ -1,13 +1,16 @@
 'use client'
 import React from 'react';
 import {
-  Container, Box, Typography, TextField, Button, Switch, Card, CardContent, CardActions, Grid, Avatar, IconButton
+  Container, Box, Typography, TextField, Button, Switch, Card, CardContent, CardActions, Grid, Avatar, IconButton,
+  CardMedia,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@mui/material';
-import { Edit, Delete, Details } from '@mui/icons-material';
+import { Edit, Delete, Details, ExpandMore } from '@mui/icons-material';
 import { useAuth } from '../hook/AuthContext';
 import Modal from '../login/alert';
 import UploadPhoto from '../components/userAvatarUpload';
-// data.js
 
 var userData = {
     notifications: {
@@ -87,14 +90,30 @@ var userData = {
   const UserPage = () => {
     const {notifications, cars, favorites, transactions } = userData;
     const {userId} = useAuth()
-
     const [avatar, setAvatar] = React.useState('');
     const [userProfile, setUserProfile] = React.useState([])
+    const [myCars, SetMyCars] = React.useState([]);
+    const [myCarsBookInfo, SetMyCarsBookInfo] = React.useState([])
+
     const [modalMessage, setModalMessage] = React.useState('');
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const [myCars, SetMyCars] = React.useState([]);
+
     console.log("[UserProfile->state:myCars]",myCars)
+    console.log("[UserProfile->state:myCarsBookInfo]:",myCarsBookInfo)
+
+    const fetchBookInfo = async () => {
+      try {
+        const carResponse = await fetch(`http://localhost:8080/api/v1/service/info/ownerId/${localStorage.getItem("userId")}`);
+        const useLogs = await carResponse.json();
+        console.log("[UserProfile->Effect->fetchBookInfo:CarInfo]", useLogs);
+        SetMyCarsBookInfo(useLogs)
+      } catch (error) {
+        console.error('Error fetching car data:', error);
+      }
+    };
+
     React.useEffect(() => {
+      //fetch User info
       const fetchUserProfile = async () => {
         try {
           const userResponse = await fetch(`http://localhost:8080/api/v1/user/getProfile/${localStorage.getItem("userId")}`);
@@ -108,6 +127,7 @@ var userData = {
         }
       };
     
+      //fetch car info
       const fetchCarInfo = async () => {
         try {
           const carResponse = await fetch(`http://localhost:8080/api/v1/cars/ownerId/${localStorage.getItem("userId")}`);
@@ -122,10 +142,9 @@ var userData = {
     
       fetchUserProfile();
       fetchCarInfo();
+      fetchBookInfo()
     }, []); // Empty Array as Listener, make sure only run when the Component mount fist time.
 
-
-    
 
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -168,8 +187,35 @@ var userData = {
 
     }
 
+    const handleApprove = async(event)=>{
+      try {
+        const response = await fetch(`http://localhost:8080/api/v1/service/status/approve/${event.currentTarget.id}`, {
+          method: 'POST',
+        });
+        
+        // parse response 2 json
+        const result = await response.json();
+        if (!response.ok) {
+          console.log(response.body)
+          throw new Error(`Register error! INFO: ${result.error}`);
+        }
+        
+        console.log("[SignIn] response Json:",result)
+        setModalMessage(result.message || 'Approved!');
+
+  
+      } catch (error) {
+        setModalMessage(`Error: ${error.message}`);
+      } finally {
+        setIsModalOpen(true);
+      }
+    }
+
     const closeModal = () => {
       setIsModalOpen(false);
+      //refetch to update the latest bookInfo.
+      fetchBookInfo();
+      
     };
     const styles = {
       container: {
@@ -242,30 +288,83 @@ var userData = {
           {/* Alerts */}
           <Box mt={4}>
             <Typography variant="h6" gutterBottom>Profile Alerts</Typography>
-            <Grid container spacing={2}>
-              {notifications.alerts.map(alert => (
-                <Grid item xs={12} key={alert.id}>
-                  <Card>
-                    <CardContent display="flex">
-                      <Avatar alt="Alert Icon" src={alert.icon} />
-                      <Box ml={2}>
-                        <Typography variant="body1">{alert.type}</Typography>
-                        <Typography variant="body2" color="textSecondary">{alert.details || `Amount: ${alert.amount}`}</Typography>
-                      </Box>
-                    </CardContent>
-                    <CardActions>
-                      <Button startIcon={<Details />}>Details</Button>
-                      {alert.type === "Rent Request" && (
-                        <>
-                          <Button color="secondary" startIcon={<Delete />}>Decline</Button>
-                          <Button color="primary">Confirm</Button>
-                        </>
-                      )}
-                    </CardActions>
-                  </Card>
+              {myCarsBookInfo && myCarsBookInfo.length > 0 ? (
+                <Grid container spacing={3}>
+                  {myCarsBookInfo.map((car) => (
+                    <Grid item xs={12} key={car.carPics[0]?.carId}>
+                      <Accordion sx={{ boxShadow: 3, borderRadius: 2, marginBottom: 2 }}>
+                        <AccordionSummary
+                          expandIcon={<ExpandMore />}
+                          aria-controls="panel1a-content"
+                          id="panel1a-header"
+                          sx={{ backgroundColor: '#f5f5f5' }}
+                        >
+                          <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+                            <Typography variant="h5" sx={{ marginRight: 2 }}>
+                              {car.brand} - {car.model} - {car.year}
+                            </Typography>
+                            <Typography variant="h6" color="textSecondary">
+                              Active Activities: {car.useLogs.length}
+                            </Typography>
+                          </Box>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ padding: 2 }}>
+                          {car.useLogs && car.useLogs.length > 0 ? (
+                            car.useLogs.map((currCarBookInfo) => (
+                              <Card key={currCarBookInfo.ID} sx={{ mb: 2, boxShadow: 1, borderRadius: 2 }}>
+                                <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
+                                  <Box sx={{ flexGrow: 1 }}>
+                                    <Typography variant="h4" sx={{ color: currCarBookInfo.status === 1 ? 'green' : 'orange', mb: 1 }}>
+                                      {currCarBookInfo.status === 1 ? "Confirmed" : "Pending"}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mb: 0.5 }}>
+                                      Reason: {currCarBookInfo.reason}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary">
+                                      Time: {new Date(currCarBookInfo.startTime).toLocaleDateString()} - {new Date(currCarBookInfo.endTime).toLocaleDateString()}
+                                    </Typography>
+                                  </Box>
+                                  {car.carPics && car.carPics[0] && (
+                                    <CardMedia
+                                      component="img"
+                                      height="140"
+                                      image={car.carPics[0].fileName}
+                                      alt="Car image"
+                                      sx={{
+                                        objectFit: 'cover',
+                                        height: '100%',
+                                        borderRadius: 2,
+                                        boxShadow: 1,
+                                        flexShrink: 0,
+                                        width: '30%',
+                                      }}
+                                    />
+                                  )}
+                                </CardContent>
+                                <CardActions sx={{ justifyContent: 'space-between' }}>
+                                  <Button startIcon={<Details />}>Details</Button>
+                                  {currCarBookInfo.status === 0 && (
+                                    <>
+                                      <Button color="secondary" startIcon={<Delete />}>Decline</Button>
+                                      <Button id={currCarBookInfo.ID} onClick={handleApprove} color="primary" variant="contained">Approve</Button>
+                                    </>
+                                  )}
+                                </CardActions>
+                              </Card>
+                            ))
+                          ) : (
+                            <Typography variant="body2" color="textSecondary">
+                              No booking information available.
+                            </Typography>
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
+              ) : (
+              <Typography variant="body1" color="textSecondary">No alerts yet</Typography>
+            )}
           </Box>
         </Box>
   
@@ -352,6 +451,7 @@ var userData = {
             ))}
           </Grid>
         </Box>
+        <Modal open={isModalOpen} message={modalMessage} onClose={closeModal} />
       </Container>
     );
   };
