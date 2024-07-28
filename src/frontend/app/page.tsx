@@ -45,8 +45,8 @@ export default function HomePage() {
   };
 
   const circleStyle: React.CSSProperties = {
-    width: '650px', // Increase circle width
-    height: '650px', // Increase circle height
+    width: '655px', // Increase circle width
+    height: '655px', // Increase circle height
     borderRadius: '50%', // Make the element a circle
     display: 'flex', // Use Flexbox layout
     flexDirection: 'column', // Vertical layout
@@ -61,7 +61,7 @@ export default function HomePage() {
     color: 'white', // White text color
     textAlign: 'center', // Center-align text
     fontSize: '24px', // Smaller font size for subtext
-    marginBottom: '40px', // Margin at the bottom
+    marginBottom: '-10px', // Margin at the bottom
   };
 
   const buttonContainerStyle: React.CSSProperties = {
@@ -89,36 +89,41 @@ export default function HomePage() {
     border: '1px solid white', // White border
   };
 
+  const adjectiveStyle: React.CSSProperties = {
+    color: 'orange', // Highlight color for adjectives
+    fontWeight: 'bold', // Bold text
+    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', // Text shadow for artistic effect
+  };
+
   return (
     <div style={ContainerStyle}>
       <div style={overlayStyle}>
         <div style={circleStyle}>
           <p style={textStyle}>
-            Provide People With Safe,<br />
-            Convenient ,<br />
-            And Comfortable<br />
+            Provide People With <span style={adjectiveStyle}>SAFE</span>,<br />
+            <span style={adjectiveStyle}>CONVENIENT</span>,<br />
+            And <span style={adjectiveStyle}>COMFORTABLE</span><br />
             Car Rental Travel Solutions
           </p>
-          <p style={subTextStyle}></p>
+          <p style={subTextStyle}>RentRide.mn</p>
           <div style={buttonContainerStyle}>
-          <Button
-            variant="contained"
-            style={buttonStyle}
-            endIcon={<SendIcon />}
-            onClick={handleClick}
-          >
-            Get Started
-          </Button>
-          <Button
-            variant="outlined"
-            style={downloadButtonStyle}
-            startIcon={<DownloadIcon />}
-          >
-            Download Apps
-          </Button>
+            <Button
+              variant="contained"
+              style={buttonStyle}
+              endIcon={<SendIcon />}
+              onClick={handleClick}
+            >
+              Get Started
+            </Button>
+            <Button
+              variant="outlined"
+              style={downloadButtonStyle}
+              startIcon={<DownloadIcon />}
+            >
+              Download Apps
+            </Button>
+          </div>
         </div>
-        </div>
-       
       </div>
     </div>
   );
