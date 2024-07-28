@@ -3,6 +3,7 @@
 import { Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import SendIcon from '@mui/icons-material/Send';
+import DownloadIcon from '@mui/icons-material/Download';
 
 export default function HomePage() {
   const router = useRouter();
@@ -13,51 +14,111 @@ export default function HomePage() {
 
   const ContainerStyle: React.CSSProperties = {
     width: '100%',
-    height: '855px',
-    backgroundImage: 'url(background.png)', // 替换为你的图片路径
-    backgroundSize: 'cover', // 确保图片覆盖整个容器
-    backgroundPosition: 'center', // 确保图片居中显示
-    backgroundRepeat: 'no-repeat', // 防止图片重复
+    height: '100vh',
+    backgroundImage: 'url(homepage1.jpg)', // Replace with your image path
+    backgroundSize: 'cover', // Ensure the image covers the entire container
+    backgroundPosition: 'center', // Center the image
+    backgroundRepeat: 'no-repeat', // Prevent the image from repeating
+    position: 'relative', // Position relative for overlay
   };
 
-  const HomePageContainerStyle: React.CSSProperties = {
+  const overlayStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
     width: '100%',
-    height: '85%',
-    position: 'relative', // 使得子元素的绝对定位相对于此容器
-  };
-
-  const circleStyle: React.CSSProperties = {
-    width: '500px', // 增大圆形的宽度以容纳文字
-    height: '500px', // 增大圆形的高度以容纳文字
-    borderRadius: '50%', // 将元素的形状设置为圆形
-    position: 'absolute', // 使用绝对定位
-    top: '50%', // 垂直居中
-    left: '50%', // 水平居中
-    transform: 'translate(-50%, -50%)', // 将元素的中心移动到定位点
-    display: 'flex', // 使用 Flexbox 布局
-    flexDirection: 'column', // 垂直布局
-    justifyContent: 'center', // 主轴（垂直方向）居中对齐
-    alignItems: 'center', // 交叉轴（水平方向）居中对齐
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', // 使用 rgba 设置圆形的背景颜色和不透明度
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark overlay for better text readability
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   };
 
   const textStyle: React.CSSProperties = {
-    color: 'white', // 设置文字颜色为白色
-    textAlign: 'center', // 居中文字
-    fontSize: '32px',
+    color: 'white', // White text color
+    textAlign: 'center', // Center-align text
+    fontSize: '48px', // Larger font size for main text
+    marginBottom: '20px', // Margin at the bottom
+    fontWeight: 'bold', // Bold text
+    lineHeight: '1.2', // Line height for better readability
+  };
+
+  const circleStyle: React.CSSProperties = {
+    width: '650px', // Increase circle width
+    height: '650px', // Increase circle height
+    borderRadius: '50%', // Make the element a circle
+    display: 'flex', // Use Flexbox layout
+    flexDirection: 'column', // Vertical layout
+    justifyContent: 'center', // Center align items on the main axis
+    alignItems: 'center', // Center align items on the cross axis
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Use rgba to set the background color with opacity
+    padding: '20px', // Add padding for spacing
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Add a subtle shadow for depth
+  };
+
+  const subTextStyle: React.CSSProperties = {
+    color: 'white', // White text color
+    textAlign: 'center', // Center-align text
+    fontSize: '24px', // Smaller font size for subtext
+    marginBottom: '40px', // Margin at the bottom
+  };
+
+  const buttonContainerStyle: React.CSSProperties = {
+    display: 'flex',
+    gap: '20px',
+    marginTop: '20px', // Add margin to separate buttons from text
+  };
+
+  const buttonStyle: React.CSSProperties = {
+    backgroundColor: 'orange', // Button background color
+    color: 'white', // Button text color
+    fontSize: '18px', // Button font size
+    padding: '10px 20px', // Button padding
+    borderRadius: '5px', // Button border radius
+    textTransform: 'none', // Prevent text capitalization
+  };
+
+  const downloadButtonStyle: React.CSSProperties = {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)', // Transparent button background
+    color: 'white', // Button text color
+    fontSize: '18px', // Button font size
+    padding: '10px 20px', // Button padding
+    borderRadius: '5px', // Button border radius
+    textTransform: 'none', // Prevent text capitalization
+    border: '1px solid white', // White border
   };
 
   return (
     <div style={ContainerStyle}>
-      <div style={HomePageContainerStyle}>
+      <div style={overlayStyle}>
         <div style={circleStyle}>
-          <p style={textStyle}>Our Slogan</p>
-          <p style={textStyle}>Our Slogan</p>
-          <p style={textStyle}>Our Slogan</p>
-          <Button variant="contained" style={{ backgroundColor: 'orange' }} endIcon={<SendIcon />} onClick={handleClick}>
+          <p style={textStyle}>
+            Provide People With Safe,<br />
+            Convenient ,<br />
+            And Comfortable<br />
+            Car Rental Travel Solutions
+          </p>
+          <p style={subTextStyle}></p>
+          <div style={buttonContainerStyle}>
+          <Button
+            variant="contained"
+            style={buttonStyle}
+            endIcon={<SendIcon />}
+            onClick={handleClick}
+          >
             Get Started
           </Button>
+          <Button
+            variant="outlined"
+            style={downloadButtonStyle}
+            startIcon={<DownloadIcon />}
+          >
+            Download Apps
+          </Button>
         </div>
+        </div>
+       
       </div>
     </div>
   );

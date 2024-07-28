@@ -13,12 +13,15 @@ export const AuthProvider = ({ children }) => {
   const [username, setUsername] = useLocalStorage("user", null);
   const [userId, setUserId] = useLocalStorage("userId", null);
   const [token, setToken] = useLocalStorage("token", null);
+  const [avatar, setAvatar] = useLocalStorage("avatar", null);
 
-  const login = (router, username:string, userId:string, token:string) => {
+  const login = (router, username:string, userId:string, token:string,currAvatar:string) => {
     setIsLoggedIn(true);
     setUsername(username)
     setUserId(userId)
-    setToken()
+    setToken(token)
+    setAvatar(currAvatar)
+    console.log('[AuthProvider]: Login!',currAvatar)
     
     console.log('[AuthProvider]: Login!')
     router.push('/');
@@ -36,7 +39,8 @@ export const AuthProvider = ({ children }) => {
       username,
       login,
       logout,
-      userId
+      userId,
+      avatar,
     }),
     [username]
   );
