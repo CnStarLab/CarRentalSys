@@ -486,10 +486,10 @@ var userData = {
 
 
         {/* My Cars Section */}
-        {/* <Box my={4}>
+        <Box my={4}>
           <Typography variant="h4" gutterBottom>My Cars</Typography>
           <Grid container spacing={2}>
-            {
+            { myCars && myCars.length > 0 ?(
               myCars.map(car => (
                 <Grid item xs={12} key={car.id}>
                   <Card>
@@ -511,10 +511,12 @@ var userData = {
                     </CardActions>
                   </Card>
                 </Grid>)
-            )}
+            )):
+            <Typography variant="body1" color="textSecondary">No Cars yet</Typography>
+            }
           </Grid>
         </Box>
-   */}
+  
         {/* Favorite Section */}
         {/* <Box my={4}>
           <Typography variant="h4" gutterBottom>Favorite</Typography>
