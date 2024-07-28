@@ -99,7 +99,7 @@ export default function StageRequest_st1({handleNext,setCurrBookInfo}) {
   
         if (!response.ok) {
           console.log(response.body)
-          throw new Error(`Register error! INFO: ${result.error}`);
+          throw new Error(`Create this order request failed! INFO: ${result.error}`);
         }
         setCurrBookInfo(result.bookId)
         console.log(result)

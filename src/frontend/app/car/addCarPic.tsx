@@ -41,7 +41,7 @@ export default function AddCarPics({handleNext, setCurrCarInfo, currCarInfo}){
   
         if (!response.ok) {
           console.log("[AddCarPics->handleSubmit->response.body]: ",response.body)
-          throw new Error(`Register error! INFO: ${result.error}`);
+          throw new Error(`Update this car info failed! INFO: ${result.error}`);
         }
         
         setModalMessage(result.message || 'Success!');

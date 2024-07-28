@@ -114,7 +114,7 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}) {
   
         if (!response.ok) {
           console.log("[AddCarBasic->handleSubmit->response.body]: ",response.body)
-          throw new Error(`Register error! INFO: ${result.error}`);
+          throw new Error(`Create this car basic info failed! INFO: ${result.error}`);
         }
         
         console.log("[AddCarBasic->handleSubmit->result]: ", result)

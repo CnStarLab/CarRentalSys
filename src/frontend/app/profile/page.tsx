@@ -190,7 +190,7 @@ var userData = {
   
         if (!response.ok) {
           console.log(response.body)
-          throw new Error(`Register error! INFO: ${result.error}`);
+          throw new Error(`Update profile failed! INFO: ${result.error}`);
         }
     
         setModalMessage(result.message || 'Success!');
@@ -212,7 +212,7 @@ var userData = {
         const result = await response.json();
         if (!response.ok) {
           console.log(response.body)
-          throw new Error(`Register error! INFO: ${result.error}`);
+          throw new Error(`Approve this request failed! INFO: ${result.error}`);
         }
         
         console.log("[SignIn] response Json:",result)
@@ -236,7 +236,7 @@ var userData = {
         const result = await response.json();
         if (!response.ok) {
           console.log(response.body)
-          throw new Error(`Register error! INFO: ${result.error}`);
+          throw new Error(`Decline this request failed! INFO: ${result.error}`);
         }
         
         console.log("[SignIn] response Json:",result)
@@ -260,7 +260,7 @@ var userData = {
         const result = await response.json();
         if (!response.ok) {
           console.log(response.body)
-          throw new Error(`Register error! INFO: ${result.error}`);
+          throw new Error(`Cancel this order failed! INFO: ${result.error}`);
         }
         
         console.log("[SignIn] response Json:",result)

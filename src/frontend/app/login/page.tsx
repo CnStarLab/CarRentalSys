@@ -54,7 +54,7 @@ export default function SignIn() {
       const result = await response.json();
       if (!response.ok) {
         console.log(response.body)
-        throw new Error(`Register error! INFO: ${result.error}`);
+        throw new Error(`Login error! INFO: ${result.error}`);
       }
       
       console.log("[SignIn] response Json:",result)
