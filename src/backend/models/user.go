@@ -80,6 +80,23 @@ func HashPassword(user *User) error {
 	return nil
 }
 
+func comparePassword(user *User, providedPassword string) (bool, error) {
+	// 检查用户密码（哈希值）是否为空
+	if user.Password == "" {
+		return false, errors.New("hashed password cannot be empty")
+	}
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(providedPassword))
+	if err != nil {
+		// 密码不匹配
+		if err == bcrypt.ErrMismatchedHashAndPassword {
+			return false, nil
+		}
+		return false, err
+	}
+	// 密码匹配
+	return true, nil
+}
+
 func (u *User) FindByEmail(db *gorm.DB, email string) error {
 	if err := db.Where("email = ?", email).First(u).Error; err != nil {
 
