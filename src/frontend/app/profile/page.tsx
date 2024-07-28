@@ -7,10 +7,11 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from '@mui/material';
-import { Edit, Delete, Details, ExpandMore } from '@mui/icons-material';
+import { Edit, Delete, Details, ExpandMore, Payment } from '@mui/icons-material';
 import { useAuth } from '../hook/AuthContext';
 import Modal from '../login/alert';
 import UploadPhoto from '../components/userAvatarUpload';
+import Link from 'next/link';
 
 var userData = {
     notifications: {
@@ -91,9 +92,11 @@ var userData = {
     const {notifications, cars, favorites, transactions } = userData;
     const {userId} = useAuth()
     const [avatar, setAvatar] = React.useState('');
+
     const [userProfile, setUserProfile] = React.useState([])
     const [myCars, SetMyCars] = React.useState([]);
     const [myCarsBookInfo, SetMyCarsBookInfo] = React.useState([])
+    const [myOrderInfo, SetMyOrderInfo] = React.useState([])
 
     const [modalMessage, setModalMessage] = React.useState('');
     const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -101,12 +104,23 @@ var userData = {
     console.log("[UserProfile->state:myCars]",myCars)
     console.log("[UserProfile->state:myCarsBookInfo]:",myCarsBookInfo)
 
-    const fetchBookInfo = async () => {
+    const fetchOwenerBookInfo = async () => {
       try {
         const carResponse = await fetch(`http://localhost:8080/api/v1/service/info/ownerId/${localStorage.getItem("userId")}`);
         const useLogs = await carResponse.json();
-        console.log("[UserProfile->Effect->fetchBookInfo:CarInfo]", useLogs);
+        console.log("[UserProfile->Effect->fetchOwenerBookInfo:CarInfo]", useLogs);
         SetMyCarsBookInfo(useLogs)
+      } catch (error) {
+        console.error('Error fetching car data:', error);
+      }
+    };
+
+    const fetchUserOrders = async ()=>{
+      try {
+        const carResponse = await fetch(`http://localhost:8080/api/v1/service/info/userId/${localStorage.getItem("userId")}`);
+        const orders = await carResponse.json();
+        console.log("[UserProfile->Effect->fetchUserOrders:orders]", orders);
+        SetMyOrderInfo(orders)
       } catch (error) {
         console.error('Error fetching car data:', error);
       }
@@ -142,7 +156,8 @@ var userData = {
     
       fetchUserProfile();
       fetchCarInfo();
-      fetchBookInfo()
+      fetchOwenerBookInfo()
+      fetchUserOrders()
     }, []); // Empty Array as Listener, make sure only run when the Component mount fist time.
 
 
@@ -187,7 +202,7 @@ var userData = {
 
     }
 
-    const handleApprove = async(event)=>{
+    const handleOwnerApprove = async(event)=>{
       try {
         const response = await fetch(`http://localhost:8080/api/v1/service/status/approve/${event.currentTarget.id}`, {
           method: 'POST',
@@ -211,9 +226,33 @@ var userData = {
       }
     }
 
-    const handleDecline = async(event)=>{
+    const handleOwnerDecline = async(event)=>{
       try {
         const response = await fetch(`http://localhost:8080/api/v1/service/status/decline/${event.currentTarget.id}`, {
+          method: 'POST',
+        });
+        
+        // parse response 2 json
+        const result = await response.json();
+        if (!response.ok) {
+          console.log(response.body)
+          throw new Error(`Register error! INFO: ${result.error}`);
+        }
+        
+        console.log("[SignIn] response Json:",result)
+        setModalMessage(result.message || 'Approved!');
+
+  
+      } catch (error) {
+        setModalMessage(`Error: ${error.message}`);
+      } finally {
+        setIsModalOpen(true);
+      }
+    }
+
+    const handleUserDecline = async(event)=>{
+      try {
+        const response = await fetch(`http://localhost:8080/api/v1/service/user/status/decline/${event.currentTarget.id}`, {
           method: 'POST',
         });
         
@@ -238,7 +277,8 @@ var userData = {
     const closeModal = () => {
       setIsModalOpen(false);
       //refetch to update the latest bookInfo.
-      fetchBookInfo();
+      fetchOwenerBookInfo();
+      fetchUserOrders();
       
     };
     const styles = {
@@ -369,8 +409,8 @@ var userData = {
                                   <Button startIcon={<Details />}>Details</Button>
                                   {currCarBookInfo.status === 0 && (
                                     <>
-                                      <Button id={currCarBookInfo.ID} onClick={handleDecline}color="secondary" startIcon={<Delete />}>Decline</Button>
-                                      <Button id={currCarBookInfo.ID} onClick={handleApprove} color="primary" variant="contained">Approve</Button>
+                                      <Button id={currCarBookInfo.ID} onClick={handleOwnerDecline}color="secondary" startIcon={<Delete />}>Decline</Button>
+                                      <Button id={currCarBookInfo.ID} onClick={handleOwnerApprove} color="primary" variant="contained">Approve</Button>
                                     </>
                                   )}
                                 </CardActions>
@@ -390,40 +430,93 @@ var userData = {
               <Typography variant="body1" color="textSecondary">No alerts yet</Typography>
             )}
           </Box>
-        </Box>
-  
-        {/* My Cars Section */}
-        <Box my={4}>
-          <Typography variant="h4" gutterBottom>My Cars</Typography>
-          <Grid container spacing={2}>
-            {myCars.map(car => (
-              <Grid item xs={12} key={car.id}>
-                <Card>
-                  <CardContent display="flex" alignItems="center">
-                    <Box flexShrink={0} mr={2}>
-                      <img src={car?.carPics[0].fileName || "https://via.placeholder.com/150"} alt="Car" style={styles.cardImage} />
-                    </Box>
-                    <Box>
-                      <Typography variant="body1">{car?.brand ? car.brand : "Something Wrong"} {car?.model?car.model:"Something Wrong"}</Typography>
-                      <Typography variant="body2" color="textSecondary">{car?.basicInfo?car.basicInfo:"Something Wrong"}</Typography>
-                    </Box>
-                  </CardContent>
-                  <CardActions>
-                    <Button color="secondary" startIcon={<Delete />}>Delete</Button>
-                    <Button color="primary">Car Detail</Button>
-                    <Box ml="auto">
-                      <Switch defaultChecked={car.available === "Active"} />
-                    </Box>
-                  </CardActions>
-                </Card>
-              </Grid>)
         
+        </Box>
+            
+        {/* My Order Section */}
+        <Box my={4}>
+          <Typography variant="h4" gutterBottom>My Orders</Typography>
+          <Grid container spacing={2}>
+              {myOrderInfo && myOrderInfo.length > 0 ? (
+                myOrderInfo.map(order => (
+                <Grid item xs={12} key={order.id}>
+                  <Card>
+                    <CardContent>
+                      <Grid container spacing={2} alignItems="center">
+                        <Grid item xs={12} sm={8}>
+                          <Box>
+                            <Typography variant="h5">
+                              Order ID: {order.ID ? order.ID : "Something Wrong"}  CarId: {order.carId ? order.carId : "Something Wrong"}
+                            </Typography>
+                            <Typography variant="h6" color="textSecondary">
+                              {order?.reason ? order.reason : "Something Wrong"}
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                          <Typography 
+                            variant="h4" 
+                            sx={{ color: order.status === 1 ? 'green' : 'orange', textAlign: { xs: 'left', sm: 'right' } }}
+                          >
+                            {order.status === 1 ? "Owner Approved" : "Pending for Approve"}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                    <CardActions>
+                      <Link href={`/rent?carId=${encodeURIComponent(order.carId)}&bookId=${encodeURIComponent(order.ID)}`}>
+                        <Button color="primary" startIcon={<Payment />}>Pay for your order</Button>
+                      </Link>            
+                      <Button color="secondary" id={order.ID} onClick={handleUserDecline} startIcon={<Delete />}>Delete</Button>
+                      <Box ml="auto" /> {/* Keeps this for potential right-aligned content */}
+                    </CardActions>
+                  </Card>
+                </Grid>)
+              )
+            )
+            :(
+            <Typography variant="body1" color="textSecondary">No Orders yet</Typography>
             )}
           </Grid>
         </Box>
-  
+
+
+
+
+
+
+        {/* My Cars Section */}
+        {/* <Box my={4}>
+          <Typography variant="h4" gutterBottom>My Cars</Typography>
+          <Grid container spacing={2}>
+            {
+              myCars.map(car => (
+                <Grid item xs={12} key={car.id}>
+                  <Card>
+                    <CardContent display="flex" alignItems="center">
+                      <Box flexShrink={0} mr={2}>
+                        <img src={car?.carPics[0].fileName || "https://via.placeholder.com/150"} alt="Car" style={styles.cardImage} />
+                      </Box>
+                      <Box>
+                        <Typography variant="body1">{car?.brand ? car.brand : "Something Wrong"} {car?.model?car.model:"Something Wrong"}</Typography>
+                        <Typography variant="body2" color="textSecondary">{car?.basicInfo?car.basicInfo:"Something Wrong"}</Typography>
+                      </Box>
+                    </CardContent>
+                    <CardActions>
+                      <Button color="secondary" startIcon={<Delete />}>Delete</Button>
+                      <Button color="primary">Car Detail</Button>
+                      <Box ml="auto">
+                        <Switch defaultChecked={car.available === "Active"} />
+                      </Box>
+                    </CardActions>
+                  </Card>
+                </Grid>)
+            )}
+          </Grid>
+        </Box>
+   */}
         {/* Favorite Section */}
-        <Box my={4}>
+        {/* <Box my={4}>
           <Typography variant="h4" gutterBottom>Favorite</Typography>
           <Grid container spacing={2}>
             {favorites.map(car => (
@@ -451,10 +544,10 @@ var userData = {
               </Grid>
             ))}
           </Grid>
-        </Box>
+        </Box> */}
   
         {/* Transaction History */}
-        <Box my={4}>
+        {/* <Box my={4}>
           <Typography variant="h4" gutterBottom>Transaction History</Typography>
           <Grid container spacing={2}>
             {transactions.map(transaction => (
@@ -474,7 +567,7 @@ var userData = {
               </Grid>
             ))}
           </Grid>
-        </Box>
+        </Box> */}
         <Modal open={isModalOpen} message={modalMessage} onClose={closeModal} />
       </Container>
     );
