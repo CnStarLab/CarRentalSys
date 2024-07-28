@@ -427,7 +427,13 @@ var userData = {
                   ))}
                 </Grid>
               ) : (
-              <Typography variant="body1" color="textSecondary">No alerts yet</Typography>
+                <Grid item xs={12}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="body1" color="textSecondary">No alerts yet</Typography>
+                    </CardContent>
+                </Card>
+              </Grid>
             )}
           </Box>
         
@@ -475,7 +481,13 @@ var userData = {
               )
             )
             :(
-            <Typography variant="body1" color="textSecondary">No Orders yet</Typography>
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="body1" color="textSecondary">No Orders yet</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
             )}
           </Grid>
         </Box>
@@ -487,9 +499,9 @@ var userData = {
 
         {/* My Cars Section */}
         <Box my={4}>
-          <Typography variant="h4" gutterBottom>My Cars</Typography>
+        <Typography variant="h4" gutterBottom>My Cars</Typography>
           <Grid container spacing={2}>
-            { myCars && myCars.length > 0 ?(
+            {myCars && myCars.length > 0 ? (
               myCars.map(car => (
                 <Grid item xs={12} key={car.id}>
                   <Card>
@@ -498,8 +510,8 @@ var userData = {
                         <img src={car?.carPics[0].fileName || "https://via.placeholder.com/150"} alt="Car" style={styles.cardImage} />
                       </Box>
                       <Box>
-                        <Typography variant="body1">{car?.brand ? car.brand : "Something Wrong"} {car?.model?car.model:"Something Wrong"}</Typography>
-                        <Typography variant="body2" color="textSecondary">{car?.basicInfo?car.basicInfo:"Something Wrong"}</Typography>
+                        <Typography variant="body1">{car?.brand ? car.brand : "Something Wrong"} {car?.model ? car.model : "Something Wrong"}</Typography>
+                        <Typography variant="body2" color="textSecondary">{car?.basicInfo ? car.basicInfo : "Something Wrong"}</Typography>
                       </Box>
                     </CardContent>
                     <CardActions>
@@ -510,10 +522,17 @@ var userData = {
                       </Box>
                     </CardActions>
                   </Card>
-                </Grid>)
-            )):
-            <Typography variant="body1" color="textSecondary">No Cars yet</Typography>
-            }
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="body1" color="textSecondary">No Cars yet</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
           </Grid>
         </Box>
   
