@@ -59,7 +59,7 @@ export default function SignIn() {
       
       console.log("[SignIn] response Json:",result)
       setModalMessage(result.message || 'Success!');
-      login(router,result.username, result.userId, result.token)
+      login(router,result.username, result.userId, result.token, result.userPic)
 
     } catch (error) {
       setModalMessage(`Error: ${error.message}`);

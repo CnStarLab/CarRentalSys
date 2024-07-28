@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 export default function Header() {
-    const { username, isLoggedIn, logout } = useAuth();
+    const { username, isLoggedIn, logout, avatar } = useAuth();
     const router = useRouter();
     const [clientOnly, setClientOnly] = useState(false);
 
@@ -67,6 +67,11 @@ export default function Header() {
         cursor: 'pointer'
     };
 
+    const avatarStyle: React.CSSProperties = {
+        borderRadius: '50%',
+        marginRight: '10px'
+    };
+
     return (
         <header style={headerStyle}>
             <Logo />
@@ -84,8 +89,17 @@ export default function Header() {
                 <button style={iconButtonStyle}>❔</button>
                 {clientOnly && isLoggedIn ? (
                     <>
-                        <Link href="/profile">
-                            <div>Welcome, {username}!</div>
+                        <Link style={navLinkStyle} href="/profile">
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <Image
+                                    src={avatar || '/default-avatar.png'} // 使用默认头像
+                                    alt="Avatar"
+                                    width={30} // 设置头像宽度
+                                    height={30} // 设置头像高度
+                                    style={avatarStyle}
+                                />
+                                <div>Welcome, {username}!</div>
+                            </div>
                         </Link>
                         <Button style={iconButtonStyle} onClick={handleLogout}>
                             <Image
