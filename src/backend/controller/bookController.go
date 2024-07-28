@@ -129,6 +129,37 @@ func DeclineBookRequest(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Request declined and deleted successfully"})
 }
 
+func UserDeclineBookRequest(c *gin.Context) {
+	//User side API
+	idParam := c.Param("id")
+	requestId, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Book ID"})
+		return
+	}
+
+	// Get book info
+	var currRequest models.UserCar
+	currRequest, err = models.FindBookInfoByBookId(database.DB, requestId)
+	if err != nil {
+		if errors.Is(err, models.ErrUserCarNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Delete the request from the database
+	if err := currRequest.Delete(database.DB); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	//[WIP] email/sms service notice user
+	c.JSON(http.StatusOK, gin.H{"message": "Request declined and deleted successfully"})
+}
+
 func GetBookInfoByBookId(c *gin.Context) {
 	idParam := c.Param("id")
 	requestId, err := strconv.ParseUint(idParam, 10, 32)
@@ -164,16 +195,41 @@ func GetBookInfoByOwnerId(c *gin.Context) {
 	var myCars models.Cars
 	err = myCars.FindByOwnerID(database.DB, OwnerId)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch cars"})
+		c.JSON(http.StatusAccepted, gin.H{"error": "Failed To Find Your Cars!"})
 		return
 	}
 	//emprty slice
 	if len(myCars) == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "You Have No Car Registered For Renting Yet!"})
+		c.JSON(http.StatusAccepted, gin.H{"error": "You Have No Order Yet!"})
 		return
 	}
 
 	copier.Copy(&ownerCarsInfo, &myCars)
 
 	c.JSON(http.StatusOK, ownerCarsInfo)
+}
+
+func GetBookInfoByUserId(c *gin.Context) {
+	var userOrder models.Logs
+	idParam := c.Param("id")
+	userId, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid User ID"})
+		return
+	}
+
+	err = userOrder.FindBookInfoByUserId(database.DB, userId)
+	if err != nil {
+		c.JSON(http.StatusAccepted, gin.H{"error": err.Error()})
+		return
+	}
+	//emprty slice
+	// if len(userOrder) == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "You Have No Car Registered For Renting Yet!"})
+	// 	return
+	// }
+
+	//copier.Copy(&ownerCarsInfo, &myCars)
+
+	c.JSON(http.StatusOK, userOrder)
 }

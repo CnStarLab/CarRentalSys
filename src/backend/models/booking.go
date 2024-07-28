@@ -45,6 +45,7 @@ var (
 	ErrUserCarNotFound   = errors.New("UserCar relation not found")
 	ErrPreloadNotAllowed = errors.New("preload connection not found")
 	ErrNoCarsMatch       = errors.New("no cars match with conditions")
+	ErrNoBookInfoExist   = errors.New("no order info for the user")
 )
 
 func BookCar(db *gorm.DB, userId uint, carID uint, startTime time.Time, endTime time.Time, reason string) (uint, error) {
@@ -115,6 +116,17 @@ func (u *UserCar) UpdateStatus(db *gorm.DB, newStatus uint8) error {
 func (uc *UserCar) Delete(db *gorm.DB) error {
 	if err := db.Delete(&uc).Error; err != nil {
 		return err
+	}
+	return nil
+}
+
+func (l *Logs) FindBookInfoByUserId(db *gorm.DB, userId uint64) error {
+	if err := db.Where("user_id = ?", userId).Find(&l).Error; err != nil {
+		return ErrNoBookInfoExist
+	}
+	//emprty slice
+	if len(*l) == 0 {
+		return ErrNoBookInfoExist
 	}
 	return nil
 }
