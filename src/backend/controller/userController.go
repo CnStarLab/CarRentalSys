@@ -15,7 +15,7 @@ import (
 
 // @Summary      user login
 // @Description  new user to login
-// @Tags         user
+// @Tags User
 // @Response     200
 // @Router       /api/v1/user/login [GET]
 func UserLogin(c *gin.Context) {
@@ -53,6 +53,17 @@ func UserLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": token, "username": dbUser.Username, "userId": dbUser.ID, "userPic": dbUser.UserPic})
 }
 
+// @Summary Get user profile
+// @Description Get the profile of a user by ID
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} models.UserProfile
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/user/getProfile/{id} [get]
 func GetUserProfile(c *gin.Context) {
 	idParam := c.Param("id")
 	userID, err := strconv.ParseUint(idParam, 10, 32)
@@ -78,7 +89,7 @@ func GetUserProfile(c *gin.Context) {
 
 // @Summary      User Register
 // @Description  New user to register
-// @Tags         user
+// @Tags User
 // @Param        user body models.User true "User Registration Request"
 // @Accept       json
 // @Produce      json
@@ -104,6 +115,18 @@ func UserRegister(c *gin.Context) {
 	c.JSON(http.StatusCreated, user)
 }
 
+// @Summary Update user profile
+// @Description Update the profile of a user by ID
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param user body models.User true "User object that needs to be updated"
+// @Success 200 {object} models.User
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/user/updateUserProfile/{id} [post]
 func UpdateUserProfile(c *gin.Context) {
 	var updateUser models.User
 

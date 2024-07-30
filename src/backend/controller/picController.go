@@ -11,6 +11,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Upload a photo
+// @Description Upload a photo to the server
+// @Tags Upload
+// @Accept multipart/form-data
+// @Produce plain
+// @Param photo formData file true "Photo to upload"
+// @Success 200 {string} string "Uploaded successfully"
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Error getting current working directory"
+// @Failure 500 {string} string "Error saving file"
+// @Router /api/v1/upload/pic [post]
 func UploadPic(c *gin.Context) {
 	file, err := c.FormFile("photo")
 	if err != nil {
@@ -40,6 +51,17 @@ func UploadPic(c *gin.Context) {
 	c.String(http.StatusOK, "Uploaded successfully")
 }
 
+// @Summary Get a photo
+// @Description Get a photo by filename
+// @Tags Upload
+// @Accept json
+// @Produce image/jpeg
+// @Param filename path string true "Photo filename"
+// @Success 200 {file} file "Photo file"
+// @Failure 404 {string} string "Photo not found"
+// @Failure 500 {string} string "Error getting current working directory"
+// @Failure 500 {string} string "Error reading file"
+// @Router /api/v1/upload/pic/{filename} [get]
 func GetPhoto(c *gin.Context) {
 	wd, err := os.Getwd() //[WIP] using global env storage current workdir
 	if err != nil {

@@ -11,6 +11,19 @@ import (
 	"github.com/jinzhu/copier"
 )
 
+// @Summary Book a new car
+// @Description Book a new car for rental
+// @Tags Service
+// @Accept json
+// @Produce json
+// @Param rentRequest body models.UserCar true "Rent request details"
+// @Success 200 {object} map[string]interface{} "Car rented successfully"
+// @Failure 400 {string} string "Bad request"
+// @Failure 404 {string} string "User not found"
+// @Failure 404 {string} string "Car not found"
+// @Failure 400 {string} string "Car is not available"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/service/user/bookCar [post]
 func BookNewCar(c *gin.Context) {
 	var rentRequest models.UserCar
 	if err := c.ShouldBindJSON(&rentRequest); err != nil {
@@ -36,6 +49,19 @@ func BookNewCar(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Car rented successfully", "bookId": id})
 }
 
+// @Summary Return a car
+// @Description Return a rented car
+// @Tags Service
+// @Accept json
+// @Produce json
+// @Param returnRequest body models.UserCar true "Return request details"
+// @Success 200 {object} map[string]string "Car rented successfully"
+// @Failure 400 {string} string "Bad request"
+// @Failure 404 {string} string "User not found"
+// @Failure 404 {string} string "Car not found"
+// @Failure 400 {string} string "Relation between User and Car not found"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/service/user/returnCar [post]
 func ReturnCar(c *gin.Context) {
 	var returnRequest models.UserCar
 	if err := c.ShouldBindJSON(&returnRequest); err != nil {
@@ -61,6 +87,18 @@ func ReturnCar(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Car rented successfully"})
 }
 
+// @Summary Approve a booking request
+// @Description Approve a booking request by car owner
+// @Tags Service
+// @Accept json
+// @Produce json
+// @Param id path int true "Booking ID"
+// @Success 200 {object} map[string]string "Request approved successfully"
+// @Failure 400 {string} string "Invalid Book ID"
+// @Failure 404 {string} string "UserCar not found"
+// @Failure 400 {string} string "Not A Pending Request!"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/service/status/approve/{id} [post]
 func ApproveBookRequest(c *gin.Context) {
 	idParam := c.Param("id")
 	requestId, err := strconv.ParseUint(idParam, 10, 32)
@@ -95,6 +133,18 @@ func ApproveBookRequest(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Request approved successfully"})
 }
 
+// @Summary Decline a booking request
+// @Description Decline a booking request by car owner
+// @Tags Service
+// @Accept json
+// @Produce json
+// @Param id path int true "Booking ID"
+// @Success 200 {object} map[string]string "Request declined and deleted successfully"
+// @Failure 400 {string} string "Invalid Book ID"
+// @Failure 404 {string} string "UserCar not found"
+// @Failure 400 {string} string "Not A Pending Request!"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/service/status/decline/{id} [post]
 func DeclineBookRequest(c *gin.Context) {
 	idParam := c.Param("id")
 	requestId, err := strconv.ParseUint(idParam, 10, 32)
@@ -129,6 +179,17 @@ func DeclineBookRequest(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Request declined and deleted successfully"})
 }
 
+// @Summary User decline a booking request
+// @Description User decline a booking request
+// @Tags Service
+// @Accept json
+// @Produce json
+// @Param id path int true "Booking ID"
+// @Success 200 {object} map[string]string "Request declined and deleted successfully"
+// @Failure 400 {string} string "Invalid Book ID"
+// @Failure 404 {string} string "UserCar not found"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/service/user/status/decline/{id} [post]
 func UserDeclineBookRequest(c *gin.Context) {
 	//User side API
 	idParam := c.Param("id")
@@ -160,6 +221,17 @@ func UserDeclineBookRequest(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Request declined and deleted successfully"})
 }
 
+// @Summary Get booking info by bookId
+// @Description Get booking information by bookId
+// @Tags Service
+// @Accept json
+// @Produce json
+// @Param id path int true "Booking ID"
+// @Success 200 {object} models.UserCar
+// @Failure 400 {string} string "Invalid car ID"
+// @Failure 404 {string} string "UserCar not found"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/service/info/bookId/{id} [get]
 func GetBookInfoByBookId(c *gin.Context) {
 	idParam := c.Param("id")
 	requestId, err := strconv.ParseUint(idParam, 10, 32)
@@ -183,6 +255,16 @@ func GetBookInfoByBookId(c *gin.Context) {
 	c.JSON(http.StatusOK, currBookInfo)
 }
 
+// @Summary Get booking info by ownerId
+// @Description Get booking information by ownerId
+// @Tags Service
+// @Accept json
+// @Produce json
+// @Param id path int true "Owner ID"
+// @Success 200 {object} models.CarsBookInfo
+// @Failure 400 {string} string "Invalid Owner ID"
+// @Failure 500 {string} string "Failed To Find Your Cars!"
+// @Router /api/v1/service/info/ownerId/{id} [get]
 func GetBookInfoByOwnerId(c *gin.Context) {
 	var ownerCarsInfo models.CarsBookInfo
 	idParam := c.Param("id")
@@ -209,6 +291,16 @@ func GetBookInfoByOwnerId(c *gin.Context) {
 	c.JSON(http.StatusOK, ownerCarsInfo)
 }
 
+// @Summary Get booking info by userId
+// @Description Get booking information by userId
+// @Tags Service
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} models.Logs
+// @Failure 400 {string} string "Invalid User ID"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/service/info/userId/{id} [get]
 func GetBookInfoByUserId(c *gin.Context) {
 	var userOrder models.Logs
 	idParam := c.Param("id")

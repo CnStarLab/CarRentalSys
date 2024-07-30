@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   gorm.DeletedAt:
     properties:
@@ -7,7 +8,254 @@ definitions:
         description: Valid is true if Time is not NULL
         type: boolean
     type: object
+  models.Car:
+    properties:
+      available:
+        type: boolean
+      basicInfo:
+        type: string
+      brand:
+        type: string
+      carPics:
+        items:
+          $ref: '#/definitions/models.CarsPic'
+        type: array
+      carType:
+        type: string
+      comments2car:
+        items:
+          $ref: '#/definitions/models.Comment2Car'
+        type: array
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      featureInfo:
+        type: string
+      id:
+        type: integer
+      location:
+        type: string
+      model:
+        type: string
+      numSeats:
+        type: integer
+      ownerId:
+        type: integer
+      price:
+        type: number
+      rating:
+        type: number
+      supportDelivery:
+        type: boolean
+      supportDriver:
+        type: boolean
+      updatedAt:
+        type: string
+      useLogs:
+        items:
+          $ref: '#/definitions/models.UserCar'
+        type: array
+      year:
+        type: integer
+    type: object
+  models.CarsPic:
+    properties:
+      carId:
+        type: integer
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      fileName:
+        type: string
+      id:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.Comment2Car:
+    properties:
+      bookId:
+        type: integer
+      carId:
+        type: integer
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      likes:
+        type: integer
+      mainContent:
+        type: string
+      photos:
+        items:
+          $ref: '#/definitions/models.Comment2CarPic'
+        type: array
+      titleContent:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  models.Comment2CarPic:
+    properties:
+      comment2CarId:
+        type: integer
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      fileName:
+        type: string
+      id:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.Comment2User:
+    properties:
+      bookId:
+        type: integer
+      carId:
+        type: integer
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      likes:
+        type: integer
+      mainContent:
+        type: string
+      photos:
+        items:
+          $ref: '#/definitions/models.Comment2UserPic'
+        type: array
+      titileContent:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  models.Comment2UserPic:
+    properties:
+      comment2CarId:
+        type: integer
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      fileName:
+        type: string
+      id:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.FavoriteCars:
+    properties:
+      carId:
+        type: integer
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  models.OwnerCarsInfo:
+    properties:
+      brand:
+        type: string
+      carPics:
+        items:
+          $ref: '#/definitions/models.CarsPic'
+        type: array
+      cartype:
+        type: string
+      model:
+        type: string
+      useLogs:
+        items:
+          $ref: '#/definitions/models.UserCar'
+        type: array
+      year:
+        type: integer
+    type: object
   models.User:
+    properties:
+      comments2user:
+        items:
+          $ref: '#/definitions/models.Comment2User'
+        type: array
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      favoriteCars:
+        items:
+          $ref: '#/definitions/models.FavoriteCars'
+        type: array
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+      myCars:
+        items:
+          $ref: '#/definitions/models.Car'
+        type: array
+      password:
+        type: string
+      updatedAt:
+        type: string
+      userPic:
+        type: string
+      username:
+        type: string
+    type: object
+  models.UserCar:
+    properties:
+      UserId:
+        type: integer
+      carId:
+        type: integer
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      endTime:
+        type: string
+      id:
+        type: integer
+      reason:
+        description: |-
+          0: Request     1:Pending for payment     2:Paid but not used
+          3.During using 4.After using             5.Finished
+        type: string
+      startTime:
+        type: string
+      status:
+        type: integer
+      totalPrice:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.UserProfile:
     properties:
       createdAt:
         type: string
@@ -15,18 +263,654 @@ definitions:
         $ref: '#/definitions/gorm.DeletedAt'
       email:
         type: string
+      firstName:
+        type: string
       id:
         type: integer
-      password:
+      lastName:
         type: string
+      myCars:
+        items:
+          $ref: '#/definitions/models.Car'
+        type: array
       updatedAt:
+        type: string
+      userPic:
         type: string
       username:
         type: string
     type: object
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    email: cheayuki13@gmail.com
+  description: This is a car rental system API.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Car Rental System API
+  version: "1.0"
 paths:
+  /api/v1/cars:
+    get:
+      consumes:
+      - application/json
+      description: Get cars information with specified conditions
+      parameters:
+      - description: Minimum price
+        in: query
+        name: minPrice
+        type: integer
+      - description: Maximum price
+        in: query
+        name: maxPrice
+        type: integer
+      - description: Brand
+        in: query
+        name: brand
+        type: string
+      - description: Location
+        in: query
+        name: location
+        type: string
+      - description: Car type
+        in: query
+        name: carType
+        type: string
+      - description: Support driver
+        in: query
+        name: supportDriver
+        type: string
+      - description: Support delivery
+        in: query
+        name: supportDelivery
+        type: string
+      - description: Start time (RFC3339 format)
+        in: query
+        name: startTime
+        type: string
+      - description: End time (RFC3339 format)
+        in: query
+        name: endTime
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Car'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            type: string
+      summary: Get cars with conditions
+      tags:
+      - Car
+  /api/v1/cars/all:
+    get:
+      consumes:
+      - application/json
+      description: Get all cars information from the `Car` table
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Car'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get all cars
+      tags:
+      - Car
+  /api/v1/cars/carId/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Get car information by carId
+      parameters:
+      - description: Car ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Car'
+        "400":
+          description: Invalid car ID
+          schema:
+            type: string
+        "404":
+          description: Car not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get car by carId
+      tags:
+      - Car
+  /api/v1/cars/info/createCarBasic:
+    post:
+      consumes:
+      - application/json
+      description: Add a new car for renting from a user
+      parameters:
+      - description: Car information
+        in: body
+        name: car
+        required: true
+        schema:
+          $ref: '#/definitions/models.Car'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Car'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Create a new car by user
+      tags:
+      - Car
+  /api/v1/cars/info/update/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Update car information by carId
+      parameters:
+      - description: Car ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Car information to update
+        in: body
+        name: car
+        required: true
+        schema:
+          $ref: '#/definitions/models.Car'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Car'
+        "400":
+          description: Invalid car ID
+          schema:
+            type: string
+        "404":
+          description: Car not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Update car information
+      tags:
+      - Car
+  /api/v1/cars/invalidDate/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a car's invalid date range
+      parameters:
+      - description: Car ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "400":
+          description: Invalid Car ID
+          schema:
+            type: string
+        "404":
+          description: Car not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get car invalid date range
+      tags:
+      - Car
+  /api/v1/cars/ownerId/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get cars information by ownerId
+      parameters:
+      - description: Owner ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Car'
+            type: array
+        "400":
+          description: Invalid Owner ID
+          schema:
+            type: string
+        "404":
+          description: Car not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get cars by ownerId
+      tags:
+      - Car
+  /api/v1/service/info/bookId/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get booking information by bookId
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserCar'
+        "400":
+          description: Invalid car ID
+          schema:
+            type: string
+        "404":
+          description: UserCar not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get booking info by bookId
+      tags:
+      - Service
+  /api/v1/service/info/ownerId/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get booking information by ownerId
+      parameters:
+      - description: Owner ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.OwnerCarsInfo'
+            type: array
+        "400":
+          description: Invalid Owner ID
+          schema:
+            type: string
+        "500":
+          description: Failed To Find Your Cars!
+          schema:
+            type: string
+      summary: Get booking info by ownerId
+      tags:
+      - Service
+  /api/v1/service/info/userId/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get booking information by userId
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.UserCar'
+            type: array
+        "400":
+          description: Invalid User ID
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get booking info by userId
+      tags:
+      - Service
+  /api/v1/service/status/approve/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Approve a booking request by car owner
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Request approved successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Not A Pending Request!
+          schema:
+            type: string
+        "404":
+          description: UserCar not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Approve a booking request
+      tags:
+      - Service
+  /api/v1/service/status/decline/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Decline a booking request by car owner
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Request declined and deleted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Not A Pending Request!
+          schema:
+            type: string
+        "404":
+          description: UserCar not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Decline a booking request
+      tags:
+      - Service
+  /api/v1/service/user/bookCar:
+    post:
+      consumes:
+      - application/json
+      description: Book a new car for rental
+      parameters:
+      - description: Rent request details
+        in: body
+        name: rentRequest
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserCar'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Car rented successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Car is not available
+          schema:
+            type: string
+        "404":
+          description: Car not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Book a new car
+      tags:
+      - Service
+  /api/v1/service/user/returnCar:
+    post:
+      consumes:
+      - application/json
+      description: Return a rented car
+      parameters:
+      - description: Return request details
+        in: body
+        name: returnRequest
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserCar'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Car rented successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Relation between User and Car not found
+          schema:
+            type: string
+        "404":
+          description: Car not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Return a car
+      tags:
+      - Service
+  /api/v1/service/user/status/decline/{id}:
+    post:
+      consumes:
+      - application/json
+      description: User decline a booking request
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Request declined and deleted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid Book ID
+          schema:
+            type: string
+        "404":
+          description: UserCar not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: User decline a booking request
+      tags:
+      - Service
+  /api/v1/upload/pic:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a photo to the server
+      parameters:
+      - description: Photo to upload
+        in: formData
+        name: photo
+        required: true
+        type: file
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Uploaded successfully
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Error saving file
+          schema:
+            type: string
+      summary: Upload a photo
+      tags:
+      - Upload
+  /api/v1/upload/pic/{filename}:
+    get:
+      consumes:
+      - application/json
+      description: Get a photo by filename
+      parameters:
+      - description: Photo filename
+        in: path
+        name: filename
+        required: true
+        type: string
+      produces:
+      - image/jpeg
+      responses:
+        "200":
+          description: Photo file
+          schema:
+            type: file
+        "404":
+          description: Photo not found
+          schema:
+            type: string
+        "500":
+          description: Error reading file
+          schema:
+            type: string
+      summary: Get a photo
+      tags:
+      - Upload
+  /api/v1/user/getProfile/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get the profile of a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserProfile'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get user profile
+      tags:
+      - User
   /api/v1/user/login:
     get:
       description: new user to login
@@ -35,7 +919,7 @@ paths:
           description: OK
       summary: user login
       tags:
-      - user
+      - User
   /api/v1/user/register:
     post:
       consumes:
@@ -67,5 +951,50 @@ paths:
             type: object
       summary: User Register
       tags:
-      - user
+      - User
+  /api/v1/user/updateUserProfile/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Update the profile of a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User object that needs to be updated
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update user profile
+      tags:
+      - User
 swagger: "2.0"

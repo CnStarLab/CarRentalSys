@@ -6,6 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @title Swagger Example API
+// @version 1.0
+// @description Renting Service API
+// @host localhost:8080
+// @BasePath /api/v1
 func BookingRoutes(router *gin.Engine) {
 	v1 := router.Group("/api/v1")
 	{

@@ -11,6 +11,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Create a new car by user
+// @Description Add a new car for renting from a user
+// @Tags Car
+// @Accept json
+// @Produce json
+// @Param car body models.Car true "Car information"
+// @Success 201 {object} models.Car
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/cars/info/createCarBasic [post]
 func CreateCarsByUser(c *gin.Context) {
 	var car models.Car
 
@@ -29,6 +39,18 @@ func CreateCarsByUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, car)
 }
 
+// @Summary Update car information
+// @Description Update car information by carId
+// @Tags Car
+// @Accept json
+// @Produce json
+// @Param id path int true "Car ID"
+// @Param car body models.Car true "Car information to update"
+// @Success 200 {object} models.Car
+// @Failure 400 {string} string "Invalid car ID"
+// @Failure 404 {string} string "Car not found"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/cars/info/update/{id} [post]
 func UpdateCarInfo(c *gin.Context) {
 	var updateCar models.Car
 	// Bind request with json
@@ -67,6 +89,14 @@ func UpdateCarInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, existingCar)
 }
 
+// @Summary Get all cars
+// @Description Get all cars information from the `Car` table
+// @Tags Car
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.Car
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/cars/all [get]
 func GetAllCars(c *gin.Context) {
 	var cars []models.Car
 	result := database.DB.Preload("CarPics").Find(&cars)
@@ -77,6 +107,17 @@ func GetAllCars(c *gin.Context) {
 	c.JSON(http.StatusOK, cars)
 }
 
+// @Summary Get car by carId
+// @Description Get car information by carId
+// @Tags Car
+// @Accept json
+// @Produce json
+// @Param id path int true "Car ID"
+// @Success 200 {object} models.Car
+// @Failure 400 {string} string "Invalid car ID"
+// @Failure 404 {string} string "Car not found"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/cars/carId/{id} [post]
 func GetCarByCarId(c *gin.Context) {
 	idParam := c.Param("id")
 	carID, err := strconv.ParseUint(idParam, 10, 32)
@@ -98,6 +139,17 @@ func GetCarByCarId(c *gin.Context) {
 	c.JSON(http.StatusOK, existingCarInfo)
 }
 
+// @Summary Get cars by ownerId
+// @Description Get cars information by ownerId
+// @Tags Car
+// @Accept json
+// @Produce json
+// @Param id path int true "Owner ID"
+// @Success 200 {array} models.Car
+// @Failure 400 {string} string "Invalid Owner ID"
+// @Failure 404 {string} string "Car not found"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/cars/ownerId/{id} [get]
 func GetCarByOwnerId(c *gin.Context) {
 	idParam := c.Param("id")
 	ownerID, err := strconv.ParseUint(idParam, 10, 32)
@@ -119,6 +171,25 @@ func GetCarByOwnerId(c *gin.Context) {
 	c.JSON(http.StatusOK, existingCarsInfo)
 }
 
+// @Summary Get cars with conditions
+// @Description Get cars information with specified conditions
+// @Tags Car
+// @Accept json
+// @Produce json
+// @Param minPrice query int false "Minimum price"
+// @Param maxPrice query int false "Maximum price"
+// @Param brand query string false "Brand"
+// @Param location query string false "Location"
+// @Param carType query string false "Car type"
+// @Param supportDriver query string false "Support driver"
+// @Param supportDelivery query string false "Support delivery"
+// @Param startTime query string false "Start time (RFC3339 format)"
+// @Param endTime query string false "End time (RFC3339 format)"
+// @Success 200 {array} models.Car
+// @Failure 400 {string} string "Invalid start date format"
+// @Failure 400 {string} string "Invalid end date format"
+// @Failure 400 {string} string "Bad request"
+// @Router /api/v1/cars [get]
 func GetCarsWithConds(c *gin.Context) {
 	var currParams models.CarQueryParams
 
@@ -166,6 +237,17 @@ func GetCarsWithConds(c *gin.Context) {
 	c.JSON(http.StatusOK, resultCars)
 }
 
+// @Summary Get car invalid date range
+// @Description Get a car's invalid date range
+// @Tags Car
+// @Accept json
+// @Produce json
+// @Param id path int true "Car ID"
+// @Success 200 {array} map[string]interface{}
+// @Failure 400 {string} string "Invalid Car ID"
+// @Failure 404 {string} string "Car not found"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/cars/invalidDate/{id} [get]
 func GetCarInvalidDate(c *gin.Context) {
 	//get parama and trans 2 unsigned int
 	idParam := c.Param("id")
