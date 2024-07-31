@@ -88,7 +88,7 @@ func GetUserProfile(c *gin.Context) {
 // @Router       /api/v1/user/register [post]
 func UserRegister(c *gin.Context) {
 	var user models.User
-
+	h_err=HashPassword(&user)
 	// 绑定 JSON 请求体到 user 对象
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
