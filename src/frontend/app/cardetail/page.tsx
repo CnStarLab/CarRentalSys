@@ -1,13 +1,14 @@
 // pages/car-detail.js
 'use client'
 import React from 'react';
+import '../interface'
 import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Divider, Box, Rating, TextField } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 
 export default function CarDetailComponent(){
     const searchParams = useSearchParams();
     const carId = searchParams.get('carId');
-    const [carData, setCarData] = React.useState([]);
+    const [carData, setCarData] = React.useState<Car | null>(null);
     const [selectedImageIndex , setSelectedImageIndex] = React.useState(0);
 
     React.useEffect(() => {
@@ -72,16 +73,15 @@ export default function CarDetailComponent(){
             <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
                     <Card onClick={() => setSelectedImageIndex(0)}>
-                    <CardMedia
-                        component="img"
-                        alt={car.brand}
-                        height="400"
-                        image={car?.image[selectedImageIndex]?.fileName}
-                        titleContent={car.brand}
-                    />
+                        <CardMedia
+                            component="img"
+                            alt={car.brand}
+                            height="400"
+                            image={car.image[selectedImageIndex]?.fileName}
+                        />
                     </Card>
                 </Grid>
-
+    
                 <Grid item xs={12} md={6}>
                     <Typography variant="h4" component="div">
                         {car.brand + car.model}
@@ -106,24 +106,24 @@ export default function CarDetailComponent(){
             </Grid>
             <Grid container spacing={2} sx={{ marginTop: '10px' }}>
                 {car.image.map((img, index) => (
-                <Grid item xs={6} md={1.5} key={index}>
-                    <Card
-                    onClick={() => setSelectedImageIndex(index)}
-                    sx={{
-                        border:
-                        selectedImageIndex === index
-                            ? '2px solid #007bff'
-                            : '1px solid #ccc',
-                    }}
-                    >
-                    <CardMedia
-                        component="img"
-                        alt="car img"
-                        height="100"
-                        image={img.fileName}
-                    />
-                    </Card>
-                </Grid>
+                    <Grid item xs={6} md={1.5} key={index}>
+                        <Card
+                            onClick={() => setSelectedImageIndex(index)}
+                            sx={{
+                                border:
+                                    selectedImageIndex === index
+                                        ? '2px solid #007bff'
+                                        : '1px solid #ccc',
+                            }}
+                        >
+                            <CardMedia
+                                component="img"
+                                alt="car img"
+                                height="100"
+                                image={img.fileName}
+                            />
+                        </Card>
+                    </Grid>
                 ))}
             </Grid>
             <Divider sx={{ marginY: '20px' }} />
@@ -147,7 +147,6 @@ export default function CarDetailComponent(){
                                 alt={product.titleContent}
                                 height="150"
                                 image={product.image}
-                                titleContent={product.titleContent}
                             />
                             <CardContent>
                                 <Typography variant="body2" component="p">
@@ -188,8 +187,6 @@ export default function CarDetailComponent(){
                             alt="Review image"
                             height="100"
                             image={review.image}
-                            titleContent="Review image"
-                            sx={{ marginTop: '10px' }}
                         />
                         <Typography variant="body2" color="text.secondary" component="p" sx={{ marginTop: '10px' }}>
                             {`${review.likes} people found this helpful`}
@@ -208,7 +205,6 @@ export default function CarDetailComponent(){
                                 alt={product.titleContent}
                                 height="150"
                                 image={product.image}
-                                titleContent={product.titleContent}
                             />
                             <CardContent>
                                 <Typography variant="body2" component="p">
@@ -233,7 +229,6 @@ export default function CarDetailComponent(){
                                 alt={product.titleContent}
                                 height="150"
                                 image={product.image}
-                                titleContent={product.titleContent}
                             />
                             <CardContent>
                                 <Typography variant="body2" component="p">
@@ -248,5 +243,5 @@ export default function CarDetailComponent(){
                 ))}
             </Grid>
         </Container>
-    );
+    );    
 };

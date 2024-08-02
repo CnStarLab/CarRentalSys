@@ -10,8 +10,24 @@ import Grid from '@mui/material/Grid';
 import { Box } from '@mui/material';
 import Link from 'next/link';
 
-export default function CarCards({ car }) {
-  //console.log("[CarCards:props:car] :",car)
+// 定义 Car 的接口
+interface Car {
+  ID: number;
+  brand?: string;
+  model?: string;
+  year?: number;
+  price?: number;
+  available?: boolean;
+  supportDriver?: boolean;
+  supportDelivery?: boolean;
+  carPics?: { fileName: string }[];
+}
+
+interface CarCardsProps {
+  car: Car;
+}
+
+export default function CarCards({ car }: CarCardsProps) {
   return (
     <Card sx={{ maxWidth: 1200 }}>
       <CardActionArea>
@@ -19,7 +35,7 @@ export default function CarCards({ car }) {
           <Grid item xs={8}>
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
-                {car.brand ? car.brand+' '+car.model+' - '+car.year : 'NaN'}
+                {car.brand ? `${car.brand} ${car.model} - ${car.year}` : 'NaN'}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Here will add some info in future. WIP
@@ -37,7 +53,7 @@ export default function CarCards({ car }) {
                   color="primary"
                   sx={{ mr: 2 }}
                 >
-                  Price: 
+                  Price:
                   <Box
                     component="span"
                     sx={{
@@ -48,24 +64,24 @@ export default function CarCards({ car }) {
                   >
                     ${car.price ? car.price : 'NaN'} /Day
                   </Box>
-                  </Typography>
-                  <Typography
-                    fontSize="lg"
-                    fontWeight="bold"
-                    color="primary"
+                </Typography>
+                <Typography
+                  fontSize="lg"
+                  fontWeight="bold"
+                  color="primary"
+                >
+                  Available:
+                  <Box
+                    component="span"
+                    sx={{
+                      color: car.available ? 'green' : 'red',
+                      fontWeight: 'bold',
+                      ml: 1, // a little margin
+                    }}
                   >
-                    Available: 
-                    <Box
-                      component="span"
-                      sx={{
-                        color: car.available ? 'green' : 'red',
-                        fontWeight: 'bold',
-                        ml: 1, // a little margin
-                      }}
-                    >
-                      {car.available ? 'Yes' : 'No'}
-                    </Box>
-                  </Typography>
+                    {car.available ? 'Yes' : 'No'}
+                  </Box>
+                </Typography>
               </Box>
               <Box
                 sx={{
@@ -97,17 +113,17 @@ export default function CarCards({ car }) {
                   fontWeight="bold"
                   color="primary"
                 >
-                  Support Delivery: 
-                    <Box
-                      component="span"
-                      sx={{
-                        color: car.supportDelivery ? 'green' : 'red',
-                        fontWeight: 'bold',
-                        ml: 1, // a little margin
-                      }}
-                    >
-                      {car.supportDelivery ? 'Yes' : 'No'}
-                    </Box>
+                  Support Delivery:
+                  <Box
+                    component="span"
+                    sx={{
+                      color: car.supportDelivery ? 'green' : 'red',
+                      fontWeight: 'bold',
+                      ml: 1, // a little margin
+                    }}
+                  >
+                    {car.supportDelivery ? 'Yes' : 'No'}
+                  </Box>
                 </Typography>
               </Box>
             </CardContent>
@@ -116,8 +132,8 @@ export default function CarCards({ car }) {
             <CardMedia
               component="img"
               height="140"
-              image={car?.carPics[0]?.fileName}
-              alt="green iguana"
+              image={car?.carPics?.[0]?.fileName || 'default-image.jpg'}
+              alt="Car Image"
               sx={{
                 objectFit: 'cover',
                 height: '100%',
@@ -128,12 +144,12 @@ export default function CarCards({ car }) {
         </Grid>
       </CardActionArea>
       <CardActions>
-        <Link href={`/cardetail?carId=${car.ID}`} >
+        <Link href={`/cardetail?carId=${car.ID}`} passHref>
           <Button size="small" color="primary">
             More Info
           </Button>
         </Link>
-        <Link href={`/rent?carId=${car.ID}`} >
+        <Link href={`/rent?carId=${car.ID}`} passHref>
           <Button size="small" color="success">
             Rent Now
           </Button>

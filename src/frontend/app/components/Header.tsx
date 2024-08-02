@@ -9,8 +9,15 @@ import { Button } from '@mui/material';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
+interface AuthContext {
+    username: string;
+    isLoggedIn: boolean;
+    logout: () => void;
+    avatar?: string;
+}
+  
 export default function Header() {
-    const { username, isLoggedIn, logout, avatar } = useAuth();
+    const { username, isLoggedIn, logout, avatar } = useAuth() as AuthContext;
     const router = useRouter();
     const [clientOnly, setClientOnly] = useState(false);
 
