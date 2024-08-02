@@ -1,6 +1,6 @@
 'use client'
-import React from 'react';
-import { Container, Grid, Box, Typography, TextField, Slider, FormControlLabel, Button, Card, CardContent, CardMedia, Stack, Radio, ToggleButtonGroup, ToggleButton, RadioGroup } from '@mui/material';
+import React, { ChangeEvent } from 'react';
+import { Container, Grid, Box, Typography, TextField, Slider, FormControlLabel, Button, Radio, RadioGroup } from '@mui/material';
 import AllCars from '../carList/page';
 import Link from 'next/link';
 import { DateRangePicker } from 'rsuite';
@@ -17,8 +17,21 @@ const marks = [
   },
 ];
 
+interface ChoiceConds {
+  minPrice: number;
+  maxPrice: number;
+  brand: string | null;
+  location: string | null;
+  carType: string | null;
+  supportDriver: string | null;
+  supportDelivery: string | null;
+  startTime: string;
+  endTime: string;
+  [key: string]: string | number | boolean | null; // 添加索引签名
+}
+
 export default function BroserPage() {
-  const [choiceConds, setChoiceConds] = React.useState({
+  const [choiceConds, setChoiceConds] = React.useState<ChoiceConds>({
     minPrice: 50,
     maxPrice: 500,
     brand: null,
@@ -30,9 +43,9 @@ export default function BroserPage() {
     endTime: ""
   });
 
-  const [searchParam, setSearchParam] = React.useState('');
+  const [searchParam, setSearchParam] = React.useState<string>('');
 
-  const handleCondsChange = (e) => {
+  const handleCondsChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     console.log("[BrowserPage->handleCondsChange:name,value]:", name, value);
     
@@ -47,35 +60,33 @@ export default function BroserPage() {
     setSearchParam(param);
   }, [choiceConds]);
 
-  const toQueryString = (obj) => {
+  const toQueryString = (obj: Record<string, string | number | boolean | null>) => {
     return Object.entries(obj)
       .filter(([_, value]) => value !== null && value !== undefined && value !== '')
-      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
       .join('&');
   };
 
-  const handleDateRange = (value) =>{
+  const handleDateRange = (value: Date[] | null) => {
     if (value && value.length === 2) {
       const [startDate, endDate] = value;
       const startISOString = startDate.toISOString();
       const endISOString = endDate.toISOString();
-      // Set the date range using the ISO strings
-      console.log(startISOString,endISOString)
+      console.log(startISOString, endISOString);
       setChoiceConds((prevChoiceConds) => ({
         ...prevChoiceConds,
-        ["startTime"]: startISOString,
-        ["endTime"]: endISOString
+        startTime: startISOString,
+        endTime: endISOString,
       }));
     }
   };
 
-  const handleCleanDate = () =>{
-      setChoiceConds((prevChoiceConds) => ({
-        ...prevChoiceConds,
-        ["startTime"]: "",
-        ["endTime"]: ""
-      }));
-
+  const handleCleanDate = () => {
+    setChoiceConds((prevChoiceConds) => ({
+      ...prevChoiceConds,
+      startTime: "",
+      endTime: ""
+    }));
   };
 
   return (
@@ -96,7 +107,7 @@ export default function BroserPage() {
                 min={50}
                 max={500}
                 valueLabelDisplay="auto"
-                onChange={(e, max) => handleCondsChange({ target: { name: 'maxPrice', value: max } })}
+                onChange={(e, max) => handleCondsChange({ target: { name: 'maxPrice', value: max } } as any)}
               />
               <Typography variant="h6">Location</Typography>
               <RadioGroup row name="location" onChange={handleCondsChange}>
@@ -148,9 +159,9 @@ export default function BroserPage() {
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <DateRangePicker 
-                  size='lg'
-                  onChange={(value) => handleDateRange(value)}
-                  onClean={handleCleanDate}
+                    size='lg'
+                    onChange={(value) => handleDateRange(value)}
+                    onClean={handleCleanDate}
                   />
                 </Grid>
                 <Grid item xs={12} md={1}>

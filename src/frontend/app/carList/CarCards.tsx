@@ -9,19 +9,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Box } from '@mui/material';
 import Link from 'next/link';
-
-// 定义 Car 的接口
-interface Car {
-  ID: number;
-  brand?: string;
-  model?: string;
-  year?: number;
-  price?: number;
-  available?: boolean;
-  supportDriver?: boolean;
-  supportDelivery?: boolean;
-  carPics?: { fileName: string }[];
-}
+import { Car } from '../interface'
 
 interface CarCardsProps {
   car: Car;

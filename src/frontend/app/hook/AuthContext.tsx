@@ -2,12 +2,23 @@
 import { useRouter } from 'next/navigation';
 import { createContext, useState, useContext, useMemo } from 'react';
 import { useLocalStorage } from "./UseLocalStorage";
+import { ProtectedRouteProps, AuthContextType } from '../interface'
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+
+const defaultAuthContext: AuthContextType = {
+  username: '',
+  isLoggedIn: false,
+  logout: () => {},
+  login: (router: AppRouterInstance, username: string, userId: string, token: string, currAvatar: string) => {},
+  avatar: '',
+  userId: ''
+};
 
 // 创建AuthContext
-const AuthContext = createContext();
+const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 
 // 创建AuthProvider组件
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }: ProtectedRouteProps) => {
 
   const [isLoggedIn, setIsLoggedIn] = useLocalStorage("isloggedin",false);
   const [username, setUsername] = useLocalStorage("user", null);
@@ -15,7 +26,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useLocalStorage("token", null);
   const [avatar, setAvatar] = useLocalStorage("avatar", null);
 
-  const login = (router, username:string, userId:string, token:string,currAvatar:string) => {
+  const login = (router:AppRouterInstance, username:string, userId:string, token:string,currAvatar:string) => {
     setIsLoggedIn(true);
     setUsername(username)
     setUserId(userId)

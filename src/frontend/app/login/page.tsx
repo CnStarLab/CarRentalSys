@@ -62,7 +62,11 @@ export default function SignIn() {
       login(router,result.username, result.userId, result.token, result.userPic)
 
     } catch (error) {
-      setModalMessage(`Error: ${error.message}`);
+      if (error instanceof Error) {
+        setModalMessage(`Error: ${error.message}`);
+      } else {
+        setModalMessage('An unknown error occurred');
+      }
     } finally {
       setIsModalOpen(true);
     }

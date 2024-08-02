@@ -1,7 +1,7 @@
 // pages/car-detail.js
 'use client'
 import React from 'react';
-import '../interface'
+import { Car } from '../interface'
 import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Divider, Box, Rating, TextField } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 

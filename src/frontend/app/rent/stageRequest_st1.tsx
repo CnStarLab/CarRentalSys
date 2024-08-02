@@ -105,7 +105,11 @@ export default function StageRequest_st1({handleNext,setCurrBookInfo}) {
         console.log(result)
         setModalMessage(result.message || 'Success!');
       } catch (error) {
-        setModalMessage(`Error: ${error.message}`);
+        if (error instanceof Error) {
+          setModalMessage(`Error: ${error.message}`);
+        } else {
+          setModalMessage('An unknown error occurred');
+        }
       } finally {
         setIsModalOpen(true);
       }
