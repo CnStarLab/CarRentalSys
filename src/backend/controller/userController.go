@@ -38,7 +38,12 @@ func UserLogin(c *gin.Context) {
 	}
 
 	// Compare the provided password with the stored password
-	if !dbUser.ValidatePassword(user.Password) {
+	match, err := comparePassword(&dbUser, user.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if !match {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 		return
 	}
@@ -88,7 +93,10 @@ func GetUserProfile(c *gin.Context) {
 // @Router       /api/v1/user/register [post]
 func UserRegister(c *gin.Context) {
 	var user models.User
-	h_err=HashPassword(&user)
+	if h_err := HashPassword(&user); h_err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+		return // 这里需要返回
+	}
 	// 绑定 JSON 请求体到 user 对象
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
