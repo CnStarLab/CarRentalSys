@@ -69,9 +69,6 @@ type CarQueryParams struct {
 }
 
 // ==========================function for type==========================================//
-func CreateCarByUser(db *gorm.DB, car *Car) error {
-	return db.Create(car).Error
-}
 
 func (c *Car) FindByCarID(db *gorm.DB, ID uint64) error {
 	if err := db.Preload("CarPics").Preload("UsingLogs").First(&c, ID).Error; err != nil {
@@ -86,6 +83,22 @@ func (c *Car) FindByCarID(db *gorm.DB, ID uint64) error {
 		}
 		return err
 	}
+	return nil
+}
+
+func (c *Car) SetAvail(db *gorm.DB, ID uint64, status bool) error {
+	if err := db.Where("id = ?", ID).First(c).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return ErrCarNotFound
+		}
+		return err
+	}
+
+	c.Available = status
+	if err := db.Save(&c).Error; err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -186,4 +199,9 @@ func (c *Cars) FindByConds(db *gorm.DB, param *CarQueryParams) error {
 	}
 
 	return nil
+}
+
+// ==========================other service functions=================================//
+func CreateCarByUser(db *gorm.DB, car *Car) error {
+	return db.Create(car).Error
 }

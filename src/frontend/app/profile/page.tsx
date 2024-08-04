@@ -162,7 +162,6 @@ var userData = {
 
 
     const handleSubmit = async (event) => {
-      event.preventDefault();
       const data = new FormData(event.currentTarget);
     
       // formData 2 json
@@ -274,6 +273,39 @@ var userData = {
       }
     }
 
+    const onChangeCarAvail = async(event)=>{
+      event.preventDefault();
+      const formData : { carId: number; available: boolean } ={
+        carId:  parseInt(event.currentTarget.id, 10),
+        available: event.currentTarget.checked
+      }
+      console.log(formData)
+
+      try {
+        const response = await fetch(`http://localhost:8080/api/v1/cars/info/avail/set`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+        
+        // parse response 2 json
+        const result = await response.json();
+  
+        if (!response.ok) {
+          console.log(response.body)
+          throw new Error(`Update profile failed! INFO: ${result.error}`);
+        }
+    
+        setModalMessage(result.message || 'Success!');
+      } catch (error) {
+        setModalMessage(`Error: ${error.message}`);
+      } finally {
+        setIsModalOpen(true);
+      }
+    }
+
     const closeModal = () => {
       setIsModalOpen(false);
       //refetch to update the latest bookInfo.
@@ -281,6 +313,7 @@ var userData = {
       fetchUserOrders();
       
     };
+
     const styles = {
       container: {
         maxWidth: '800px',
@@ -297,6 +330,7 @@ var userData = {
       },
     };
   
+
     return (
       <Container style={styles.container}>
         {/* Profile Section */}
@@ -470,10 +504,16 @@ var userData = {
                       </Grid>
                     </CardContent>
                     <CardActions>
-                      <Link href={`/rent?carId=${encodeURIComponent(order.carId)}&bookId=${encodeURIComponent(order.ID)}`}>
-                        <Button color="primary" startIcon={<Payment />}>Pay for your order</Button>
-                      </Link>            
-                      <Button color="secondary" id={order.ID} onClick={handleUserDecline} startIcon={<Delete />}>Delete</Button>
+                    {order.status === 0 ? (
+                        <Button color="secondary" id={order.ID} onClick={handleUserDecline} startIcon={<Delete />}>Delete</Button>
+                      ) : (
+                        <>
+                          <Link href={`/rent?carId=${encodeURIComponent(order.carId)}&bookId=${encodeURIComponent(order.ID)}`}>
+                            <Button color="primary" startIcon={<Payment />}>Pay for your order</Button>
+                          </Link>            
+                          <Button color="secondary" id={order.ID} onClick={handleUserDecline} startIcon={<Delete />}>Delete</Button>
+                        </>
+                    )}
                       <Box ml="auto" /> {/* Keeps this for potential right-aligned content */}
                     </CardActions>
                   </Card>
@@ -503,7 +543,7 @@ var userData = {
           <Grid container spacing={2}>
             {myCars && myCars.length > 0 ? (
               myCars.map(car => (
-                <Grid item xs={12} key={car.id}>
+                <Grid item xs={12} key={car.ID}>
                   <Card>
                     <CardContent display="flex" alignItems="center">
                       <Box flexShrink={0} mr={2}>
@@ -518,7 +558,7 @@ var userData = {
                       <Button color="secondary" startIcon={<Delete />}>Delete</Button>
                       <Button color="primary">Car Detail</Button>
                       <Box ml="auto">
-                        <Switch defaultChecked={car.available === "Active"} />
+                        <Switch id={car.ID} onChange={onChangeCarAvail} defaultChecked={car.available === "Active"} />
                       </Box>
                     </CardActions>
                   </Card>
