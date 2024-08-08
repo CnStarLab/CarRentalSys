@@ -12,6 +12,7 @@ import { useAuth } from '../hook/AuthContext';
 import Modal from '../login/alert';
 import UploadPhoto from '../components/userAvatarUpload';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Car, Order, UserProfile } from '../interface'
 
 var userData = {
@@ -468,7 +469,8 @@ var userData = {
           <Grid container spacing={2}>
               {myOrderInfo && myOrderInfo.length > 0 ? (
                 myOrderInfo.map((order:Order) => (
-                <Grid item xs={12} key={order.id}>
+                // ID or id
+                <Grid item xs={12} key={order.ID}>  
                   <Card>
                     <CardContent>
                       <Grid container spacing={2} alignItems="center">
@@ -496,7 +498,14 @@ var userData = {
                       <Link href={`/rent?carId=${encodeURIComponent(order.carId)}&bookId=${encodeURIComponent(order.ID)}`}>
                         <Button color="primary" startIcon={<Payment />}>Pay for your order</Button>
                       </Link>            
-                      <Button color="secondary" id={order.ID} onClick={handleUserDecline} startIcon={<Delete />}>Delete</Button>
+                      <Button
+                        color="secondary"
+                        id={`${order.ID}`} // 将 number 转换为 string
+                        onClick={handleUserDecline}
+                        startIcon={<Delete />}
+                      >
+                        Delete
+                      </Button>
                       <Box ml="auto" /> {/* Keeps this for potential right-aligned content */}
                     </CardActions>
                   </Card>
@@ -526,15 +535,27 @@ var userData = {
           <Grid container spacing={2}>
             {myCars && myCars.length > 0 ? (
               myCars.map((car:Car) => (
-                <Grid item xs={12} key={car.id}>
+                // ID or id
+                <Grid item xs={12} key={car.ID}>
                   <Card>
-                    <CardContent display="flex" alignItems="center">
+                    <CardContent sx={{ display: "flex", alignItems: "center" }}>
                       <Box flexShrink={0} mr={2}>
-                        <img src={car?.carPics[0].fileName || "https://via.placeholder.com/150"} alt="Car" style={styles.cardImage} />
+                        <Image
+                          src={car?.carPics[0].fileName || "https://via.placeholder.com/150"}
+                          alt="Car"
+                          width={150} // 你需要指定图像的宽度和高度
+                          height={150}
+                          style={styles.cardImage}
+                        />
                       </Box>
                       <Box>
-                        <Typography variant="body1">{car?.brand ? car.brand : "Something Wrong"} {car?.model ? car.model : "Something Wrong"}</Typography>
-                        <Typography variant="body2" color="textSecondary">{car?.basicInfo ? car.basicInfo : "Something Wrong"}</Typography>
+                        <Typography variant="body1">
+                          {car?.brand ? car.brand : "Something Wrong"}{" "}
+                          {car?.model ? car.model : "Something Wrong"}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          {car?.basicInfo ? car.basicInfo : "Something Wrong"}
+                        </Typography>
                       </Box>
                     </CardContent>
                     <CardActions>
