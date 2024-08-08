@@ -9,14 +9,15 @@ import Typography from '@mui/material/Typography';
 import AddCarBasic from './addCarBasic';
 import AddCarPics from './addCarPic';
 import FinishCarCreate from './FinishCarCreate';
+import { Car } from '../interface'
 
 const steps = ['Add basic info for your car.', 'Upload relative pictures.', 'Ready for rent.'];
 
 export default function AddCarProgressControl() {
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
-    const [currCarInfo, SetCurrCarInfo] = React.useState([])
-  
+    const [currCarInfo, setCurrCarInfo] = React.useState<Car | null>(null);
+
     const isStepOptional = (step: number) => {
       return step === 1;
     };
@@ -58,11 +59,13 @@ export default function AddCarProgressControl() {
   
     const renderStepContent = (step: number) => {
       console.log("[AddCarProgressControl->renderStepContent->state:currCarInfo]: ",currCarInfo)
+      if (!currCarInfo) {
+        return null; // 或者返回一些默认的 JSX 元素
+      }
       switch (step) {
         case 0:
-          return <AddCarBasic handleNext={handleNext} setCurrCarInfo={SetCurrCarInfo}/>;
         case 1:
-          return <AddCarPics handleNext={handleNext} setCurrCarInfo={SetCurrCarInfo} currCarInfo={currCarInfo}/>;
+          return <AddCarPics handleNext={handleNext} setCurrCarInfo={setCurrCarInfo} currCarInfo={currCarInfo}/>;
         case 2:
           return <FinishCarCreate currCarInfo={currCarInfo}/>;
         default:

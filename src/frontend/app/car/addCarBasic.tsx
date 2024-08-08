@@ -15,8 +15,14 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Modal from './alert';
 import { useAuth } from '../hook/AuthContext';
 import { MenuItem } from '@mui/material';
+import { Car } from '../interface' 
 
-export default function AddCarBasic({handleNext,setCurrCarInfo}) {
+interface AddCarPicsProps {
+  handleNext: () => void;
+  setCurrCarInfo: (info: Car) => void;
+}
+
+export default function AddCarBasic({handleNext,setCurrCarInfo}:AddCarPicsProps) {
     // 定义错误状态的类型
     type Errors = {
       brand?: boolean;
@@ -78,24 +84,24 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}) {
       }
     ];
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
     
       // formData 2 json
       const formData = {
         ownerId: parseInt(`${userId}`, 10),
-        brand: data.get('brand'),
-        model: data.get('model'),
-        year: parseInt(data.get('year'), 10), 
-        price: parseFloat(data.get('price')),
-        numSeats:parseInt(data.get('numSeats'), 10), 
-        basicInfo: data.get('basicInfo'),
-        featureInfo: data.get('featureInfo'),
-        location: data.get('location'),
-        supportDriver: JSON.parse(data.get('supportDriver').toLowerCase()),
-        supportDelivery:JSON.parse(data.get('supportDelivery').toLowerCase()),
-        carType: data.get('carType'),
+        brand: data.get('brand') as string,
+        model: data.get('model') as string,
+        year: parseInt(data.get('year') as string, 10), 
+        price: parseFloat(data.get('price') as string),
+        numSeats: parseInt(data.get('numSeats') as string, 10), 
+        basicInfo: data.get('basicInfo') as string,
+        featureInfo: data.get('featureInfo') as string,
+        location: data.get('location') as string,
+        supportDriver: JSON.parse((data.get('supportDriver') as string).toLowerCase()),
+        supportDelivery: JSON.parse((data.get('supportDelivery') as string).toLowerCase()),
+        carType: data.get('carType') as string,
         available: false,
       };
     
@@ -108,26 +114,28 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}) {
           body: JSON.stringify(formData),
         });
         
-        // parse response 2 json
         const result = await response.json();
-        setCurrCarInfo(result)
-  
+        setCurrCarInfo(result);
+    
         if (!response.ok) {
-          console.log("[AddCarBasic->handleSubmit->response.body]: ",response.body)
+          console.log("[AddCarBasic->handleSubmit->response.body]: ", response.body);
           throw new Error(`Create this car basic info failed! INFO: ${result.error}`);
         }
         
-        console.log("[AddCarBasic->handleSubmit->result]: ", result)
+        console.log("[AddCarBasic->handleSubmit->result]: ", result);
         
         setModalMessage(result.message || 'Success!');
         
-        
       } catch (error) {
-        setModalMessage(`Error: ${error.message}`);
+        if (error instanceof Error) {
+          setModalMessage(`Error: ${error.message}`);
+        } else {
+          setModalMessage('An unknown error occurred');
+        }
       } finally {
         setIsModalOpen(true);
       }
-    };
+    };    
   
     const closeModal = () => {
       handleNext()
@@ -283,7 +291,7 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}) {
                   helperText="Please choose"
                 >
                   {boolChoice.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
+                    <MenuItem key={String(option.value)} value={String(option.value)}>
                       {option.label}
                     </MenuItem>
                   ))}
@@ -300,7 +308,7 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}) {
                   fullWidth
                 >
                   {boolChoice.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
+                    <MenuItem key={String(option.value)} value={String(option.value)}>
                       {option.label}
                     </MenuItem>
                   ))}

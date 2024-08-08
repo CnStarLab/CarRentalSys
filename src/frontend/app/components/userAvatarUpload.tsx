@@ -2,11 +2,18 @@
 import React, { useState } from 'react';
 import { Container, Box, Button, Typography } from '@mui/material';
 
-const UploadPhoto = ({msg,setAvatar}) => {
-  const [files, setFiles] = useState([]);
+interface UploadPhotoProps {
+  msg: string;
+  setAvatar: (urls: string[]) => void;
+}
 
-  const handleFileChange = (e) => {
-    setFiles(Array.from(e.target.files));
+const UploadPhoto: React.FC<UploadPhotoProps> = ({ msg, setAvatar }) => {
+  const [files, setFiles] = useState<File[]>([]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFiles(Array.from(e.target.files));
+    }
   };
 
   const handleUpload = async () => {
@@ -30,7 +37,7 @@ const UploadPhoto = ({msg,setAvatar}) => {
     });
 
     const uploadedUrls = await Promise.all(uploadPromises);
-    const filteredUrls = uploadedUrls.filter((url) => url !== null);
+    const filteredUrls = uploadedUrls.filter((url): url is string => url !== null);
 
     setAvatar(filteredUrls);
   };
@@ -45,7 +52,7 @@ const UploadPhoto = ({msg,setAvatar}) => {
         marginTop={4}
       >
         <Typography variant="h4" component="h3" gutterBottom>
-         {msg}
+          {msg}
         </Typography>
 
         <Button variant="contained" component="label">
@@ -53,26 +60,7 @@ const UploadPhoto = ({msg,setAvatar}) => {
           <input type="file" multiple hidden onChange={handleFileChange} />
         </Button>
 
-      <Button onClick={handleUpload}>Upload</Button>
-      {/* <Button
-          variant="contained"
-          color="primary"
-          onClick={handleUpload}
-          disabled={!file}
-          sx={{ marginTop: 2 }}
-        > */}
-
-        {/*
-        for inner testing
-         {photoUrl && (
-          <Box marginTop={4}>
-            <Typography variant="h6" component="h2">
-              Processed Photo:
-            </Typography>
-            <img src={photoUrl} alt="Processed" style={{ maxWidth: '100%' }} />
-          </Box>
-        )} 
-        */}
+        <Button onClick={handleUpload}>Upload</Button>
       </Box>
     </Container>
   );

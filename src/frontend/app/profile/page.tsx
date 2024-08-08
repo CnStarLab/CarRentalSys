@@ -12,6 +12,8 @@ import { useAuth } from '../hook/AuthContext';
 import Modal from '../login/alert';
 import UploadPhoto from '../components/userAvatarUpload';
 import Link from 'next/link';
+import Image from 'next/image';
+import { Car, Order, UserProfile } from '../interface'
 
 var userData = {
     notifications: {
@@ -91,9 +93,9 @@ var userData = {
   const UserPage = () => {
     const {notifications, cars, favorites, transactions } = userData;
     const {userId} = useAuth()
-    const [avatar, setAvatar] = React.useState('');
+    const [avatar, setAvatar] = React.useState<string>(''); // 用于保存单个头像 URL
 
-    const [userProfile, setUserProfile] = React.useState([])
+    const [userProfile, setUserProfile] = React.useState<UserProfile | null>(null);
     const [myCars, SetMyCars] = React.useState([]);
     const [myCarsBookInfo, SetMyCarsBookInfo] = React.useState([])
     const [myOrderInfo, SetMyOrderInfo] = React.useState([])
@@ -103,6 +105,12 @@ var userData = {
 
     console.log("[UserProfile->state:myCars]",myCars)
     console.log("[UserProfile->state:myCarsBookInfo]:",myCarsBookInfo)
+
+    const handleSetAvatar = (urls: string[]) => {
+      if (urls.length > 0) {
+        setAvatar(urls[0]); // 使用第一个 URL 作为头像
+      }
+    };
 
     const fetchOwenerBookInfo = async () => {
       try {
@@ -161,7 +169,9 @@ var userData = {
     }, []); // Empty Array as Listener, make sure only run when the Component mount fist time.
 
 
-    const handleSubmit = async (event) => {
+
+    const handleSubmit = async (event: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined; }) => {
+      event.preventDefault();
       const data = new FormData(event.currentTarget);
     
       // formData 2 json
@@ -194,14 +204,18 @@ var userData = {
     
         setModalMessage(result.message || 'Success!');
       } catch (error) {
-        setModalMessage(`Error: ${error.message}`);
+        if (error instanceof Error) {
+          setModalMessage(`Error: ${error.message}`);
+        } else {
+          setModalMessage('An unknown error occurred');
+        }
       } finally {
         setIsModalOpen(true);
       }
 
     }
 
-    const handleOwnerApprove = async(event)=>{
+    const handleOwnerApprove = async(event: { currentTarget: { id: any; }; })=>{
       try {
         const response = await fetch(`http://localhost:8080/api/v1/service/status/approve/${event.currentTarget.id}`, {
           method: 'POST',
@@ -219,13 +233,17 @@ var userData = {
 
         
       } catch (error) {
-        setModalMessage(`Error: ${error.message}`);
+        if (error instanceof Error) {
+          setModalMessage(`Error: ${error.message}`);
+        } else {
+          setModalMessage('An unknown error occurred');
+        }
       } finally {
         setIsModalOpen(true);
       }
     }
 
-    const handleOwnerDecline = async(event)=>{
+    const handleOwnerDecline = async(event: { currentTarget: { id: any; }; })=>{
       try {
         const response = await fetch(`http://localhost:8080/api/v1/service/status/decline/${event.currentTarget.id}`, {
           method: 'POST',
@@ -243,13 +261,17 @@ var userData = {
 
   
       } catch (error) {
-        setModalMessage(`Error: ${error.message}`);
+        if (error instanceof Error) {
+          setModalMessage(`Error: ${error.message}`);
+        } else {
+          setModalMessage('An unknown error occurred');
+        }
       } finally {
         setIsModalOpen(true);
       }
     }
 
-    const handleUserDecline = async(event)=>{
+    const handleUserDecline = async(event: { currentTarget: { id: any; }; })=>{
       try {
         const response = await fetch(`http://localhost:8080/api/v1/service/user/status/decline/${event.currentTarget.id}`, {
           method: 'POST',
@@ -267,7 +289,11 @@ var userData = {
 
   
       } catch (error) {
-        setModalMessage(`Error: ${error.message}`);
+        if (error instanceof Error) {
+          setModalMessage(`Error: ${error.message}`);
+        } else {
+          setModalMessage('An unknown error occurred');
+        }
       } finally {
         setIsModalOpen(true);
       }
@@ -337,28 +363,28 @@ var userData = {
         <Box component="form" onSubmit={handleSubmit} my={4}>
           <Typography variant="h4" gutterBottom>Profile</Typography>
           <Box bgcolor="white" p={2} borderRadius="8px" boxShadow={2}>
-            <Typography variant="h6" gutterBottom>User Information for {userProfile.username}</Typography>
+            <Typography variant="h6" gutterBottom>User Information for {userProfile?.username}</Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} display="flex" justifyContent="center">
                 <Avatar alt="User Avatar" src={avatar} style={styles.avatar} />
               </Grid>
               <Grid item xs={12} display="flex" justifyContent="center">
-                <UploadPhoto msg="change avatar" setAvatar={setAvatar}/>
+                <UploadPhoto msg="Change Avatar" setAvatar={handleSetAvatar} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="First Name" name="firstName" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.firstName} />
+                <TextField fullWidth label="First Name" name="firstName" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile?.firstName} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Change password" name="password" type="password" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.password} />
+                <TextField fullWidth label="Change password" name="password" type="password" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile?.password} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Last Name" name="lastName" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.lastName} />
+                <TextField fullWidth label="Last Name" name="lastName" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile?.lastName} />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField fullWidth label="Confirm Password" type="password" variant="outlined" InputLabelProps={{ shrink: true }} />
               </Grid>
               <Grid item xs={12}>
-                <TextField fullWidth label="Email" name="email" type="email" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile.email} />
+                <TextField fullWidth label="Email" name="email" type="email" variant="outlined" InputLabelProps={{ shrink: true }} defaultValue={userProfile?.email} />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Button type="submit" variant="contained" color="primary" fullWidth startIcon={<Edit />}>Edit & Save</Button>
@@ -388,7 +414,7 @@ var userData = {
             <Typography variant="h6" gutterBottom>Profile Alerts</Typography>
               {myCarsBookInfo && myCarsBookInfo.length > 0 ? (
                 <Grid container spacing={3}>
-                  {myCarsBookInfo.map((car) => (
+                  {myCarsBookInfo.map((car:Car) => (
                     <Grid item xs={12} key={car.carPics[0]?.carId}>
                       <Accordion sx={{ boxShadow: 3, borderRadius: 2, marginBottom: 2 }}>
                         <AccordionSummary
@@ -478,8 +504,9 @@ var userData = {
           <Typography variant="h4" gutterBottom>My Orders</Typography>
           <Grid container spacing={2}>
               {myOrderInfo && myOrderInfo.length > 0 ? (
-                myOrderInfo.map(order => (
-                <Grid item xs={12} key={order.id}>
+                myOrderInfo.map((order:Order) => (
+                // ID or id
+                <Grid item xs={12} key={order.ID}>  
                   <Card>
                     <CardContent>
                       <Grid container spacing={2} alignItems="center">
@@ -504,16 +531,17 @@ var userData = {
                       </Grid>
                     </CardContent>
                     <CardActions>
-                    {order.status === 0 ? (
-                        <Button color="secondary" id={order.ID} onClick={handleUserDecline} startIcon={<Delete />}>Delete</Button>
-                      ) : (
-                        <>
-                          <Link href={`/rent?carId=${encodeURIComponent(order.carId)}&bookId=${encodeURIComponent(order.ID)}`}>
-                            <Button color="primary" startIcon={<Payment />}>Pay for your order</Button>
-                          </Link>            
-                          <Button color="secondary" id={order.ID} onClick={handleUserDecline} startIcon={<Delete />}>Delete</Button>
-                        </>
-                    )}
+                      <Link href={`/rent?carId=${encodeURIComponent(order.carId)}&bookId=${encodeURIComponent(order.ID)}`}>
+                        <Button color="primary" startIcon={<Payment />}>Pay for your order</Button>
+                      </Link>            
+                      <Button
+                        color="secondary"
+                        id={`${order.ID}`} // 将 number 转换为 string
+                        onClick={handleUserDecline}
+                        startIcon={<Delete />}
+                      >
+                        Delete
+                      </Button>
                       <Box ml="auto" /> {/* Keeps this for potential right-aligned content */}
                     </CardActions>
                   </Card>
@@ -542,16 +570,28 @@ var userData = {
         <Typography variant="h4" gutterBottom>My Cars</Typography>
           <Grid container spacing={2}>
             {myCars && myCars.length > 0 ? (
-              myCars.map(car => (
+              myCars.map((car:Car) => (
+                // ID or id
                 <Grid item xs={12} key={car.ID}>
                   <Card>
-                    <CardContent display="flex" alignItems="center">
+                    <CardContent sx={{ display: "flex", alignItems: "center" }}>
                       <Box flexShrink={0} mr={2}>
-                        <img src={car?.carPics[0].fileName || "https://via.placeholder.com/150"} alt="Car" style={styles.cardImage} />
+                        <Image
+                          src={car?.carPics[0].fileName || "https://via.placeholder.com/150"}
+                          alt="Car"
+                          width={150} // 你需要指定图像的宽度和高度
+                          height={150}
+                          style={styles.cardImage}
+                        />
                       </Box>
                       <Box>
-                        <Typography variant="body1">{car?.brand ? car.brand : "Something Wrong"} {car?.model ? car.model : "Something Wrong"}</Typography>
-                        <Typography variant="body2" color="textSecondary">{car?.basicInfo ? car.basicInfo : "Something Wrong"}</Typography>
+                        <Typography variant="body1">
+                          {car?.brand ? car.brand : "Something Wrong"}{" "}
+                          {car?.model ? car.model : "Something Wrong"}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          {car?.basicInfo ? car.basicInfo : "Something Wrong"}
+                        </Typography>
                       </Box>
                     </CardContent>
                     <CardActions>

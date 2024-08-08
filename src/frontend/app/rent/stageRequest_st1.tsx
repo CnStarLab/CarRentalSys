@@ -7,7 +7,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import Box, { BoxClassKey } from '@mui/material/Box';
 import DirectionsCarFilledOutlinedIcon from '@mui/icons-material/DirectionsCarFilledOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -16,8 +16,19 @@ import Modal from './alert';
 import { useAuth } from '../hook/AuthContext';
 import { useSearchParams } from 'next/navigation';
 import { DateRangePicker } from 'rsuite';
+import { BookInfo} from '../interface'
 
-export default function StageRequest_st1({handleNext,setCurrBookInfo}) {
+interface StageRequest_st1Props {
+    handleNext: () => void;
+    setCurrBookInfo: (info: BookInfo) => void;
+}
+
+interface DateRange {
+  startTime: string;
+  endTime: string;
+}
+
+export default function StageRequest_st1({handleNext,setCurrBookInfo}:StageRequest_st1Props) {
     // 定义错误状态的类型
     type Errors = {
       brand?: boolean;
@@ -63,10 +74,10 @@ export default function StageRequest_st1({handleNext,setCurrBookInfo}) {
     const { isLoggedIn, username, userId} = useAuth();
     const [dateRange, setDateRange]:any = React.useState([null, null]);
     const [modalMessage, setModalMessage] = React.useState('');
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const [JsonData, setJsonData] = React.useState(null);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);    
+    const [JsonData, setJsonData] = React.useState<DateRange[] | null>(null);
   
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       if(!isLoggedIn){
         window.location.href = '/login'
       }
@@ -105,14 +116,18 @@ export default function StageRequest_st1({handleNext,setCurrBookInfo}) {
         console.log(result)
         setModalMessage(result.message || 'Success!');
       } catch (error) {
-        setModalMessage(`Error: ${error.message}`);
+        if (error instanceof Error) {
+          setModalMessage(`Error: ${error.message}`);
+        } else {
+          setModalMessage('An unknown error occurred');
+        }
       } finally {
         setIsModalOpen(true);
       }
     };
   
 
-    const handleDateRange = (value) =>{
+    const handleDateRange = (value: Date[] | null) =>{
       if (value && value.length === 2) {
         const [startDate, endDate] = value;
         const startISOString = startDate.toISOString();
@@ -126,13 +141,15 @@ export default function StageRequest_st1({handleNext,setCurrBookInfo}) {
       }
     }
 
-    const isDateDisabled = (date) => {
-        //console.log("[StageRequest_st1:isDateDisabled] test")
-        if (JsonData != null)
-            return JsonData.some(range => {
-                return date >= new Date(range.startTime) && date <= new Date(range.endTime);
-              });
-      };
+    const isDateDisabled = (date: Date): boolean => {
+      if (JsonData != null) {
+        return JsonData.some(range => {
+          return date >= new Date(range.startTime) && date <= new Date(range.endTime);
+        });
+      }
+      // Return false explicitly when no date is disabled
+      return false;
+    };    
 
     React.useEffect(() => {
         fetch(`http://localhost:8080/api/v1/cars/invalidDate/${carId}`)
@@ -142,7 +159,7 @@ export default function StageRequest_st1({handleNext,setCurrBookInfo}) {
                 setJsonData(data)
             })
             .catch(error => console.error('Error fetching data:', error));
-    }, []);
+    }, [carId]);
 
     return (
         <Container component="main" maxWidth="xs">
