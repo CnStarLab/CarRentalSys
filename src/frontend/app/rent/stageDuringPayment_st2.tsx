@@ -1,7 +1,13 @@
 import React from "react";
 import { CircularProgress, Typography, Box, Paper } from "@mui/material";
+import { BookInfo} from '../interface'
 
-export default function StageDuringPayment_st2({ handleNext, currBookInfo }) {
+interface StageDuringPayment_st2Props {
+    handleNext: () => void;
+    currBookInfo: BookInfo;
+}
+
+export default function StageDuringPayment_st2({ handleNext, currBookInfo }:StageDuringPayment_st2Props) {
     const [pendingApprove, setPendingApprove] = React.useState(false);
 
     React.useEffect(() => {
@@ -16,7 +22,7 @@ export default function StageDuringPayment_st2({ handleNext, currBookInfo }) {
                 }
             })
             .catch(error => console.error('Error fetching data:', error));
-    }, []);
+    }, [currBookInfo.ID]);
 
     return (
         <Paper elevation={3} sx={{ padding: 3, textAlign: 'center', margin: 2 }}>

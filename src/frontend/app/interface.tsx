@@ -117,3 +117,17 @@ interface Comment2UserPic {
   comment2CarId: number;  // 对应 `Comment2UserID`
 }
 
+export interface BookInfo {
+  ID: number;  // 对应 gorm.Model 中的 ID
+  createdAt: string;  // 对应 gorm.Model 中的 CreatedAt
+  updatedAt: string;  // 对应 gorm.Model 中的 UpdatedAt
+  deletedAt: string | null;  // 对应 gorm.Model 中的 DeletedAt
+
+  UserId: number;
+  carId: number;
+  startTime: number;
+  endTime: number;
+  status: number;
+  reason: number;
+  totalPrice: number;
+}
