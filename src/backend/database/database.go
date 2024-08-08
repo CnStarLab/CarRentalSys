@@ -19,7 +19,7 @@ func ConnectDatabase() {
 	}
 	DB = db
 
-	// 自动迁移数据库模型
+	// Auto-migration database structure
 	err = db.AutoMigrate(
 		&models.User{},
 		&models.Car{},

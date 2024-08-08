@@ -9,6 +9,7 @@ fi
 # Start the frontend in development mode
 if [ -f /app/src/frontend/package.json ]; then
     cd /app/src/frontend
+    npm i
     npm run dev &
 fi
 

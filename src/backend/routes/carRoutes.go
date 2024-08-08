@@ -23,6 +23,6 @@ func CarRoutes(router *gin.Engine) {
 		v1.POST("/cars/searchAvail")                                      //Search the avil car with some condition.
 		v1.POST("/cars/info/createCarBasic", controller.CreateCarsByUser) //Add a new car for renting from a user
 		v1.POST("/cars/info/update/:id", controller.UpdateCarInfo)
-
+		v1.POST("/cars/info/avail/set", controller.SetCarAvailByOwner) //Set if the car is visable for users. || prvilage: carOwner+
 	}
 }

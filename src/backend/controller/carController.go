@@ -248,6 +248,7 @@ func GetCarsWithConds(c *gin.Context) {
 // @Failure 404 {string} string "Car not found"
 // @Failure 500 {string} string "Internal server error"
 // @Router /api/v1/cars/invalidDate/{id} [get]
+
 func GetCarInvalidDate(c *gin.Context) {
 	//get parama and trans 2 unsigned int
 	idParam := c.Param("id")
@@ -279,4 +280,31 @@ func GetCarInvalidDate(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, result)
+}
+
+// @Summary Set car availability by owner
+// @Description Set the availability status of a car by its owner
+// @Tags Car
+// @Accept json
+// @Produce json
+// @Param request body SetCarAvailRequest true "Set car availability request"
+// @Success 200 {object} map[string]interface{} "Car availability updated successfully"
+// @Failure 400 {string} string "Invalid request"
+// @Failure 404 {string} string "Car not found"
+// @Failure 500 {string} string "Internal server error"
+// @Router /api/v1/cars/setAvail [post]
+func SetCarAvailByOwner(c *gin.Context) {
+	var currRequest SetCarAvailRequest
+	if err := c.ShouldBindJSON(&currRequest); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var targetCar models.Car
+	if err := targetCar.SetAvail(database.DB, currRequest.CarID, *currRequest.Available); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Car availability updated successfully"})
 }

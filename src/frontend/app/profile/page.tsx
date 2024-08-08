@@ -169,6 +169,7 @@ var userData = {
     }, []); // Empty Array as Listener, make sure only run when the Component mount fist time.
 
 
+
     const handleSubmit = async (event: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined; }) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
@@ -298,6 +299,39 @@ var userData = {
       }
     }
 
+    const onChangeCarAvail = async(event)=>{
+      event.preventDefault();
+      const formData : { carId: number; available: boolean } ={
+        carId:  parseInt(event.currentTarget.id, 10),
+        available: event.currentTarget.checked
+      }
+      console.log(formData)
+
+      try {
+        const response = await fetch(`http://localhost:8080/api/v1/cars/info/avail/set`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+        
+        // parse response 2 json
+        const result = await response.json();
+  
+        if (!response.ok) {
+          console.log(response.body)
+          throw new Error(`Update profile failed! INFO: ${result.error}`);
+        }
+    
+        setModalMessage(result.message || 'Success!');
+      } catch (error) {
+        setModalMessage(`Error: ${error.message}`);
+      } finally {
+        setIsModalOpen(true);
+      }
+    }
+
     const closeModal = () => {
       setIsModalOpen(false);
       //refetch to update the latest bookInfo.
@@ -305,6 +339,7 @@ var userData = {
       fetchUserOrders();
       
     };
+
     const styles = {
       container: {
         maxWidth: '800px',
@@ -321,6 +356,7 @@ var userData = {
       },
     };
   
+
     return (
       <Container style={styles.container}>
         {/* Profile Section */}
@@ -562,7 +598,7 @@ var userData = {
                       <Button color="secondary" startIcon={<Delete />}>Delete</Button>
                       <Button color="primary">Car Detail</Button>
                       <Box ml="auto">
-                        <Switch defaultChecked={car.available === true} />
+                        <Switch id={car.ID} onChange={onChangeCarAvail} defaultChecked={car.available === "Active"} />
                       </Box>
                     </CardActions>
                   </Card>
