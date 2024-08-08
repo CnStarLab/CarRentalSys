@@ -24,7 +24,7 @@ type Car struct {
 	Price        float64       `json:"price"`
 	Rating       float64       `json:"rating"`
 	Available    bool          `json:"available"`
-	Comments2Car []Comment2Car `json:"comments2car"`
+	Comments2Car []Comment2Car `json:"comments2car" gorm:"foreignKey:CarId"`
 	CarPics      []CarsPic     `json:"carPics" gorm:"foreignKey:CarId"`
 	UsingLogs    []UserCar     `json:"useLogs" gorm:"foreignKey:CarID"`
 }
@@ -33,7 +33,7 @@ type Comment2Car struct {
 	gorm.Model
 	BookId       uint             `json:"bookId"`
 	UserId       uint             `json:"userId"`
-	CarId        uint             `json:"carId" gorm:"primaryKey"`
+	CarId        uint             `json:"carId"`
 	TitleContent string           `json:"titleContent"`
 	MainContent  string           `json:"mainContent"`
 	Likes        uint             `json:"likes"`
