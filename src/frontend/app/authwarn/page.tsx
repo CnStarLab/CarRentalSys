@@ -12,11 +12,10 @@ export default function AuthWarn(){
         router.push('/');
     };
 
-    useEffect(() => {
-        if (open === false) {
-            router.push('/');
-        }
-    }, [open, router]);
+    const handleSignIn = () => {
+        setOpen(false);
+        router.push('/login');
+    };
 
     const modalStyle = {
         position: 'absolute',
@@ -44,8 +43,11 @@ export default function AuthWarn(){
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                     You must be logged in to access this page.
                 </Typography>
-                <Button onClick={handleClose} sx={{ mt: 2 }}>
+                <Button onClick={handleClose} sx={{ mt: 2, ml: -1}}>
                     Close
+                </Button>
+                <Button onClick={handleSignIn} sx={{ mt: 2, ml: 22 }}>
+                    Sign in
                 </Button>
             </Box>
         </Modal>
