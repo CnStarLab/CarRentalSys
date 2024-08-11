@@ -12,13 +12,12 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-// 定义 props 的类型
+// 定义 Modal 组件的 props 类型
 interface ModalProps {
   open: boolean;
   message: string;
   onClose: () => void;
 }
-
 
 const Modal: React.FC<ModalProps> = ({ open, message, onClose }) => {
   return (
@@ -36,7 +35,7 @@ const Modal: React.FC<ModalProps> = ({ open, message, onClose }) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Close</Button>
+        <Button onClick={onClose}>Next Step</Button>
       </DialogActions>
     </Dialog>
   );

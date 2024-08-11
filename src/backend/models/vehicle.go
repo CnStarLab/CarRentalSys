@@ -1,7 +1,12 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
 
+	"gorm.io/gorm"
+)
+
+// ===========================Database Table Mapping Structure==============================//
 type Car struct {
 	gorm.Model
 	Brand           string `json:"brand"`
@@ -19,17 +24,16 @@ type Car struct {
 	Price        float64       `json:"price"`
 	Rating       float64       `json:"rating"`
 	Available    bool          `json:"available"`
-	Comments2Car []Comment2Car `json:"comments2car"`
+	Comments2Car []Comment2Car `json:"comments2car" gorm:"foreignKey:CarId"`
 	CarPics      []CarsPic     `json:"carPics" gorm:"foreignKey:CarId"`
+	UsingLogs    []UserCar     `json:"useLogs" gorm:"foreignKey:CarID"`
 }
-
-type Cars []Car
 
 type Comment2Car struct {
 	gorm.Model
 	BookId       uint             `json:"bookId"`
 	UserId       uint             `json:"userId"`
-	CarId        uint             `json:"carId" gorm:"primaryKey"`
+	CarId        uint             `json:"carId"`
 	TitleContent string           `json:"titleContent"`
 	MainContent  string           `json:"mainContent"`
 	Likes        uint             `json:"likes"`
@@ -48,12 +52,26 @@ type CarsPic struct {
 	CarId    uint   `json:"carId"`
 }
 
-func CreateCarByUser(db *gorm.DB, car *Car) error {
-	return db.Create(car).Error
+//===========================Service Inner Structure===================================//
+
+type Cars []Car
+
+type CarQueryParams struct {
+	MinPrice        int64
+	MaxPrice        int64
+	Brand           string
+	Location        string
+	CarType         string
+	SupportDriver   string
+	SupportDelivery string
+	StartTime       time.Time
+	EndTime         time.Time
 }
 
+// ==========================function for type==========================================//
+
 func (c *Car) FindByCarID(db *gorm.DB, ID uint64) error {
-	if err := db.Preload("CarPics").First(&c, ID).Error; err != nil {
+	if err := db.Preload("CarPics").Preload("UsingLogs").First(&c, ID).Error; err != nil {
 		if err == gorm.ErrPreloadNotAllowed {
 			return ErrPreloadNotAllowed
 		}
@@ -68,8 +86,25 @@ func (c *Car) FindByCarID(db *gorm.DB, ID uint64) error {
 	return nil
 }
 
+func (c *Car) SetAvail(db *gorm.DB, ID uint64, status bool) error {
+	if err := db.Where("id = ?", ID).First(c).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return ErrCarNotFound
+		}
+		return err
+	}
+
+	c.Available = status
+	if err := db.Save(&c).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (c *Cars) FindByOwnerID(db *gorm.DB, ownerId uint64) error {
-	if err := db.Preload("CarPics").Where("owner_id = ?", ownerId).Find(c).Error; err != nil {
+	//[WIP] here we both use this for just fine cars and for find using logs,we should take out the logic for useing logs.
+	if err := db.Preload("CarPics").Preload("UsingLogs").Where("owner_id = ?", ownerId).Find(c).Error; err != nil {
 		if err == gorm.ErrPreloadNotAllowed {
 			return ErrPreloadNotAllowed
 		}
@@ -79,4 +114,94 @@ func (c *Cars) FindByOwnerID(db *gorm.DB, ownerId uint64) error {
 		return err
 	}
 	return nil
+}
+
+func (c *Cars) FindLogsByOwnerID(db *gorm.DB, ownerId uint64) error {
+	if err := db.Preload("UsingLogs").Where("owner_id = ?", ownerId).Find(c).Error; err != nil {
+		if err == gorm.ErrPreloadNotAllowed {
+			return ErrPreloadNotAllowed
+		}
+		if err == gorm.ErrRecordNotFound {
+			return ErrCarNotFound
+		}
+		return err
+	}
+	return nil
+}
+
+func (c *Cars) FindByConds(db *gorm.DB, param *CarQueryParams) error {
+	query := db.Model(&Car{}).Preload("CarPics")
+
+	if param.MinPrice > 0 && param.MaxPrice > 0 {
+		query = query.Where("price >= ? AND price <= ?", param.MinPrice, param.MaxPrice)
+	}
+
+	if param.Brand != "" {
+		query = query.Where("brand = ?", param.Brand)
+	}
+
+	if param.Location != "" {
+		query = query.Where("location = ?", param.Location)
+	}
+
+	if param.CarType != "" {
+		query = query.Where("car_type = ?", param.CarType)
+	}
+
+	if param.SupportDriver != "" {
+		query = query.Where("support_driver = ?", param.SupportDriver)
+	}
+
+	if param.SupportDelivery != "" {
+		query = query.Where("support_delivery = ?", param.SupportDelivery)
+	}
+
+	// Execute the query and load the results into `c`
+	if err := query.Find(&c).Error; err != nil {
+		return err
+	}
+
+	// Check if any cars match the basic conditions
+	if len(*c) == 0 {
+		return ErrNoCarsMatch
+	}
+
+	// Filter by availability if start and end times are provided
+	if !param.StartTime.IsZero() && !param.EndTime.IsZero() {
+		availableCars := make(Cars, 0, len(*c))
+
+		for _, car := range *c {
+			err := db.Preload("UsingLogs").Find(&car).Error
+			if err != nil {
+				return err
+			}
+
+			available := true
+			for _, log := range car.UsingLogs {
+				if (param.StartTime.Before(log.EndTime) && param.EndTime.After(log.StartTime)) ||
+					(param.StartTime.Equal(log.StartTime) && param.EndTime.Equal(log.EndTime)) {
+					available = false
+					break
+				}
+			}
+
+			if available {
+				availableCars = append(availableCars, car)
+			}
+		}
+
+		*c = availableCars
+
+		// Check if any cars are available in the given time frame
+		if len(*c) == 0 {
+			return ErrNoCarsMatch
+		}
+	}
+
+	return nil
+}
+
+// ==========================other service functions=================================//
+func CreateCarByUser(db *gorm.DB, car *Car) error {
+	return db.Create(car).Error
 }

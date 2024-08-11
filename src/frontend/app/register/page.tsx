@@ -23,7 +23,7 @@ export default function SignUp() {
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined; }) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
   
@@ -55,7 +55,11 @@ export default function SignUp() {
   
       setModalMessage(result.message || 'Success!');
     } catch (error) {
-      setModalMessage(`Error: ${error.message}`);
+      if (error instanceof Error) {
+        setModalMessage(`Error: ${error.message}`);
+      } else {
+        setModalMessage('An unknown error occurred');
+      }
     } finally {
       setIsModalOpen(true);
     }

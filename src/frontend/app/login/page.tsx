@@ -54,15 +54,19 @@ export default function SignIn() {
       const result = await response.json();
       if (!response.ok) {
         console.log(response.body)
-        throw new Error(`Register error! INFO: ${result.error}`);
+        throw new Error(`Login error! INFO: ${result.error}`);
       }
       
       console.log("[SignIn] response Json:",result)
       setModalMessage(result.message || 'Success!');
-      login(router,result.username, result.userId, result.token)
+      login(router,result.username, result.userId, result.token, result.userPic)
 
     } catch (error) {
-      setModalMessage(`Error: ${error.message}`);
+      if (error instanceof Error) {
+        setModalMessage(`Error: ${error.message}`);
+      } else {
+        setModalMessage('An unknown error occurred');
+      }
     } finally {
       setIsModalOpen(true);
     }

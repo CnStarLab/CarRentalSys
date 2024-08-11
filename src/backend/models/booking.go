@@ -8,10 +8,11 @@ import (
 	"gorm.io/gorm"
 )
 
+// =======================Structure for database mapping ==============================//
 type UserCar struct {
 	gorm.Model
-	Username  string    `json:"username" gorm:"primaryKe"`
-	CarID     uint      `json:"carId" gorm:"primaryKey"`
+	UserId    uint      `json:"UserId"`
+	CarID     uint      `json:"carId"`
 	StartTime time.Time `json:"startTime" gorm:"not null"`
 	EndTime   time.Time `json:"endTime" gorm:"not null"`
 	Status    uint8     `json:"status"`
@@ -21,68 +22,111 @@ type UserCar struct {
 	TotalPrice uint64 `json:"totalPrice"`
 }
 
+//=======================Structure for service==================================//
+
+type Logs []UserCar
+
+// struct for owner profile page status monitor and renting flow alert
+type OwnerCarsInfo struct {
+	Brand     string    `json:"brand"`
+	CarModel  string    `json:"model"`
+	CarType   string    `json:"cartype"`
+	Year      int       `json:"year"`
+	CarPics   []CarsPic `json:"carPics"`
+	UsingLogs []UserCar `json:"useLogs"`
+}
+
+type CarsBookInfo []OwnerCarsInfo
+
 var (
 	ErrUserNotFound      = errors.New("user not found")
 	ErrCarNotFound       = errors.New("car not found")
 	ErrCarNotAvailable   = errors.New("car is not available")
 	ErrUserCarNotFound   = errors.New("UserCar relation not found")
 	ErrPreloadNotAllowed = errors.New("preload connection not found")
+	ErrNoCarsMatch       = errors.New("no cars match with conditions")
+	ErrNoBookInfoExist   = errors.New("no order info for the user")
 )
 
-func BookCar(db *gorm.DB, username string, carID uint, startTime time.Time, endTime time.Time) error {
+func BookCar(db *gorm.DB, userId uint, carID uint, startTime time.Time, endTime time.Time, reason string) (uint, error) {
 	var car Car
 	if err := db.First(&car, carID).Error; err != nil {
-		return ErrCarNotFound
+		return 0, ErrCarNotFound
 	}
 
 	if !car.Available {
-		return ErrCarNotAvailable
+		return 0, ErrCarNotAvailable
 	}
-
-	// Update car status to unavailable
-	car.Available = false
-	db.Save(&car)
 
 	// Create a new UserCar record
 	fmt.Println(startTime)
 	userCar := UserCar{
-		Username:  username,
+		UserId:    userId,
 		CarID:     car.ID,
 		StartTime: startTime,
 		EndTime:   endTime,
+		Reason:    reason,
+		Status:    0,
 	}
 	if err := db.Create(&userCar).Error; err != nil {
-		return err
+		return 0, err
 	}
 
 	// Associate the user and car
 	//db.Model(&user).Association("Cars").Append(&car)
 
-	return nil
+	return userCar.ID, nil
 }
 
-func ReturnCar(db *gorm.DB, username string, carID uint) error {
-	// 查找用户和汽车
+func ReturnCar(db *gorm.DB, userId, carID uint) error {
 
 	var car Car
 	if err := db.First(&car, carID).Error; err != nil {
 		return ErrCarNotFound
 	}
 
-	// 在 UserCars 中找到对应的记录并删除
 	var userCar UserCar
-	if err := db.Where("username = ? AND car_id = ?", username, carID).First(&userCar).Error; err != nil {
+	if err := db.Where("userId = ? AND car_id = ?", userId, carID).First(&userCar).Error; err != nil {
 		return ErrUserCarNotFound
 	}
 
-	// 更新汽车状态为可用
-	car.Available = true
-	db.Save(&car)
-
-	// 删除 UserCar 记录
 	if err := db.Delete(&userCar).Error; err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func FindBookInfoByBookId(db *gorm.DB, bookId uint64) (UserCar, error) {
+	var curr UserCar
+	if err := db.Where("id = ?", bookId).First(&curr).Error; err != nil {
+		return curr, ErrUserCarNotFound
+	}
+	return curr, nil
+}
+
+func (u *UserCar) UpdateStatus(db *gorm.DB, newStatus uint8) error {
+	u.Status = newStatus
+	if err := db.Save(&u).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (uc *UserCar) Delete(db *gorm.DB) error {
+	if err := db.Delete(&uc).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (l *Logs) FindBookInfoByUserId(db *gorm.DB, userId uint64) error {
+	if err := db.Where("user_id = ?", userId).Find(&l).Error; err != nil {
+		return ErrNoBookInfoExist
+	}
+	//emprty slice
+	if len(*l) == 0 {
+		return ErrNoBookInfoExist
+	}
 	return nil
 }
