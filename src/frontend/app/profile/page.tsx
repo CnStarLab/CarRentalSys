@@ -299,11 +299,11 @@ var userData = {
       }
     }
 
-    const onChangeCarAvail = async(event: React.FormEvent<HTMLFormElement>)=>{
+    const onChangeCarAvail = async(event: React.ChangeEvent<HTMLInputElement>, checked:boolean)=>{
       event.preventDefault();
       const formData : { carId: number; available: boolean } ={
         carId:  parseInt(event.currentTarget.id, 10),
-        available: event.currentTarget.checked
+        available: checked
       }
       console.log(formData)
 
