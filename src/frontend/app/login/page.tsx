@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Modal from './alert';
-import { useAuth } from '../hook/AuthContext';
+import { useAuth } from '../../hook/AuthContext';
 import { useRouter } from 'next/navigation';
 
 // TODO remove, this demo shouldn't need to reset the theme.

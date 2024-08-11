@@ -8,9 +8,9 @@ import {
   AccordionDetails,
 } from '@mui/material';
 import { Edit, Delete, Details, ExpandMore, Payment } from '@mui/icons-material';
-import { useAuth } from '../hook/AuthContext';
+import { useAuth } from '../../hook/AuthContext';
 import Modal from '../login/alert';
-import UploadPhoto from '../components/userAvatarUpload';
+import UploadPhoto from '../../components/userAvatarUpload';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Car, Order, UserProfile } from '../interface'
@@ -299,7 +299,7 @@ var userData = {
       }
     }
 
-    const onChangeCarAvail = async(event)=>{
+    const onChangeCarAvail = async(event: React.FormEvent<HTMLFormElement>)=>{
       event.preventDefault();
       const formData : { carId: number; available: boolean } ={
         carId:  parseInt(event.currentTarget.id, 10),
@@ -326,7 +326,11 @@ var userData = {
     
         setModalMessage(result.message || 'Success!');
       } catch (error) {
-        setModalMessage(`Error: ${error.message}`);
+        if (error instanceof Error) {
+          setModalMessage(`Error: ${error.message}`);
+        } else {
+          setModalMessage('An unknown error occurred');
+        }
       } finally {
         setIsModalOpen(true);
       }
@@ -598,7 +602,7 @@ var userData = {
                       <Button color="secondary" startIcon={<Delete />}>Delete</Button>
                       <Button color="primary">Car Detail</Button>
                       <Box ml="auto">
-                        <Switch id={car.ID} onChange={onChangeCarAvail} defaultChecked={car.available === "Active"} />
+                        <Switch id={String(car.ID)} onChange={onChangeCarAvail} defaultChecked={car.available} />
                       </Box>
                     </CardActions>
                   </Card>

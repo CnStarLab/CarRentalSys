@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { createContext, useState, useContext, useMemo } from 'react';
 import { useLocalStorage } from "./UseLocalStorage";
-import { ProtectedRouteProps, AuthContextType } from '../interface'
+import { ProtectedRouteProps, AuthContextType } from '../app/interface'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
 const defaultAuthContext: AuthContextType = {
