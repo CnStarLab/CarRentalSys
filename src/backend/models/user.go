@@ -2,7 +2,6 @@ package models
 
 import (
 	"carRentalSys/config"
-	"fmt"
 	"time"
 
 	"errors"
@@ -57,7 +56,7 @@ type UserProfile struct {
 }
 
 type JWTClaims struct {
-	ID    uint   `json:userId`
+	ID    uint   `json:"userId"`
 	Email string `json:"email"`
 	jwt.StandardClaims
 }
@@ -69,17 +68,13 @@ func CreateUser(db *gorm.DB, user *User) error {
 }
 
 func HashPassword(user *User) error {
-	fmt.Println(user.Password)
 	// 检查密码是否为空
 	if user.Password == "" {
 		return errors.New("password cannot be empty")
 	}
-	fmt.Println(user.Password)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
-		fmt.Println(err.Error())
 		return err // 如果哈希生成失败，返回错误
-
 	}
 
 	user.Password = string(hashedPassword)
