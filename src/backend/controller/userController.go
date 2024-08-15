@@ -38,7 +38,7 @@ func UserLogin(c *gin.Context) {
 	}
 
 	// Compare the provided password with the stored password
-	match, err := comparePassword(&dbUser, user.Password)
+	match, err := models.ComparePassword(&dbUser, user.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -104,14 +104,15 @@ func GetUserProfile(c *gin.Context) {
 // @Router       /api/v1/user/register [post]
 func UserRegister(c *gin.Context) {
 	var user models.User
-	if h_err := HashPassword(&user); h_err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
-		return // 这里需要返回
-	}
 	// 绑定 JSON 请求体到 user 对象
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	if err := models.HashPassword(&user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+		return // 这里需要返回
 	}
 
 	// 创建用户

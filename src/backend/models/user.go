@@ -2,6 +2,7 @@ package models
 
 import (
 	"carRentalSys/config"
+	"fmt"
 	"time"
 
 	"errors"
@@ -68,13 +69,17 @@ func CreateUser(db *gorm.DB, user *User) error {
 }
 
 func HashPassword(user *User) error {
+	fmt.Println(user.Password)
 	// 检查密码是否为空
 	if user.Password == "" {
 		return errors.New("password cannot be empty")
 	}
+	fmt.Println(user.Password)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
+		fmt.Println(err.Error())
 		return err // 如果哈希生成失败，返回错误
+
 	}
 
 	user.Password = string(hashedPassword)
@@ -82,7 +87,7 @@ func HashPassword(user *User) error {
 	return nil
 }
 
-func comparePassword(user *User, providedPassword string) (bool, error) {
+func ComparePassword(user *User, providedPassword string) (bool, error) {
 	// 检查用户密码（哈希值）是否为空
 	if user.Password == "" {
 		return false, errors.New("hashed password cannot be empty")
