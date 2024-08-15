@@ -4,7 +4,10 @@ import (
 	"carRentalSys/config"
 	"time"
 
+	"errors"
+
 	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -62,6 +65,38 @@ type JWTClaims struct {
 
 func CreateUser(db *gorm.DB, user *User) error {
 	return db.Create(user).Error
+}
+
+func HashPassword(user *User) error {
+	// 检查密码是否为空
+	if user.Password == "" {
+		return errors.New("password cannot be empty")
+	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err // 如果哈希生成失败，返回错误
+	}
+
+	user.Password = string(hashedPassword)
+
+	return nil
+}
+
+func comparePassword(user *User, providedPassword string) (bool, error) {
+	// 检查用户密码（哈希值）是否为空
+	if user.Password == "" {
+		return false, errors.New("hashed password cannot be empty")
+	}
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(providedPassword))
+	if err != nil {
+		// 密码不匹配
+		if err == bcrypt.ErrMismatchedHashAndPassword {
+			return false, nil
+		}
+		return false, err
+	}
+	// 密码匹配
+	return true, nil
 }
 
 func (u *User) FindByEmail(db *gorm.DB, email string) error {
