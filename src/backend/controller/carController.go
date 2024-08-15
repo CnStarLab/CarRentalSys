@@ -294,7 +294,7 @@ func GetCarInvalidDate(c *gin.Context) {
 // @Failure 500 {string} string "Internal server error"
 // @Router /api/v1/cars/setAvail [post]
 func SetCarAvailByOwner(c *gin.Context) {
-	var currRequest SetCarAvailRequest
+	var currRequest models.SetCarAvailRequest
 	if err := c.ShouldBindJSON(&currRequest); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

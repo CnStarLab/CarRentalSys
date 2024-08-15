@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -38,16 +37,12 @@ type OwnerCarsInfo struct {
 
 type CarsBookInfo []OwnerCarsInfo
 
-var (
-	ErrUserNotFound      = errors.New("user not found")
-	ErrCarNotFound       = errors.New("car not found")
-	ErrCarNotAvailable   = errors.New("car is not available")
-	ErrUserCarNotFound   = errors.New("UserCar relation not found")
-	ErrPreloadNotAllowed = errors.New("preload connection not found")
-	ErrNoCarsMatch       = errors.New("no cars match with conditions")
-	ErrNoBookInfoExist   = errors.New("no order info for the user")
-)
+type SetCarAvailRequest struct {
+	CarID     uint64 `json:"carId" binding:"required"`
+	Available *bool  `json:"available" binding:"required"`
+}
 
+// ============================================================================//
 func BookCar(db *gorm.DB, userId uint, carID uint, startTime time.Time, endTime time.Time, reason string) (uint, error) {
 	var car Car
 	if err := db.First(&car, carID).Error; err != nil {
