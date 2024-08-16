@@ -8,29 +8,56 @@ on:
     branches:
       - main
 
-
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Build and start Docker containers
+        run: docker compose up --build -d
 
-    - name: Build and start Docker containers
-      run: docker-compose up --build -d
+      - name: Wait for fronend service to be ready
+        run: |
+          echo "Waiting for the fronend service to be ready..."
+          for i in {1..14}; do
+            if curl -s http://localhost:3000/health > /dev/null; then
+              echo "Frontend service is up!"
+              exit 0
+            fi
+            echo "Frontend service not ready, retrying in 30 seconds..."
+            sleep 30
+          done
+          echo "Frontend service failed to start in time."
+          exit 1
 
-    - name: Run tests
-      run: |
-        # Add your test commands here
-        echo "Running tests..."
-        # Example: Wait for services to be ready
-        sleep 30
-        # Example: Check if backend and frontend are running
-        curl --connect-timeout 20 -f http://localhost:8080/health && curl --connect-timeout 20 -f http://localhost:3000/health
+      - name: Wait for backend service to be ready
+        run: |
+          echo "Waiting for the backend service to be ready..."
+          for i in {1..14}; do
+            if curl -s http://localhost:8080/health > /dev/null; then
+              echo "Backend service is up!"
+              exit 0
+            fi
+            echo "Backend service not ready, retrying in 30 seconds..."
+            sleep 30
+          done
+          echo "Backend service failed to start in time."
+          exit 1
 
-    - name: Cleanup
-      run: docker-compose down
+      - name: Run tests inside container
+        continue-on-error: true
+        run: docker compose exec carrentalsys-app-1 tests/test.sh
+        
+
+      - name: Run tests outside container
+        run: tests/test.sh
+        
+
+      - name: Tear down containers
+        if: always()
+        run: docker compose down

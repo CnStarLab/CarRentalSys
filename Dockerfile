@@ -29,5 +29,11 @@ EXPOSE 3000 8080
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+RUN chmod +x tests/test.sh
+
+RUN cd src/backend/cmd && go mod download
+
+RUN cd src/frontend && npm i
+
 # Set entrypoint command
 ENTRYPOINT ["/entrypoint.sh"]
