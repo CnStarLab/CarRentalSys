@@ -25,6 +25,15 @@ import (
 // @Failure 500 {string} string "Internal server error"
 // @Router /api/v1/service/user/bookCar [post]
 func BookNewCar(c *gin.Context) {
+	//1.Get Current User
+	var currUser models.User
+	currUserID, userExist := c.Get("ID")
+	if !userExist {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Auth middleware bugs!"})
+		return
+	}
+	currUser.ID = currUserID.(uint) //assert into uint
+
 	var rentRequest models.UserCar
 	if err := c.ShouldBindJSON(&rentRequest); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

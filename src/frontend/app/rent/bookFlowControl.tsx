@@ -15,6 +15,7 @@ import StageUsing_st4 from './stageUsing_st4';
 import StageEnding_st5 from './stageEnding_st5';
 import StageFinish_st6 from './stageFinish_st6';
 import { useSearchParams } from 'next/navigation';
+import { useAuth } from '../hook/AuthContext';
 
 const steps = [
   'Input Your Basic Request Info.', 

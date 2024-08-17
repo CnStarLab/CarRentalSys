@@ -49,7 +49,7 @@ func UserLogin(c *gin.Context) {
 	}
 
 	// Genetate Signed JWT
-	token, err := user.GenerateToken()
+	token, err := dbUser.GenerateToken()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return

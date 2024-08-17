@@ -92,7 +92,7 @@ var userData = {
 
   const UserPage = () => {
     const {notifications, cars, favorites, transactions } = userData;
-    const {userId} = useAuth()
+    const {userId, token} = useAuth()
     const [avatar, setAvatar] = React.useState<string>(''); // 用于保存单个头像 URL
 
     const [userProfile, setUserProfile] = React.useState<UserProfile | null>(null);
@@ -102,6 +102,7 @@ var userData = {
 
     const [modalMessage, setModalMessage] = React.useState('');
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+
 
     console.log("[UserProfile->state:myCars]",myCars)
     console.log("[UserProfile->state:myCarsBookInfo]:",myCarsBookInfo)
@@ -312,6 +313,7 @@ var userData = {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `${token}`
           },
           body: JSON.stringify(formData),
         });

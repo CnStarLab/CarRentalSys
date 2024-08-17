@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"carRentalSys/models"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -28,8 +29,10 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
+		fmt.Println("[JWT Auth]Email:", claims.Email)
+		fmt.Println("[JWT Auth]ID:", claims.ID)
 		c.Set("Email", claims.Email)
+		c.Set("ID", claims.ID)
 		c.Next()
 	}
 }

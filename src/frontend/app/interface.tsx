@@ -62,6 +62,7 @@ export interface AuthContextType {
         ) => void;
   avatar?: string;
   userId: string;
+  token: string;
 }
 
 export interface Order {

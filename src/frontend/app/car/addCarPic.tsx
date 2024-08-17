@@ -2,6 +2,7 @@ import { Button } from "@mui/material";
 import React from "react";
 import Modal from "./alert";
 import { Car } from '../interface' 
+import { useAuth } from "../hook/AuthContext";
 
 interface AddCarPicsProps {
   handleNext: () => void;
@@ -13,6 +14,7 @@ export default function AddCarPics({ handleNext, setCurrCarInfo, currCarInfo }: 
     const [modalMessage, setModalMessage] = React.useState('');
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [Pics, setPics] = React.useState<string[]>([]);
+    const {token } = useAuth()
     console.log("[AddCarPics->state:Pics]: ", Pics)
 
 
@@ -38,6 +40,7 @@ export default function AddCarPics({ handleNext, setCurrCarInfo, currCarInfo }: 
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `${token}`,
           },
           body: JSON.stringify(formData),
         });

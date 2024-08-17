@@ -231,7 +231,7 @@ func GetCarsWithConds(c *gin.Context) {
 
 	var resultCars models.Cars
 	if err := resultCars.FindByConds(database.DB, &currParams); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, resultCars)

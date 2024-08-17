@@ -2,6 +2,7 @@ package models
 
 import (
 	"carRentalSys/config"
+	"fmt"
 	"time"
 
 	"errors"
@@ -124,6 +125,7 @@ func (u *User) ValidatePassword(password string) bool {
 // ==============================Token=======================================//
 func (u *User) GenerateToken() (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
+	fmt.Println("[Gen Token] UserId", u.ID, "  Email:", u.Email)
 	claims := &JWTClaims{
 		ID:    u.ID,
 		Email: u.Email,
