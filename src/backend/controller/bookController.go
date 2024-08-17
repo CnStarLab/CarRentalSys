@@ -25,6 +25,12 @@ import (
 // @Failure 500 {string} string "Internal server error"
 // @Router /api/v1/service/user/bookCar [post]
 func BookNewCar(c *gin.Context) {
+	var rentRequest models.UserCar
+	if err := c.ShouldBindJSON(&rentRequest); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	//1.Get Current User
 	var currUser models.User
 	currUserID, userExist := c.Get("ID")
@@ -32,11 +38,13 @@ func BookNewCar(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Auth middleware bugs!"})
 		return
 	}
-	currUser.ID = currUserID.(uint) //assert into uint
+	currUser.ID = currUserID.(uint) //assert from any into uint
 
-	var rentRequest models.UserCar
-	if err := c.ShouldBindJSON(&rentRequest); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	//2.Forbidden rent user slef car.
+	currUser.FindByID(database.DB, currUser.ID)
+
+	if exist, _ := currUser.SearchOwnCar(database.DB); exist {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Can't rent yourself car.", "code": "-2"})
 		return
 	}
 

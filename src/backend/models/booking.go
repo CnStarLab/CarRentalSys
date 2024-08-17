@@ -42,7 +42,7 @@ type SetCarAvailRequest struct {
 	Available *bool  `json:"available" binding:"required"`
 }
 
-// ============================================================================//
+// ============================Function for service====================================//
 func BookCar(db *gorm.DB, userId uint, carID uint, startTime time.Time, endTime time.Time, reason string) (uint, error) {
 	var car Car
 	if err := db.First(&car, carID).Error; err != nil {
@@ -99,6 +99,8 @@ func FindBookInfoByBookId(db *gorm.DB, bookId uint64) (UserCar, error) {
 	}
 	return curr, nil
 }
+
+// ======================Function of Types===============================================//
 
 func (u *UserCar) UpdateStatus(db *gorm.DB, newStatus uint8) error {
 	u.Status = newStatus
