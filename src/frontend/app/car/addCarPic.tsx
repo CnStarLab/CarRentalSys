@@ -40,7 +40,7 @@ export default function AddCarPics({ handleNext, setCurrCarInfo, currCarInfo }: 
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `${token}`,
+            'Authorization': token,
           },
           body: JSON.stringify(formData),
         });

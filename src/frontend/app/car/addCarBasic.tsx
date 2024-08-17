@@ -107,12 +107,11 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}:AddCarPicsProps)
       };
     
       try {
-        console.log("token:",token)
         const response = await fetch('http://localhost:8080/api/v1/cars/info/createCarBasic', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `${token}`,
+            'Authorization': token,
           },
           body: JSON.stringify(formData),
         });
