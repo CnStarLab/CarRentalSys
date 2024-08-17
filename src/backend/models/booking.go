@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// =======================Structure for database mapping ==============================//
+// =======================1.Structure for database mapping ==============================//
 type UserCar struct {
 	gorm.Model
 	UserId    uint      `json:"UserId"`
@@ -21,7 +21,7 @@ type UserCar struct {
 	TotalPrice uint64 `json:"totalPrice"`
 }
 
-//=======================Structure for service==================================//
+//=======================2.Structure for service==================================//
 
 type Logs []UserCar
 
@@ -42,7 +42,7 @@ type SetCarAvailRequest struct {
 	Available *bool  `json:"available" binding:"required"`
 }
 
-// ============================Function for service====================================//
+// ============================3.Function for service====================================//
 func BookCar(db *gorm.DB, userId uint, carID uint, startTime time.Time, endTime time.Time, reason string) (uint, error) {
 	var car Car
 	if err := db.First(&car, carID).Error; err != nil {
@@ -73,25 +73,6 @@ func BookCar(db *gorm.DB, userId uint, carID uint, startTime time.Time, endTime 
 	return userCar.ID, nil
 }
 
-func ReturnCar(db *gorm.DB, userId, carID uint) error {
-
-	var car Car
-	if err := db.First(&car, carID).Error; err != nil {
-		return ErrCarNotFound
-	}
-
-	var userCar UserCar
-	if err := db.Where("userId = ? AND car_id = ?", userId, carID).First(&userCar).Error; err != nil {
-		return ErrUserCarNotFound
-	}
-
-	if err := db.Delete(&userCar).Error; err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func FindBookInfoByBookId(db *gorm.DB, bookId uint64) (UserCar, error) {
 	var curr UserCar
 	if err := db.Where("id = ?", bookId).First(&curr).Error; err != nil {
@@ -100,7 +81,7 @@ func FindBookInfoByBookId(db *gorm.DB, bookId uint64) (UserCar, error) {
 	return curr, nil
 }
 
-// ======================Function of Types===============================================//
+// ======================4.Function of Types===============================================//
 
 func (u *UserCar) UpdateStatus(db *gorm.DB, newStatus uint8) error {
 	u.Status = newStatus
@@ -124,6 +105,14 @@ func (l *Logs) FindBookInfoByUserId(db *gorm.DB, userId uint64) error {
 	//emprty slice
 	if len(*l) == 0 {
 		return ErrNoBookInfoExist
+	}
+	return nil
+}
+
+func (l *UserCar) FindBookInfoByBookId(db *gorm.DB, bookId uint) error {
+	fmt.Println(bookId)
+	if err := db.Where("id = ?", bookId).First(&l).Error; err != nil {
+		return ErrUserCarNotFound
 	}
 	return nil
 }

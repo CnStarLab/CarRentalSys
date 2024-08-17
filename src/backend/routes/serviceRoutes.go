@@ -19,7 +19,7 @@ func BookingRoutes(router *gin.Engine) {
 		v1.GET("/service/info/ownerId/:id", controller.GetBookInfoByOwnerId)           //get book info with OwnerId
 		v1.GET("/service/info/userId/:id", controller.GetBookInfoByUserId)             //get book info with OwnerId
 		v1.POST("/service/user/bookCar", middleware.JWTAuth(), controller.BookNewCar)  //Book a new car.
-		v1.POST("/service/user/returnCar", controller.ReturnCar)                       //Return a car.
+		v1.POST("/service/user/returnCar", middleware.JWTAuth(), controller.ReturnCar) //Return a car.
 		v1.POST("/service/user/addComment")                                            //Add comment for a car.
 		v1.POST("/service/user/add2Favorite")                                          //Add this car to favorite list.
 		v1.POST("/service/owner/addComment")                                           //Add comment to user from car owner.

@@ -4,6 +4,7 @@ import (
 	"carRentalSys/database"
 	"carRentalSys/models"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -39,10 +40,12 @@ func BookNewCar(c *gin.Context) {
 		return
 	}
 	currUser.ID = currUserID.(uint) //assert from any into uint
+	if err := currUser.FindByID(database.DB, currUser.ID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bugs! user not found.", "code": "-3"})
+		return
+	}
 
 	//2.Forbidden rent user slef car.
-	currUser.FindByID(database.DB, currUser.ID)
-
 	if exist, _ := currUser.SearchOwnCar(database.DB); exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Can't rent yourself car.", "code": "-2"})
 		return
@@ -86,22 +89,45 @@ func ReturnCar(c *gin.Context) {
 		return
 	}
 
-	err := models.ReturnCar(database.DB, returnRequest.UserId, returnRequest.CarID)
-	if err != nil {
-		switch err {
-		case models.ErrUserNotFound:
-			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
-		case models.ErrCarNotFound:
-			c.JSON(http.StatusNotFound, gin.H{"error": "Car not found"})
-		case models.ErrUserCarNotFound:
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Realation between User and Car not found"})
-		default:
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
-		}
+	var currUser models.User
+	var currOrder models.UserCar
+
+	//1.Get curr user and order info
+	currUserID, userExist := c.Get("ID")
+	if !userExist {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Auth middleware bugs!"})
+		return
+	}
+	currUser.ID = currUserID.(uint) //assert from any into uint
+	if err := currUser.FindByID(database.DB, currUser.ID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bugs! user not found.", "code": "-3"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Car rented successfully"})
+	//2.Check if this user can operate this order.
+	if err := currOrder.FindBookInfoByBookId(database.DB, returnRequest.ID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "code": "-1"})
+		return
+	}
+
+	if currUser.ID != currOrder.UserId { //2.1 check if curr user's order
+		c.JSON(http.StatusBadRequest, gin.H{"error": "you can't operate this order!", "code": "-4"})
+		return
+	}
+
+	if currOrder.Status != 4 { //2.2 check if curr order is able to return
+		fmt.Println(currUserID, currOrder.UserId)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Not the time for return request", "code": "-6"})
+		return //actually we can move this logic to `1` but for better standard, we ignore extra condition costs.
+	}
+
+	//3.Return Car Operation.
+	if err := currOrder.Delete(database.DB); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "code": "-5"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Car retured successfully"})
 }
 
 // @Summary Approve a booking request
