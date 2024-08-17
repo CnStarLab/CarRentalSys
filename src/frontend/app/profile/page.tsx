@@ -7,7 +7,7 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from '@mui/material';
-import { Edit, Delete, Details, ExpandMore, Payment } from '@mui/icons-material';
+import { Edit, Delete, Details, ExpandMore, Payment, Info } from '@mui/icons-material';
 import { useAuth } from '../hook/AuthContext';
 import Modal from '../login/alert';
 import UploadPhoto from '../components/userAvatarUpload';
@@ -533,16 +533,28 @@ var userData = {
                       </Grid>
                     </CardContent>
                     <CardActions>
-                      <Link href={`/rent?carId=${encodeURIComponent(order.carId)}&bookId=${encodeURIComponent(order.ID)}`}>
-                        <Button color="primary" startIcon={<Payment />}>Pay for your order</Button>
-                      </Link>            
+                      {order.status == 1 && (
+                        <Link href={`/rent?carId=${encodeURIComponent(order.carId)}&bookId=${encodeURIComponent(order.ID)}`}>
+                          <Button color="primary" startIcon={<Payment />}>Pay for your order</Button>
+                        </Link>
+                      )}
+                      <Link href={`/cardetail?carId=${encodeURIComponent(order.carId)}`}>
+                          <Button
+                            color="primary"
+                            id={`${order.ID}`} // 将 number 转换为 string
+                            startIcon={<Info />}
+                          >
+                            Car Info
+                          </Button>
+                      </Link> 
+
                       <Button
                         color="secondary"
                         id={`${order.ID}`} // 将 number 转换为 string
                         onClick={handleUserDecline}
                         startIcon={<Delete />}
                       >
-                        Delete
+                        Decline
                       </Button>
                       <Box ml="auto" /> {/* Keeps this for potential right-aligned content */}
                     </CardActions>
