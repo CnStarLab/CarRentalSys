@@ -69,17 +69,17 @@ func CreateUser(db *gorm.DB, user *User) error {
 }
 
 // hash
-func HashPassword(user *User) error {
+func (u *User) HashPassword() error {
 	// Check if the passwd is empty
-	if user.Password == "" {
+	if u.Password == "" {
 		return errors.New("password cannot be empty")
 	}
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
-	user.Password = string(hashedPassword)
+	u.Password = string(hashedPassword)
 
 	return nil
 }
