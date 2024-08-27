@@ -66,7 +66,8 @@ func CreateUser(db *gorm.DB, user *User) error {
 	return db.Create(user).Error
 }
 
-// Encryp
+// hash
+
 func (u *User) EncryptPassword() error {
 	// Check if the passwd is empty
 	if u.Password == "" {
@@ -156,5 +157,8 @@ func (u *User) GenerateToken() (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(config.JwtSecret)
+}
+
 	return token.SignedString(config.JwtSecret)
 }
