@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"errors"
-
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
