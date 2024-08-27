@@ -12,10 +12,12 @@ export default function Logo() {
     <Link href="/">
       <Image src="/logo.svg" alt="Logo" width={100} height={100} style={{
           position: 'absolute',
-          left: '20px',
-          top: '0',
-          maxWidth: '400px',
-          maxHeight: '400px',
+          left: '300px',
+          top: '-10px',
+          width:'150px',
+          height:'100px',
+          maxWidth: '600px',
+          maxHeight: '600px',
         }}/>
     </Link>
 

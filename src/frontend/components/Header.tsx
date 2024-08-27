@@ -1,13 +1,12 @@
 'use client'
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Logo from './Logo';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../hooks/AuthContext';
 import { Button } from '@mui/material';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 
 interface AuthContext {
     username: string;
@@ -15,11 +14,12 @@ interface AuthContext {
     logout: () => void;
     avatar?: string;
 }
-  
+
 export default function Header() {
     const { username, isLoggedIn, logout, avatar } = useAuth() as AuthContext;
     const router = useRouter();
     const [clientOnly, setClientOnly] = useState(false);
+    const [dropdownVisible, setDropdownVisible] = useState(false);
 
     useEffect(() => {
         setClientOnly(true);
@@ -34,10 +34,18 @@ export default function Header() {
         router.push('/');
     };
 
+    const toggleDropdown = () => {
+        setDropdownVisible(!dropdownVisible);
+    };
+
+    const closeDropdown = () => {
+        setDropdownVisible(false);
+    };
+
     const headerStyle: React.CSSProperties = {
         position: 'relative',
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start', // 修改为 flex-start
         alignItems: 'center',
         padding: '20px',
         backgroundColor: 'transparent'
@@ -64,51 +72,95 @@ export default function Header() {
     const iconsStyle: React.CSSProperties = {
         display: 'flex',
         alignItems: 'center',
-        gap: '10px'
+        gap: '10px',
+        position: 'relative',
+        marginLeft: '1900px' 
     };
 
     const iconButtonStyle: React.CSSProperties = {
         background: 'none',
         border: 'none',
         fontSize: '20px',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        marginLeft:'40px',
+        marginRight:'40px'
     };
 
     const avatarStyle: React.CSSProperties = {
         borderRadius: '50%',
-        marginRight: '10px'
+        cursor: 'pointer'
+    };
+
+    const dropdownStyle: React.CSSProperties = {
+        display: dropdownVisible ? 'block' : 'none',
+        position: 'absolute',
+        right: 0,
+        top: '160%',
+        backgroundColor: '#fff',
+        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+        borderRadius: '4px',
+        zIndex: 1000,
+        minWidth: '250px'
+    };
+
+    const dropdownItemStyle: React.CSSProperties = {
+        padding: '10px 20px',
+        cursor: 'pointer',
+        borderBottom: '1px solid #f0f0f0',
+        textDecoration: 'none',
+        color: 'black',
+        display: 'flex', // 使用 flex 布局
+        alignItems: 'center', // 垂直居中对齐
+        gap: '10px' // 图标和文字之间的间距
     };
 
     return (
         <header style={headerStyle}>
             <Logo />
-            <div style={navContainerStyle}>
-                <div style={navStyle}>
-                    <Link href="#" style={navLinkStyle}>Vehicles</Link>
-                    <Link href="#" style={navLinkStyle}>Energy</Link>
-                    <Link href="/rent" style={navLinkStyle}>Rent</Link>
-                    <Link href="/browser" style={navLinkStyle}>Discover</Link>
-                    <Link href="#" style={navLinkStyle}>Shop</Link>
-                </div>
-            </div>
+
             <div style={iconsStyle}>
-                <button style={iconButtonStyle}>🌍</button>
-                <button style={iconButtonStyle}>❔</button>
-                {clientOnly && isLoggedIn ? (
-                    <>
-                        <Link style={navLinkStyle} href="/profile">
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <Image
-                                    src={avatar || '/default-avatar.png'} // 使用默认头像
-                                    alt="Avatar"
-                                    width={30} // 设置头像宽度
-                                    height={30} // 设置头像高度
-                                    style={avatarStyle}
-                                />
-                                <div>Welcome, {username}!</div>
-                            </div>
-                        </Link>
-                        <Button style={iconButtonStyle} onClick={handleLogout}>
+                {!isLoggedIn && clientOnly && ( // 只在未登录时显示登录按钮
+                    <button style={iconButtonStyle} onClick={handleSignIn}>Login</button>
+                )}
+                    <div style={{ display: 'flex', alignItems: 'center' }} onClick={toggleDropdown}>
+                        <Image
+                            src={avatar || '/default-avatar.png'}
+                            alt="Avatar"
+                            width={30}
+                            height={30}
+                            style={avatarStyle}
+                        />
+                    </div>
+                    <div style={dropdownStyle}>
+                        <div style={dropdownItemStyle}>
+                            <span>👤</span>
+                            <Button onClick={toggleDropdown} href="/profile" style={{ color: 'inherit', textDecoration: 'none' }}>aaa</Button>
+                        </div>
+                        <div style={dropdownItemStyle}>
+                            <span>🔔</span>
+                            <Button onClick={toggleDropdown} href="/notifications" style={{ color: 'inherit', textDecoration: 'none' }}>bbb</Button>
+                        </div>
+                        <div style={dropdownItemStyle}>
+                            <span>🚗</span>
+                            <Button onClick={toggleDropdown} href="/my-vehicles" style={{ color: 'inherit', textDecoration: 'none' }}>ccc</Button>
+                        </div>
+                        <div style={dropdownItemStyle}>
+                            <span>📜</span>
+                            <Button onClick={toggleDropdown} href="/rental-history" style={{ color: 'inherit', textDecoration: 'none' }}>ddd</Button>
+                        </div>
+                        <div style={dropdownItemStyle}>
+                            <span>📦</span>
+                            <Button onClick={toggleDropdown} href="/order-history" style={{ color: 'inherit', textDecoration: 'none' }}>eee</Button>
+                        </div>
+                        <div style={dropdownItemStyle}>
+                            <span>❤️</span>
+                            <Button onClick={toggleDropdown} href="/saved-vehicles" style={{ color: 'inherit', textDecoration: 'none' }}>fff</Button>
+                        </div>
+                        <div style={dropdownItemStyle}>
+                            <span>📝</span>
+                            <Button onClick={toggleDropdown} href="/terms" style={{ color: 'inherit', textDecoration: 'none' }}>ggg</Button>
+                        </div>
+                        <div style={dropdownItemStyle} onClick={handleLogout}>
                             <Image
                                 src='/logout.svg'
                                 alt="Logout"
@@ -116,19 +168,10 @@ export default function Header() {
                                 height={20} // 设置图标高度
                                 title="sign out"
                             />
-                        </Button>
-                    </>
-                ) : (
-                    clientOnly && <Button style={iconButtonStyle} onClick={handleSignIn}>
-                        <Image
-                            src='login.svg'
-                            alt="Login"
-                            width={20} // 设置图标宽度
-                            height={20} // 设置图标高度
-                            title="sign in"
-                        />
-                    </Button>
-                )}
+                            <Button onClick={toggleDropdown} href="/" style={{ color: 'inherit', textDecoration: 'none' }}>sign out</Button>
+                        </div>
+                    </div>
+                <button style={iconButtonStyle}>EN</button>
             </div>
         </header>
     );
