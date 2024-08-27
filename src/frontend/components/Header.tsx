@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import Logo from './Logo';
+import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../hooks/AuthContext';
 import { Button } from '@mui/material';
@@ -20,6 +20,8 @@ export default function Header() {
     const router = useRouter();
     const [clientOnly, setClientOnly] = useState(false);
     const [dropdownVisible, setDropdownVisible] = useState(false);
+
+    const pathname = usePathname();
 
     useEffect(() => {
         setClientOnly(true);
@@ -82,8 +84,8 @@ export default function Header() {
         border: 'none',
         fontSize: '20px',
         cursor: 'pointer',
-        marginLeft:'40px',
-        marginRight:'40px'
+        marginLeft:'30px',
+        marginRight:'30px'
     };
 
     const avatarStyle: React.CSSProperties = {
@@ -119,10 +121,10 @@ export default function Header() {
             <Logo />
 
             <div style={iconsStyle}>
-                {!isLoggedIn && clientOnly && ( // 只在未登录时显示登录按钮
+                {!isLoggedIn && pathname !== '/login' && clientOnly && ( // 只在未登录时显示登录按钮
                     <button style={iconButtonStyle} onClick={handleSignIn}>Login</button>
                 )}
-                    <div style={{ display: 'flex', alignItems: 'center' }} onClick={toggleDropdown}>
+                    <div style={iconButtonStyle} onClick={toggleDropdown}>
                         <Image
                             src={avatar || '/default-avatar.png'}
                             alt="Avatar"

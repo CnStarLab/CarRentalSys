@@ -14,8 +14,8 @@ export default function Logo() {
           position: 'absolute',
           left: '300px',
           top: '-10px',
-          width:'150px',
-          height:'100px',
+          width:'135px',
+          height:'90px',
           maxWidth: '600px',
           maxHeight: '600px',
         }}/>
