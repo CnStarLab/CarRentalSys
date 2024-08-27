@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Logo from './Logo';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../hook/AuthContext';
+import { useAuth } from '../hooks/AuthContext';
 import { Button } from '@mui/material';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';

@@ -8,9 +8,9 @@ import {
   AccordionDetails,
 } from '@mui/material';
 import { Edit, Delete, Details, ExpandMore, Payment, Info } from '@mui/icons-material';
-import { useAuth } from '../hook/AuthContext';
+import { useAuth } from '../../hooks/AuthContext';
 import Modal from '../login/alert';
-import UploadPhoto from '../components/userAvatarUpload';
+import UploadPhoto from '../../components/userAvatarUpload';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Car, Order, UserProfile } from '../interface'
