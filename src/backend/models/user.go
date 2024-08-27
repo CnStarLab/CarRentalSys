@@ -159,6 +159,3 @@ func (u *User) GenerateToken() (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(config.JwtSecret)
 }
-
-	return token.SignedString(config.JwtSecret)
-}
