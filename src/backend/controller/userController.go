@@ -112,7 +112,7 @@ func UserRegister(c *gin.Context) {
 
 	if err := user.EncryptPassword(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
-		return 
+		return // 这里需要返回
 	}
 
 	// 创建用户
