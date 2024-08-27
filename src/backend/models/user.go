@@ -68,32 +68,24 @@ func CreateUser(db *gorm.DB, user *User) error {
 	return db.Create(user).Error
 }
 
-// hash
-func HashString(str string) (string, error) {
-	hash_str, err := bcrypt.GenerateFromPassword([]byte(str), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
-	return string(hash_str), nil
-}
-
-func (u *User) HashPassword() error {
+// Encryp
+func (u *User) EncryptPassword() error {
 	// Check if the passwd is empty
 	if u.Password == "" {
-		return errors.New("password cannot be empty")
+		return fmt.Errorf("module EncryptPassword: password cannot be empty")
 	}
-	hashedPassword, err := HashString(u.Password)
+	encryptedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return err
+		return fmt.Errorf("module EncryptPassword: %v", err)
 	}
-	u.Password = string(hashedPassword)
+	u.Password = string(encryptedPassword)
 	return nil
 }
 
 func ComparePassword(user *User, providedPassword string) (bool, error) {
 	// Check if hashed passwd is empty
 	if user.Password == "" {
-		return false, errors.New("hashed password cannot be empty")
+		return false, fmt.Errorf("module ComparePassword: hashed password cannot be empty")
 	}
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(providedPassword))
 	if err != nil {
@@ -101,7 +93,7 @@ func ComparePassword(user *User, providedPassword string) (bool, error) {
 		if err == bcrypt.ErrMismatchedHashAndPassword {
 			return false, nil
 		}
-		return false, err
+		return false, fmt.Errorf("module ComparePassword: %v", err)
 	}
 
 	return true, nil
