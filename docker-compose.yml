@@ -17,8 +17,16 @@ services:
     ports:
       - "8080:8080"
       - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     depends_on:
       - db
+    volumes:
+      - .:/app
     environment:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: 513513
@@ -27,6 +35,18 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_SSLMODE: disable
 
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db
 
 volumes:
   db-data16:
+  pgadmin-data:

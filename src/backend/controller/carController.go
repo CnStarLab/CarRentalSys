@@ -231,7 +231,7 @@ func GetCarsWithConds(c *gin.Context) {
 
 	var resultCars models.Cars
 	if err := resultCars.FindByConds(database.DB, &currParams); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, resultCars)
@@ -294,7 +294,7 @@ func GetCarInvalidDate(c *gin.Context) {
 // @Failure 500 {string} string "Internal server error"
 // @Router /api/v1/cars/setAvail [post]
 func SetCarAvailByOwner(c *gin.Context) {
-	var currRequest SetCarAvailRequest
+	var currRequest models.SetCarAvailRequest
 	if err := c.ShouldBindJSON(&currRequest); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

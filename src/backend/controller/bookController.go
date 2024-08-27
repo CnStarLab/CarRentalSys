@@ -31,6 +31,23 @@ func BookNewCar(c *gin.Context) {
 		return
 	}
 
+	//1.Get Current User
+	var currUser models.User
+	currUserID, userExist := c.Get("ID")
+	if !userExist {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Auth middleware bugs!"})
+		return
+	}
+	currUser.ID = currUserID.(uint) //assert from any into uint
+
+	//2.Forbidden rent user slef car.
+	currUser.FindByID(database.DB, currUser.ID)
+
+	if exist, _ := currUser.SearchOwnCar(database.DB); exist {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Can't rent yourself car.", "code": "-2"})
+		return
+	}
+
 	id, err := models.BookCar(database.DB, rentRequest.UserId, rentRequest.CarID, rentRequest.StartTime, rentRequest.EndTime, rentRequest.Reason)
 	if err != nil {
 		switch err {

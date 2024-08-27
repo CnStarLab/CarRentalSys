@@ -29,6 +29,8 @@ interface DateRange {
 }
 
 export default function StageRequest_st1({handleNext,setCurrBookInfo}:StageRequest_st1Props) {
+    const {token} = useAuth()
+
     // 定义错误状态的类型
     type Errors = {
       brand?: boolean;
@@ -101,6 +103,7 @@ export default function StageRequest_st1({handleNext,setCurrBookInfo}:StageReque
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': token
           },
           body: JSON.stringify(formData),
         });

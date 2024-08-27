@@ -84,7 +84,7 @@ export default function CarDetailComponent(){
     
                 <Grid item xs={12} md={6}>
                     <Typography variant="h4" component="div">
-                        {car.brand + car.model}
+                        {car.brand + ' '+ car.model}
                     </Typography>
                     <Rating value={4.5} precision={0.5} readOnly />
                     <Typography variant="h6" component="div" sx={{ marginTop: '10px' }}>

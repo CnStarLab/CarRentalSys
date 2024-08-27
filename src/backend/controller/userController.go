@@ -38,13 +38,18 @@ func UserLogin(c *gin.Context) {
 	}
 
 	// Compare the provided password with the stored password
-	if !dbUser.ValidatePassword(user.Password) {
+	match, err := models.ComparePassword(&dbUser, user.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if !match {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 		return
 	}
 
 	// Genetate Signed JWT
-	token, err := user.GenerateToken()
+	token, err := dbUser.GenerateToken()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
@@ -66,14 +71,14 @@ func UserLogin(c *gin.Context) {
 // @Router /api/v1/user/getProfile/{id} [get]
 func GetUserProfile(c *gin.Context) {
 	idParam := c.Param("id")
-	userID, err := strconv.ParseUint(idParam, 10, 32)
+	userID, err := strconv.ParseUint(idParam, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
 	var existingUser models.User
-	if err := existingUser.FindByID(database.DB, userID); err != nil {
+	if err := existingUser.FindByID(database.DB, uint(userID)); err != nil {
 		if errors.Is(err, models.ErrUserNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
@@ -99,11 +104,15 @@ func GetUserProfile(c *gin.Context) {
 // @Router       /api/v1/user/register [post]
 func UserRegister(c *gin.Context) {
 	var user models.User
-
 	// 绑定 JSON 请求体到 user 对象
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	if err := models.HashPassword(&user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+		return // 这里需要返回
 	}
 
 	// 创建用户
@@ -138,7 +147,7 @@ func UpdateUserProfile(c *gin.Context) {
 
 	// Get User Id and change to uint64
 	idParam := c.Param("id")
-	userID, err := strconv.ParseUint(idParam, 10, 32)
+	userID, err := strconv.ParseUint(idParam, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
@@ -146,7 +155,7 @@ func UpdateUserProfile(c *gin.Context) {
 
 	// Search existing User
 	var existingUser models.User
-	if err := existingUser.FindByID(database.DB, userID); err != nil {
+	if err := existingUser.FindByID(database.DB, uint(userID)); err != nil {
 		if errors.Is(err, models.ErrUserNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return

@@ -36,22 +36,22 @@ export default function AddCarProgressControl() {
       setSkipped(newSkipped);
     };
   
-    const handleBack = () => {
-      setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
+    // const handleBack = () => {
+    //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    // };
   
-    const handleSkip = () => {
-      if (!isStepOptional(activeStep)) {
-        throw new Error("You can't skip a step that isn't optional.");
-      }
+    // const handleSkip = () => {
+    //   if (!isStepOptional(activeStep)) {
+    //     throw new Error("You can't skip a step that isn't optional.");
+    //   }
   
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-      setSkipped((prevSkipped) => {
-        const newSkipped = new Set(prevSkipped.values());
-        newSkipped.add(activeStep);
-        return newSkipped;
-      });
-    };
+    //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    //   setSkipped((prevSkipped) => {
+    //     const newSkipped = new Set(prevSkipped.values());
+    //     newSkipped.add(activeStep);
+    //     return newSkipped;
+    //   });
+    // };
   
     const handleReset = () => {
       setActiveStep(0);
@@ -59,11 +59,12 @@ export default function AddCarProgressControl() {
   
     const renderStepContent = (step: number) => {
       console.log("[AddCarProgressControl->renderStepContent->state:currCarInfo]: ",currCarInfo)
-      if (!currCarInfo) {
-        return null; // 或者返回一些默认的 JSX 元素
-      }
+      // if (!currCarInfo) {
+      //   return null; // 或者返回一些默认的 JSX 元素
+      // }
       switch (step) {
         case 0:
+          return <AddCarBasic handleNext={handleNext} setCurrCarInfo={setCurrCarInfo} />;
         case 1:
           return <AddCarPics handleNext={handleNext} setCurrCarInfo={setCurrCarInfo} currCarInfo={currCarInfo}/>;
         case 2:

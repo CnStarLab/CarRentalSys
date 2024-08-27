@@ -52,6 +52,7 @@ export const AuthProvider = ({ children }: ProtectedRouteProps) => {
       logout,
       userId,
       avatar,
+      token,
     }),
     [username]
   );

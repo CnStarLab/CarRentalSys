@@ -23,6 +23,7 @@ interface AddCarPicsProps {
 }
 
 export default function AddCarBasic({handleNext,setCurrCarInfo}:AddCarPicsProps) {
+
     // 定义错误状态的类型
     type Errors = {
       brand?: boolean;
@@ -56,7 +57,7 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}:AddCarPicsProps)
 
     const [modalMessage, setModalMessage] = React.useState('');
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const {userId, username} = useAuth()
+    const {userId, username, token } = useAuth()    // Auth
     
     const boolChoice = [
       {
@@ -110,6 +111,7 @@ export default function AddCarBasic({handleNext,setCurrCarInfo}:AddCarPicsProps)
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': token,
           },
           body: JSON.stringify(formData),
         });
