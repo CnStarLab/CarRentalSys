@@ -145,12 +145,12 @@ export default function StageRequest_st1({handleNext,setCurrBookInfo}:StageReque
     }
 
     const isDateDisabled = (date: Date): boolean => {
-      if (JsonData != null) {
+      if (Array.isArray(JsonData) && JsonData != null) {
         return JsonData.some(range => {
           return date >= new Date(range.startTime) && date <= new Date(range.endTime);
         });
       }
-      // Return false explicitly when no date is disabled
+      // 如果 JsonData 不是数组或者为 null，返回 false
       return false;
     };    
 

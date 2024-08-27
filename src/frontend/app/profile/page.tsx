@@ -300,7 +300,7 @@ var userData = {
       }
     }
 
-    const onChangeCarAvail = async(event)=>{
+    const onChangeCarAvail = async(event: { preventDefault: () => void; currentTarget: { id: string; checked: any; }; })=>{
       event.preventDefault();
       const formData : { carId: number; available: boolean } ={
         carId:  parseInt(event.currentTarget.id, 10),
@@ -328,7 +328,11 @@ var userData = {
     
         setModalMessage(result.message || 'Success!');
       } catch (error) {
-        setModalMessage(`Error: ${error.message}`);
+        if (error instanceof Error) {
+          setModalMessage(`Error: ${error.message}`);
+        } else {
+          setModalMessage('An unknown error occurred');
+        }
       } finally {
         setIsModalOpen(true);
       }
@@ -612,7 +616,7 @@ var userData = {
                       <Button color="secondary" startIcon={<Delete />}>Delete</Button>
                       <Button color="primary">Car Detail</Button>
                       <Box ml="auto">
-                        <Switch id={car.ID} onChange={onChangeCarAvail} defaultChecked={car.available === "Active"} />
+                        <Switch id={car.ID.toString()} onChange={onChangeCarAvail} defaultChecked={car.available} />
                       </Box>
                     </CardActions>
                   </Card>
