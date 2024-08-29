@@ -14,6 +14,7 @@ import UploadPhoto from '../../components/userAvatarUpload';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Car, Order, UserProfile } from '../interface'
+import Sidebar from '@/components/SiderBar';
 
 var userData = {
     notifications: {
@@ -364,7 +365,9 @@ var userData = {
   
 
     return (
+      
       <Container style={styles.container}>
+        <Sidebar />
         {/* Profile Section */}
         <Box component="form" onSubmit={handleSubmit} my={4}>
           <Typography variant="h4" gutterBottom>Profile</Typography>

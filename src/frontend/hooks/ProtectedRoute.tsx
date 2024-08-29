@@ -10,11 +10,11 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    if (!isLoggedIn && pathname !== '/' && pathname !== '/login' && pathname !== '/authwarn' && pathname !== '/register'&& pathname !== '/health') {
-      router.push('/authwarn');
-    }
-  }, [isLoggedIn, router, pathname]);
+  // useEffect(() => {
+  //   if (!isLoggedIn && pathname !== '/' && pathname !== '/login' && pathname !== '/authwarn' && pathname !== '/register'&& pathname !== '/health') {
+  //     router.push('/authwarn');
+  //   }
+  // }, [isLoggedIn, router, pathname]);
 
   return children;
 };

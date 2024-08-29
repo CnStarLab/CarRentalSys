@@ -132,3 +132,11 @@ export interface BookInfo {
   reason: number;
   totalPrice: number;
 }
+
+export interface Notification {
+  id: number;
+  message: string;
+  timeAgo: string;
+  carModel: string;
+  read: boolean;
+}
