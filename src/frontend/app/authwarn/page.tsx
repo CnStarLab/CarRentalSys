@@ -12,11 +12,10 @@ export default function AuthWarn(){
         router.push('/');
     };
 
-    useEffect(() => {
-        if (open === false) {
-            router.push('/');
-        }
-    }, [open, router]);
+    const handleSignIn = () => {
+        setOpen(false);
+        router.push('/login');
+    };
 
     const modalStyle = {
         position: 'absolute',
@@ -46,6 +45,9 @@ export default function AuthWarn(){
                 </Typography>
                 <Button onClick={handleClose} sx={{ mt: 2 }}>
                     Close
+                </Button>
+                <Button onClick={handleSignIn} sx={{ mt: 2, ml:12 }}>
+                    Sign in
                 </Button>
             </Box>
         </Modal>

@@ -22,11 +22,9 @@ export default function Header() {
   const [clientOnly, setClientOnly] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  const pathname = usePathname();
-
-//   useEffect(() => {
-//     setClientOnly(true);
-//   }, []);
+  useEffect(() => {
+    setClientOnly(true);
+  }, []);
 
   const handleSignIn = () => {
     router.push("/login");
@@ -39,10 +37,6 @@ export default function Header() {
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
-  };
-
-  const closeDropdown = () => {
-    setDropdownVisible(false);
   };
 
   const headerStyle: React.CSSProperties = {
@@ -121,7 +115,7 @@ export default function Header() {
       <Logo />
 
       <div style={iconsStyle}>
-        {isLoggedIn || pathname === "/login" || !clientOnly ? (
+        {isLoggedIn? (
           <NotificationBell />
         ) : (
           <button style={iconButtonStyle} onClick={handleSignIn}>
