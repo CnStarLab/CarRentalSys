@@ -35,6 +35,11 @@ export default function Header() {
     router.push("/");
   };
 
+  const handleNavigate = (activeItem:number) => {
+    setDropdownVisible(!dropdownVisible);
+    router.push(`/mylist?activeItem=${activeItem}`);
+  };
+
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
@@ -115,7 +120,7 @@ export default function Header() {
       <Logo />
 
       <div style={iconsStyle}>
-        {isLoggedIn? (
+        {true? (
           <NotificationBell />
         ) : (
           <button style={iconButtonStyle} onClick={handleSignIn}>
@@ -135,8 +140,7 @@ export default function Header() {
           <div style={dropdownItemStyle}>
             <span>👤</span>
             <Button
-              onClick={toggleDropdown}
-              href="/profile"
+              onClick={() => handleNavigate(0)}
               style={{ color: "inherit", textDecoration: "none" }}
             >
               aaa
@@ -145,8 +149,7 @@ export default function Header() {
           <div style={dropdownItemStyle}>
             <span>🔔</span>
             <Button
-              onClick={toggleDropdown}
-              href="/notifications"
+              onClick={() => handleNavigate(1)}
               style={{ color: "inherit", textDecoration: "none" }}
             >
               bbb
@@ -155,8 +158,7 @@ export default function Header() {
           <div style={dropdownItemStyle}>
             <span>🚗</span>
             <Button
-              onClick={toggleDropdown}
-              href="/my-vehicles"
+              onClick={() => handleNavigate(2)}
               style={{ color: "inherit", textDecoration: "none" }}
             >
               ccc
@@ -165,8 +167,7 @@ export default function Header() {
           <div style={dropdownItemStyle}>
             <span>📜</span>
             <Button
-              onClick={toggleDropdown}
-              href="/rental-history"
+              onClick={() => handleNavigate(3)}
               style={{ color: "inherit", textDecoration: "none" }}
             >
               ddd
@@ -175,8 +176,7 @@ export default function Header() {
           <div style={dropdownItemStyle}>
             <span>📦</span>
             <Button
-              onClick={toggleDropdown}
-              href="/order-history"
+              onClick={() => handleNavigate(4)}
               style={{ color: "inherit", textDecoration: "none" }}
             >
               eee
@@ -185,8 +185,7 @@ export default function Header() {
           <div style={dropdownItemStyle}>
             <span>❤️</span>
             <Button
-              onClick={toggleDropdown}
-              href="/saved-vehicles"
+              onClick={() => handleNavigate(5)}
               style={{ color: "inherit", textDecoration: "none" }}
             >
               fff
@@ -195,8 +194,7 @@ export default function Header() {
           <div style={dropdownItemStyle}>
             <span>📝</span>
             <Button
-              onClick={toggleDropdown}
-              href="/terms"
+              onClick={() => handleNavigate(6)}
               style={{ color: "inherit", textDecoration: "none" }}
             >
               ggg

@@ -367,7 +367,6 @@ var userData = {
     return (
       
       <Container style={styles.container}>
-        <Sidebar />
         {/* Profile Section */}
         <Box component="form" onSubmit={handleSubmit} my={4}>
           <Typography variant="h4" gutterBottom>Profile</Typography>

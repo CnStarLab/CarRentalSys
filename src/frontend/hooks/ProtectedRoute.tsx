@@ -11,13 +11,14 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const pathname = usePathname();
   const [renderChildren, setRenderChildren] = useState(false);
 
-  useEffect(() => {
-    if (!isLoggedIn && pathname !== '/' && pathname !== '/login' && pathname !== '/authwarn' && pathname !== '/register' && pathname !== '/health') {
-      router.push('/authwarn');
-    } else {
-      setRenderChildren(true);
-    }
-  }, [isLoggedIn, router, pathname]);
+  // useEffect(() => {
+  //   if (!isLoggedIn && pathname !== '/' && pathname !== '/login' && pathname !== '/authwarn' && pathname !== '/register' && pathname !== '/health') {
+  //     router.push('/authwarn');
+  //   } else {
+  //     setRenderChildren(true);
+  //   }
+  // }, [isLoggedIn, router, pathname]);
 
-  return renderChildren ? children : null;
+  // return renderChildren ? children : null;
+  return children;
 };
