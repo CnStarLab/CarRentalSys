@@ -6,6 +6,7 @@ import { Button } from "@mui/material";
 
 // 导入各个页面组件
 import UserPage from "../../components/profile/profile";
+import Notification from "../../components/notification/Notification";
 import React from "react";
 
 export default function Mylist() {
@@ -44,7 +45,7 @@ export default function Mylist() {
 
   const items = [
     { icon: "👤", label: "Profile", component: UserPage },
-    { icon: "🔔", label: "Notification", component: UserPage },
+    { icon: "🔔", label: "Notification", component: Notification },
     { icon: "🚗", label: "ccc", component: UserPage },
     { icon: "📜", label: "ddd", component: UserPage },
     { icon: "📦", label: "eee", component: UserPage },
