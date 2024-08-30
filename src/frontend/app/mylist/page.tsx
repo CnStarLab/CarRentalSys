@@ -5,7 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@mui/material";
 
 // 导入各个页面组件
-import UserPage from "../profile/page";
+import UserPage from "../../components/profile/profile";
+import React from "react";
 
 export default function Mylist() {
   const searchParams = useSearchParams();
@@ -42,8 +43,8 @@ export default function Mylist() {
   };
 
   const items = [
-    { icon: "👤", label: "aaa", component: UserPage },
-    { icon: "🔔", label: "bbb", component: UserPage },
+    { icon: "👤", label: "Profile", component: UserPage },
+    { icon: "🔔", label: "Notification", component: UserPage },
     { icon: "🚗", label: "ccc", component: UserPage },
     { icon: "📜", label: "ddd", component: UserPage },
     { icon: "📦", label: "eee", component: UserPage },

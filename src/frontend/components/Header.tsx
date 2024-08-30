@@ -120,13 +120,15 @@ export default function Header() {
       <Logo />
 
       <div style={iconsStyle}>
-        {true? (
-          <NotificationBell />
-        ) : (
-          <button style={iconButtonStyle} onClick={handleSignIn}>
-            Login
-          </button>
-        )}
+        <div style={iconButtonStyle}>
+          {true? (
+            <NotificationBell />
+          ) : (
+            <button style={iconButtonStyle} onClick={handleSignIn}>
+              Login
+            </button>
+          )}
+        </div>
         <div style={iconButtonStyle} onClick={toggleDropdown}>
           <Image
             src={avatar || "/default-avatar.png"}
@@ -143,7 +145,7 @@ export default function Header() {
               onClick={() => handleNavigate(0)}
               style={{ color: "inherit", textDecoration: "none" }}
             >
-              aaa
+              Profile
             </Button>
           </div>
           <div style={dropdownItemStyle}>
@@ -152,7 +154,7 @@ export default function Header() {
               onClick={() => handleNavigate(1)}
               style={{ color: "inherit", textDecoration: "none" }}
             >
-              bbb
+              Notification
             </Button>
           </div>
           <div style={dropdownItemStyle}>
