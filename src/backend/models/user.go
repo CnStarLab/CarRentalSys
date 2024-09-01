@@ -86,6 +86,9 @@ func ComparePassword(user *User, providedPassword string) (bool, error) {
 	if user.Password == "" {
 		return false, fmt.Errorf("module ComparePassword: hashed password cannot be empty")
 	}
+	if providedPassword == "" {
+		return false, fmt.Errorf("module ComparePassword: input password cannot be empty")
+	}
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(providedPassword))
 	if err != nil {
 		// if not match
