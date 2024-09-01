@@ -1,5 +1,4 @@
-'use client'
-import AddCarProgressControl from "./ProgressControl";
+import AddCarProgressControl from "../../../components/addCar/ProgressControl";
 
 export default function AddCarPage(){
     return(

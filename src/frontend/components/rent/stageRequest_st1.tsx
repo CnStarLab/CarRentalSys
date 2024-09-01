@@ -13,10 +13,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Modal from './alert';
-import { useAuth } from '../hook/AuthContext';
+import { useAuth } from '../authwarn/AuthContext';
 import { useSearchParams } from 'next/navigation';
 import { DateRangePicker } from 'rsuite';
-import { BookInfo} from '../interface'
+import { BookInfo} from '../../app/interface'
 
 interface StageRequest_st1Props {
     handleNext: () => void;
@@ -81,7 +81,7 @@ export default function StageRequest_st1({handleNext,setCurrBookInfo}:StageReque
   
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       if(!isLoggedIn){
-        window.location.href = '/login'
+        window.location.href = '/user/login'
       }
       event.preventDefault();
       const data = new FormData(event.currentTarget);

@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { Car } from '../interface';
+import { Car } from '../../app/interface';
 
 interface FinishCarCreateProps {
   currCarInfo: Car; 

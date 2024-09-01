@@ -13,9 +13,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Modal from './alert';
-import { useAuth } from '../hook/AuthContext';
+import { useAuth } from '../authwarn/AuthContext';
 import { MenuItem } from '@mui/material';
-import { Car } from '../interface' 
+import { Car } from '../../app/interface' 
 
 interface AddCarPicsProps {
   handleNext: () => void;

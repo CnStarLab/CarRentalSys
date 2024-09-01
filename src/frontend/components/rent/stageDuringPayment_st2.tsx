@@ -1,6 +1,6 @@
 import React from "react";
 import { CircularProgress, Typography, Box, Paper } from "@mui/material";
-import { BookInfo} from '../interface'
+import { BookInfo} from '../../app/interface'
 
 interface StageDuringPayment_st2Props {
     handleNext: () => void;

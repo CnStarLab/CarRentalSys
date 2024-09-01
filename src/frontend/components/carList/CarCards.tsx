@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Box } from '@mui/material';
 import Link from 'next/link';
-import { Car } from '../interface'
+import { Car } from '../../app/interface'
 
 interface CarCardsProps {
   car: Car;
@@ -132,12 +132,12 @@ export default function CarCards({ car }: CarCardsProps) {
         </Grid>
       </CardActionArea>
       <CardActions>
-        <Link href={`/cardetail?carId=${car.ID}`} passHref>
+        <Link href={`/browser/car/cardetail?carId=${car.ID}`} passHref>
           <Button size="small" color="primary">
             More Info
           </Button>
         </Link>
-        <Link href={`/rent?carId=${car.ID}`} passHref>
+        <Link href={`/service/rent?carId=${car.ID}`} passHref>
           <Button size="small" color="success">
             Rent Now
           </Button>

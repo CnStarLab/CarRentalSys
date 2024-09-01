@@ -1,8 +1,8 @@
 import { Button } from "@mui/material";
 import React from "react";
 import Modal from "./alert";
-import { Car } from '../interface' 
-import { useAuth } from "../hook/AuthContext";
+import { Car } from '../../app/interface' 
+import { useAuth } from "../authwarn/AuthContext";
 
 interface AddCarPicsProps {
   handleNext: () => void;

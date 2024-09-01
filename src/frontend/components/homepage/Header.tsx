@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Logo from './Logo';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../hook/AuthContext';
+import { useAuth } from '../authwarn/AuthContext';
 import { Button } from '@mui/material';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -26,7 +26,7 @@ export default function Header() {
     }, []);
 
     const handleSignIn = () => {
-        router.push('/login');
+        router.push('/user/login');
     };
 
     const handleLogout = () => {
@@ -86,7 +86,7 @@ export default function Header() {
                 <div style={navStyle}>
                     <Link href="#" style={navLinkStyle}>Vehicles</Link>
                     <Link href="#" style={navLinkStyle}>Energy</Link>
-                    <Link href="/rent" style={navLinkStyle}>Rent</Link>
+                    <Link href="/service/rent" style={navLinkStyle}>Rent</Link>
                     <Link href="/browser" style={navLinkStyle}>Discover</Link>
                     <Link href="#" style={navLinkStyle}>Shop</Link>
                 </div>
@@ -96,7 +96,7 @@ export default function Header() {
                 <button style={iconButtonStyle}>❔</button>
                 {clientOnly && isLoggedIn ? (
                     <>
-                        <Link style={navLinkStyle} href="/profile">
+                        <Link style={navLinkStyle} href="/user/profile">
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <Image
                                     src={avatar || '/default-avatar.png'} // 使用默认头像

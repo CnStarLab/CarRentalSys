@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import AddCarBasic from './addCarBasic';
 import AddCarPics from './addCarPic';
 import FinishCarCreate from './FinishCarCreate';
-import { Car } from '../interface'
+import { Car } from '../../app/interface'
 
 const steps = ['Add basic info for your car.', 'Upload relative pictures.', 'Ready for rent.'];
 

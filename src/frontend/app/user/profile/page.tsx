@@ -8,12 +8,12 @@ import {
   AccordionDetails,
 } from '@mui/material';
 import { Edit, Delete, Details, ExpandMore, Payment, Info } from '@mui/icons-material';
-import { useAuth } from '../hook/AuthContext';
+import { useAuth } from '../../../components/authwarn/AuthContext';
 import Modal from '../login/alert';
-import UploadPhoto from '../components/userAvatarUpload';
+import UploadPhoto from '../../../components/homepage/userAvatarUpload';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Car, Order, UserProfile } from '../interface'
+import { Car, Order, UserProfile } from '../../interface'
 
 var userData = {
     notifications: {
@@ -534,11 +534,11 @@ var userData = {
                     </CardContent>
                     <CardActions>
                       {order.status == 1 && (
-                        <Link href={`/rent?carId=${encodeURIComponent(order.carId)}&bookId=${encodeURIComponent(order.ID)}`}>
+                        <Link href={`/service/rent?carId=${encodeURIComponent(order.carId)}&bookId=${encodeURIComponent(order.ID)}`}>
                           <Button color="primary" startIcon={<Payment />}>Pay for your order</Button>
                         </Link>
                       )}
-                      <Link href={`/cardetail?carId=${encodeURIComponent(order.carId)}`}>
+                      <Link href={`/browser/car/cardetail?carId=${encodeURIComponent(order.carId)}`}>
                           <Button
                             color="primary"
                             id={`${order.ID}`} // 将 number 转换为 string

@@ -1,7 +1,7 @@
 'use client'
 import React, { ChangeEvent } from 'react';
 import { Container, Grid, Box, Typography, TextField, Slider, FormControlLabel, Button, Radio, RadioGroup } from '@mui/material';
-import AllCars from '../carList/page';
+import AllCars from './car/carList/page';
 import Link from 'next/link';
 import { DateRangePicker } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
@@ -95,7 +95,7 @@ export default function BroserPage() {
         <Grid container spacing={2}>
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h4">RentRide.mn</Typography>
-            <Link href="/car"><Button variant="contained">ADD A CAR</Button></Link>
+            <Link href="/service/addCar"><Button variant="contained">ADD A CAR</Button></Link>
           </Grid>
           <Grid item xs={12} md={3}>
             <Box sx={{ p: 2, border: '1px solid #ddd', borderRadius: 2 }}>

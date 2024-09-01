@@ -1,7 +1,7 @@
 'use client'
 import * as React from 'react';
 import { Box, Container } from "@mui/material";
-import CarCards from "./CarCards";
+import CarCards from "../../../../components/carList/CarCards";
 
 // 定义组件的 props 类型
 interface AllCarsProps {

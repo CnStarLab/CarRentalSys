@@ -4,9 +4,9 @@ import { Button, Fade, Zoom, Box } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import SendIcon from '@mui/icons-material/Send';
 import DownloadIcon from '@mui/icons-material/Download';
-import MainSection from '@/components/MainSection';
-import FAQSection from '@/components/FAQSection';
-import FeaturesSection from '@/components/FeaturesSection';
+import MainSection from '@/components/homepage/MainSection';
+import FAQSection from '@/components/homepage/FAQSection';
+import FeaturesSection from '@/components/homepage/FeaturesSection';
 import { useState, useEffect, useRef } from 'react';
 
 export default function HomePage() {
@@ -15,7 +15,6 @@ export default function HomePage() {
   const [mainInView, setMainInView] = useState(false);
   const [featuresInView, setFeaturesInView] = useState(false);
   const [faqInView, setFaqInView] = useState(false);
-  const [footerInView, setFooterInView] = useState(false);
 
   const mainRef = useRef(null);
   const featuresRef = useRef(null);
@@ -39,9 +38,6 @@ export default function HomePage() {
               case faqRef.current:
                 setFaqInView(true);
                 break;
-              // case footerRef.current:
-              //   setFooterInView(true);
-              //   break;
             }
           }
         });
@@ -66,130 +62,36 @@ export default function HomePage() {
     router.push('/browser');
   };
 
-  const ContainerStyle: React.CSSProperties = {
-    width: '100%',
-    height: '100vh',
-    backgroundImage: 'url(homepage1.jpg)', // 保持背景图
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    position: 'relative',
-  };
-
-  const overlayStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 半透明遮罩
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  };
-
-  const textStyle: React.CSSProperties = {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: '48px',
-    marginBottom: '20px',
-    fontWeight: 'bold',
-    lineHeight: '1.2',
-  };
-
-  const circleStyle: React.CSSProperties = {
-    width: '655px',
-    height: '655px',
-    borderRadius: '50%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: '20px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    transition: 'transform 0.5s ease-in-out', // 添加旋转效果
-  };
-
-  const subTextStyle: React.CSSProperties = {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: '24px',
-    marginBottom: '-10px',
-  };
-
-  const buttonContainerStyle: React.CSSProperties = {
-    display: 'flex',
-    gap: '20px',
-    marginTop: '20px',
-  };
-
-  const buttonStyle: React.CSSProperties = {
-    backgroundColor: 'orange',
-    color: 'white',
-    fontSize: '18px',
-    padding: '10px 20px',
-    borderRadius: '5px',
-    textTransform: 'none',
-    transition: 'transform 0.2s, background-color 0.2s', // 添加过渡效果
-  };
-
-  const downloadButtonStyle: React.CSSProperties = {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    color: 'white',
-    fontSize: '18px',
-    padding: '10px 20px',
-    borderRadius: '5px',
-    textTransform: 'none',
-    border: '1px solid white',
-    transition: 'transform 0.2s, border-color 0.2s', // 添加过渡效果
-  };
-
-  const adjectiveStyle: React.CSSProperties = {
-    color: 'orange',
-    fontWeight: 'bold',
-    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-  };
-
-  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.currentTarget.style.transform = 'scale(1.05)'; // 悬停时放大按钮
-  };
-
-  const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.currentTarget.style.transform = 'scale(1)';
-  };
-
   return (
     <>
-      <div style={ContainerStyle}>
-        <div style={overlayStyle}>
+      <div className="w-full h-screen bg-cover bg-center bg-no-repeat relative" style={{ backgroundImage: 'url(homepage1.jpg)' }}>
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center">
           <Fade in={loaded} timeout={1000}>
-            <div style={circleStyle}>
-              <p style={textStyle}>
-                Provide People With <span style={adjectiveStyle}>SAFE</span>,<br />
-                <span style={adjectiveStyle}>CONVENIENT</span>,<br />
-                And <span style={adjectiveStyle}>COMFORTABLE</span><br />
+            <div className="w-[655px] h-[655px] rounded-full flex flex-col justify-center items-center bg-black bg-opacity-50 p-5 shadow-lg transition-transform duration-500 ease-in-out">
+              <p className="text-white text-center text-4xl mb-5 font-bold leading-snug">
+                Provide People With <span className="text-orange-400 font-bold text-shadow-md">SAFE</span>,<br />
+                <span className="text-orange-400 font-bold text-shadow-md">CONVENIENT</span>,<br />
+                And <span className="text-orange-400 font-bold text-shadow-md">COMFORTABLE</span><br />
                 Car Rental Travel Solutions
               </p>
-              <p style={subTextStyle}>RentRide.mn</p>
-              <div style={buttonContainerStyle}>
+              <p className="text-white text-center text-2xl mb-[-2.5rem]">RentRide.mn</p>
+              <div className="flex gap-5 mt-10">
                 <Button
                   variant="contained"
-                  style={buttonStyle}
+                  className="bg-orange-400 text-white text-lg py-2 px-5 rounded transition-transform duration-200"
                   endIcon={<SendIcon />}
                   onClick={handleClick}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
+                  onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
                 >
                   Get Started
                 </Button>
                 <Button
                   variant="outlined"
-                  style={downloadButtonStyle}
+                  className="bg-opacity-10 text-white text-lg py-2 px-5 rounded border border-white transition-transform duration-200"
                   startIcon={<DownloadIcon />}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
+                  onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
                 >
                   Download Apps
                 </Button>
@@ -222,14 +124,7 @@ export default function HomePage() {
           </div>
         </Zoom>
       </Box>
-{/* 
-      <Box ref={footerRef} sx={{ overflow: 'hidden' }}>
-        <Zoom in={footerInView} timeout={1000}>
-          <div>
-            <Footer />
-          </div>
-        </Zoom>
-      </Box> */}
+
     </>
   );
 }

@@ -1,4 +1,4 @@
-import UploadPhoto from "../components/userAvatarUpload";
+import UploadPhoto from "../../components/homepage/userAvatarUpload";
 
 export default function test(){
     return (

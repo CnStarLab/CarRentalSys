@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Modal from './alert';
-import { useAuth } from '../hook/AuthContext';
+import { useAuth } from '../../../components/authwarn/AuthContext';
 import { useRouter } from 'next/navigation';
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -135,7 +135,7 @@ export default function SignIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/register" variant="body2">
+                <Link href="/user/register" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
