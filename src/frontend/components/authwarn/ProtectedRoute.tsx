@@ -11,8 +11,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!isLoggedIn && pathname !== '/' && pathname !== '/user/login' && pathname !== '/authwarn' && pathname !== '/user/register'&& pathname !== '/service/health') {
-      router.push('/authwarn');
+    if (!isLoggedIn && pathname !== '/' && pathname !== '/user/login' && pathname !== '/browser' && pathname !== '/user/register'&& pathname !== '/service/health') {
+      router.push('/service/authwarn');
     }
   }, [isLoggedIn, router, pathname]);
 
