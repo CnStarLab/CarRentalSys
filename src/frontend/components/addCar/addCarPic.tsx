@@ -6,8 +6,8 @@ import { useAuth } from "../authwarn/AuthContext";
 
 interface AddCarPicsProps {
   handleNext: () => void;
-  setCurrCarInfo: (info: Car) => void;
-  currCarInfo: Car;
+  setCurrCarInfo: (info: Car) => void | null;
+  currCarInfo: Car | null;
 }
 
 export default function AddCarPics({ handleNext, setCurrCarInfo, currCarInfo }: AddCarPicsProps) {
@@ -36,6 +36,10 @@ export default function AddCarPics({ handleNext, setCurrCarInfo, currCarInfo }: 
       };
     
       try {
+        if(!currCarInfo || !currCarInfo.ID){
+          console.log("bugs!")
+          return
+        }
         const response = await fetch(`http://localhost:8080/api/v1/cars/info/update/${currCarInfo.ID}`, {
           method: 'POST',
           headers: {

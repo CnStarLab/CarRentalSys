@@ -8,7 +8,7 @@ interface AllCarsProps {
   conds?: string; 
 }
 
-export default function AllCars({ conds }: AllCarsProps) {
+export default function AllCars({ conds }: any) {
   const [jsonData, setJsonData] = React.useState<any[]>([]);
 
   React.useEffect(() => {

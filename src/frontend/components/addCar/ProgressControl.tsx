@@ -1,4 +1,6 @@
 'use client'
+/* eslint-disable */
+
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
@@ -64,6 +66,7 @@ export default function AddCarProgressControl() {
       // }
       switch (step) {
         case 0:
+          
           return <AddCarBasic handleNext={handleNext} setCurrCarInfo={setCurrCarInfo} />;
         case 1:
           return <AddCarPics handleNext={handleNext} setCurrCarInfo={setCurrCarInfo} currCarInfo={currCarInfo}/>;

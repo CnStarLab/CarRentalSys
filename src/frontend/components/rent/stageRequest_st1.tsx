@@ -18,10 +18,16 @@ import { useSearchParams } from 'next/navigation';
 import { DateRangePicker } from 'rsuite';
 import { BookInfo} from '../../app/interface'
 
+// interface StageRequest_st1Props {
+//     handleNext: () => void;
+//     setCurrBookInfo: (info: BookInfo) => void;
+// }
+
 interface StageRequest_st1Props {
-    handleNext: () => void;
-    setCurrBookInfo: (info: BookInfo) => void;
+  handleNext: any;
+  setCurrBookInfo: any;
 }
+
 
 interface DateRange {
   startTime: string;

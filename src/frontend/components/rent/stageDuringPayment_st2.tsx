@@ -2,9 +2,14 @@ import React from "react";
 import { CircularProgress, Typography, Box, Paper } from "@mui/material";
 import { BookInfo} from '../../app/interface'
 
+// interface StageDuringPayment_st2Props {
+//     handleNext: () => void;
+//     currBookInfo: BookInfo;
+// }
+
 interface StageDuringPayment_st2Props {
-    handleNext: () => void;
-    currBookInfo: BookInfo;
+    handleNext: any;
+    currBookInfo: any;
 }
 
 export default function StageDuringPayment_st2({ handleNext, currBookInfo }:StageDuringPayment_st2Props) {

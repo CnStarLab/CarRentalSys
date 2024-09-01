@@ -8,10 +8,11 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 const defaultAuthContext: AuthContextType = {
   username: '',
   isLoggedIn: false,
-  logout: () => {},
-  login: (router: AppRouterInstance, username: string, userId: string, token: string, currAvatar: string) => {},
+  logout: () => { },
+  login: (router: AppRouterInstance, username: string, userId: string, token: string, currAvatar: string) => { },
   avatar: '',
-  userId: ''
+  userId: '',
+  token: ''
 };
 
 // 创建AuthContext

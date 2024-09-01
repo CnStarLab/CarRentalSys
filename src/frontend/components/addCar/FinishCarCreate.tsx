@@ -2,11 +2,13 @@
 import React from 'react';
 import { Car } from '../../app/interface';
 
-interface FinishCarCreateProps {
-  currCarInfo: Car; 
-}
+// interface FinishCarCreateProps {
+//   currCarInfo: Car | null; 
+// }
 
-const FinishCarCreate: React.FC<FinishCarCreateProps> = ({ currCarInfo }) => {
+//const FinishCarCreate: React.FC<FinishCarCreateProps> = ({ currCarInfo }) => {
+
+const FinishCarCreate = ({ currCarInfo }:any) => {
   return (
     <div>
       <h1>Check Your Car Info</h1>

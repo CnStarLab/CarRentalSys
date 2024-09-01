@@ -98,13 +98,13 @@ export default function BookingFlowControl() {
       case 1:
         return <StagePayment_st2 handleNext={handleNext} currBookInfo={currBookInfo} />;
       case 2:
-        return <StageAfterPaid_st3 handleNext={handleNext}/>;
+        return <StageAfterPaid_st3 />;
       case 3:
-        return <StageUsing_st4 handleNext={handleNext}/>;
+        return <StageUsing_st4 />;
       case 4:
-        return <StageEnding_st5 handleNext={handleNext}/>;
+        return <StageEnding_st5 />;
       case 5:
-        return <StageFinish_st6 handleNext={handleNext}/>;
+        return <StageFinish_st6 />;
       default:
         return null;
     }
